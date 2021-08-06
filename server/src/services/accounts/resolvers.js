@@ -1,15 +1,23 @@
-const accounts = [{ id: "1", email: "devchirps@stevegray.com" }]
+import auth0 from '../../config/auth0'
 
 const resolvers = {
 	Account: {
 		__resolveReference(reference, context, info) {
-			return accounts.find(account => account.id === reference.id)
+			return auth0.getUser({ id: reference.id })
 		}
 	},
 	Query: {
+		account(parent, { id }, context, info) {
+			return auth0.getUser({ id })
+		},
+		accounts(parent, { id }, context, info) {
+			return auth0.getUsers()
+		},
 		viewer(parent, args, { user }, info) {
-			console.log({ user });
-			return accounts[0]
+			if (user && user.sub) {
+				return auth0.getUser({ id: user.sub })
+			}
+			return null
 		}
 	}
 }
