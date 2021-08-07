@@ -9,13 +9,18 @@ const resolvers = {
 			return auth0.getUser({ id: reference.id });
 		},
 		id(account, args, context, info) {
-			console.log("id", account);
 			return account.user_id;
 		},
 		createdAt(account, args, context, info) {
-			console.log("createdAt", account);
 			return account.created_at;
 		},
+		isModerator(account, args, context, info) {
+			return (
+				account.app_metadata &&
+				account.app_metadata.roles &&
+				account.app_metadata.roles.includes('moderator')
+			)
+		}
 	},
 	Query: {
 		account(parent, { id }, context, info) {
