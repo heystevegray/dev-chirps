@@ -49,8 +49,8 @@ const resolvers = {
 						"edit:own_profile",
 						"read:any_content",
 						"edit:own_content",
-						"upload:own_media"
-					]
+						"upload:own_media",
+					],
 				},
 				connection: "Username-Password-Authentication",
 				email,
@@ -60,6 +60,40 @@ const resolvers = {
 		async deleteAccount(parent, { where: { id } }, context, info) {
 			await auth0.deleteUser({ id });
 			return true;
+		},
+		async changeAccountModeratorRole(
+			parent,
+			{ where: { id } },
+			context,
+			info
+		) {
+			const authorPermissions = [
+				"read:own_account",
+				"edit:own_account",
+				"read:any_profile",
+				"edit:own_profile",
+				"read:any_content",
+				"edit:own_content",
+				"upload:own_media",
+			];
+			const moderatorPermissions = [
+				"read:any_account",
+				"block:any_account",
+				"promote:any_account",
+				"block:any_content",
+			];
+
+			const user = await auth0.getUser({ id });
+			const isModerator = user.app_metadata.roles.includes("moderator");
+			const roles = isModerator ? ["author"] : ["moderator"];
+			const permissions = isModerator
+				? authorPermissions
+				: authorPermissions.concat(moderatorPermissions);
+
+			return auth0.updateUser(
+				{ id },
+				{ app_metadata: { groups: [], roles, permissions } }
+			);
 		},
 		async updateAccount(
 			parent,
