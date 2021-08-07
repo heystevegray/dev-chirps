@@ -6,6 +6,16 @@ const typeDefs = gql`
 		password: String!
 	}
 
+	input AccountWhereUniqueInput {
+		id: ID!
+	}
+
+	input UpdateAccountInput {
+		email: String
+		newPassword: String
+		password: String
+	}
+
 	type Account @key(fields: "id") {
 		id: ID!
 		createdAt: String!
@@ -20,6 +30,10 @@ const typeDefs = gql`
 
 	extend type Mutation {
 		createAccount(data: CreateAccountInput!): Account!
+		updateAccount(
+			data: UpdateAccountInput!
+			where: AccountWhereUniqueInput!
+		): Account!
 	}
 `;
 
