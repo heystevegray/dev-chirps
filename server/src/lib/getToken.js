@@ -1,7 +1,7 @@
-import request from 'request'
-import util from 'util'
+import request from "request";
+import util from "util";
 
-const requestPromise = util.promisify(request)
+const requestPromise = util.promisify(request);
 
 export default async function (username, password) {
 	const options = {
@@ -16,19 +16,21 @@ export default async function (username, password) {
 			password,
 			realm: "Username-Password-Authentication",
 			scope: "openid",
-			username
-		}
+			username,
+		},
 	};
 
-	const response = await requestPromise(options).catch(error => {
-		throw new Error(error)
-	})
-	const body = JSON.parse(response.body)
-	const { access_token } = body
+	const response = await requestPromise(options).catch((error) => {
+		throw new Error(error);
+	});
+	const body = JSON.parse(response.body);
+	const { access_token } = body;
 
 	if (!access_token) {
-		throw new Error(body.error_description || "Cannot retrieve access token.")
+		throw new Error(
+			body.error_description || "Cannot retrieve access token."
+		);
 	}
 
-	return access_token
+	return access_token;
 }

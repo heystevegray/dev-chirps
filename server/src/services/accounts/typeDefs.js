@@ -1,15 +1,26 @@
-import { gql } from 'apollo-server'
+import { gql } from "apollo-server";
 
 const typeDefs = gql`
-type Account @key(fields: "id") {
-	id: ID!
-	createdAt: String!
-	email: String
-}
+	input CreateAccountInput {
+		email: String!
+		password: String!
+	}
 
-extend type Query {
-	viewer: Account
-}
-`
+	type Account @key(fields: "id") {
+		id: ID!
+		createdAt: String!
+		email: String
+	}
 
-export default typeDefs
+	extend type Query {
+		viewer: Account
+		account(id: ID!): Account!
+		accounts: [Account]
+	}
+
+	extend type Mutation {
+		createAccount(data: CreateAccountInput!): Account!
+	}
+`;
+
+export default typeDefs;

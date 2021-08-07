@@ -1,9 +1,22 @@
 import getToken from "../lib/getToken";
 
+const copy = (data) => {
+	const proc = require("child_process").spawn("pbcopy");
+	proc.stdin.write(data);
+	proc.stdin.end();
+};
+
 (async () => {
-	const [email, password] = process.argv.slice(2)
-	const access_token = await getToken(email, password).catch(error => {
-		console.log(error)
-	})
-	console.log(`"Authorization": "Bearer ${access_token}"`);
+	const [email, password] = process.argv.slice(2);
+	const access_token = await getToken(email, password).catch((error) => {
+		console.log(error);
+	});
+	const token = `"Authorization": "Bearer ${access_token}"`;
+	try {
+		copy(token);
+		console.log("Copied the following to your clipboard 😎\n");
+	} catch (error) {
+		console.log(error);
+	}
+	console.log(token);
 })();

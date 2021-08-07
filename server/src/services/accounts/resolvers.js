@@ -1,26 +1,42 @@
-import auth0 from '../../config/auth0'
+import auth0 from "../../config/auth0";
 
 const resolvers = {
 	Account: {
 		__resolveReference(reference, context, info) {
-			return auth0.getUser({ id: reference.id })
-		}
+			return auth0.getUser({ id: reference.id });
+		},
+		id(account, args, context, info) {
+			console.log("id", account);
+			return account.user_id;
+		},
+		createdAt(account, args, context, info) {
+			console.log("createdAt", account);
+			return account.created_at;
+		},
 	},
 	Query: {
 		account(parent, { id }, context, info) {
-			return auth0.getUser({ id })
+			return auth0.getUser({ id });
 		},
 		accounts(parent, { id }, context, info) {
-			return auth0.getUsers()
+			return auth0.getUsers();
 		},
 		viewer(parent, args, { user }, info) {
 			if (user && user.sub) {
-				return auth0.getUser({ id: user.sub })
+				return auth0.getUser({ id: user.sub });
 			}
-			return null
-		}
-	}
-}
+			return null;
+		},
+	},
+	Mutation: {
+		createAccount(parent, { data: { email, password } }, context, info) {
+			return auth0.createUser({
+				connection: "Username-Password-Authentication",
+				email,
+				password,
+			});
+		},
+	},
+};
 
-
-export default resolvers
+export default resolvers;
