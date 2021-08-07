@@ -18,9 +18,9 @@ const resolvers = {
 			return (
 				account.app_metadata &&
 				account.app_metadata.roles &&
-				account.app_metadata.roles.includes('moderator')
-			)
-		}
+				account.app_metadata.roles.includes("moderator")
+			);
+		},
 	},
 	Query: {
 		account(parent, { id }, context, info) {
@@ -45,8 +45,8 @@ const resolvers = {
 			});
 		},
 		async deleteAccount(parent, { where: { id } }, context, info) {
-			await auth0.deleteUser({ id })
-			return true
+			await auth0.deleteUser({ id });
+			return true;
 		},
 		async updateAccount(
 			parent,
