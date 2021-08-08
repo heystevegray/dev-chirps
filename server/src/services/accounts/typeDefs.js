@@ -20,6 +20,7 @@ const typeDefs = gql`
 		id: ID!
 		createdAt: String!
 		email: String
+		isBlocked: Boolean
 		isModerator: Boolean
 	}
 
@@ -33,6 +34,7 @@ const typeDefs = gql`
 		createAccount(data: CreateAccountInput!): Account!
 		deleteAccount(where: AccountWhereUniqueInput!): Boolean!
 		changeAccountModeratorRole(where: AccountWhereUniqueInput!): Account!
+		changeAccountBlockedStatus(where: AccountWhereUniqueInput!): Account!
 		updateAccount(
 			data: UpdateAccountInput!
 			where: AccountWhereUniqueInput!

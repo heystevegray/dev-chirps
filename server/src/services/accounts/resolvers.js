@@ -21,6 +21,9 @@ const resolvers = {
 				account.app_metadata.roles.includes("moderator")
 			);
 		},
+		isBlocked(account, args, context, info) {
+			return account.blocked;
+		},
 	},
 	Query: {
 		account(parent, { id }, context, info) {
@@ -94,6 +97,15 @@ const resolvers = {
 				{ id },
 				{ app_metadata: { groups: [], roles, permissions } }
 			);
+		},
+		async changeAccountBlockedStatus(
+			parent,
+			{ where: { id } },
+			context,
+			info
+		) {
+			const { blocked } = await auth0.getUser({ id });
+			return auth0.updateUser({ id }, { blocked: !blocked });
 		},
 		async updateAccount(
 			parent,
