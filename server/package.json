@@ -28,6 +28,7 @@
 		"graphql-middleware": "^6.0.10",
 		"graphql-shield": "^7.5.0",
 		"jwks-rsa": "^2.0.4",
+		"validator": "^13.6.0",
 		"wait-on": "^6.0.0"
 	},
 	"devDependencies": {
