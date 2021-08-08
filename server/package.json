@@ -6,9 +6,8 @@
 	"scripts": {
 		"dev": "concurrently -k npm:dev:*",
 		"dev:accounts": "nodemon -r dotenv/config -r esm ./src/services/accounts/index.js",
-		"dev:gateway": "wait-on tcp:4001 && npm run format && nodemon -r dotenv/config -r esm ./src/index.js",
-		"accounts": "node -r dotenv/config -r esm ./src/services/accounts/index.js",
-		"gateway": "wait-on tcp:4001 && node -r dotenv/config -r esm ./src/index.js",
+		"dev:profiles": "nodemon -r dotenv/config -r esm ./src/services/profiles/index.js",
+		"dev:gateway": "wait-on tcp:4001 tcp:4002 && npm run format && nodemon -r dotenv/config -r esm ./src/index.js",
 		"format": "npx prettier --write ."
 	},
 	"keywords": [],
@@ -29,6 +28,7 @@
 		"graphql-middleware": "^6.0.10",
 		"graphql-shield": "^7.5.0",
 		"jwks-rsa": "^2.0.4",
+		"mongoose": "^5.13.5",
 		"validator": "^13.6.0",
 		"wait-on": "^6.0.0"
 	},
