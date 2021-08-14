@@ -41,6 +41,11 @@ const resolvers = {
 			return dataSources.profilesAPI.getProfiles();
 		},
 	},
+	Mutation: {
+		createProfile(parent, { data }, { dataSources }, info) {
+			return dataSources.profilesAPI.createProfile(data);
+		},
+	},
 };
 
 export default resolvers;

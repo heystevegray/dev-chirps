@@ -8,6 +8,20 @@ const typeDefs = gql`
 	}
 
 	"""
+	Provides data to create a new user profile.
+	"""
+	input CreateProfileInput {
+		"The new user's unique Auth0 ID."
+		accountId: ID!
+		"A short bio or description about the user (max. 256 characters)."
+		description: String
+		"The new user's full name."
+		fullName: String
+		"The new user's username (must be unique)."
+		username: String!
+	}
+
+	"""
 	Profile Entity
 	The Accounts type above is a "stub" of the Account entity
 
@@ -38,6 +52,11 @@ const typeDefs = gql`
 
 		"Retrieves a list of profiles."
 		profiles: [Profile]
+	}
+
+	extend type Mutation {
+		"Creates a new profile tied to an Auth0 account."
+		createProfile(data: CreateProfileInput!): Profile!
 	}
 `;
 

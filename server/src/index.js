@@ -45,7 +45,7 @@ export const wait = async () => {
 	server.applyMiddleware({ app });
 	app.listen({ port }, async () => {
 		console.log(
-			`Server ready at http://localhost:${port}${server.graphqlPath} 🚀`
+			`🚀 Server ready at http://localhost:${port}${server.graphqlPath} 🚀`
 		);
 	});
 })().catch((error) => {
