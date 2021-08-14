@@ -32,5 +32,5 @@ import typeDefs from "./typeDefs";
 		throw new Error(error.message);
 	});
 
-	console.log(`Accounts service ready at ${url} 🤖`);
+	console.log(`🤖 Accounts service ready | ${url}`);
 })();

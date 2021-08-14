@@ -1,19 +1,31 @@
 import app from "./config/app";
-import initGateway from "./config/apollo";
+import initGateway from "./config/apollo/apollo";
 import waitOn from "wait-on";
 import { ApolloError } from "apollo-server-express";
 
+const SERVICES = [
+	{
+		port: `tcp:${process.env.ACCOUNTS_SERVICE_PORT}`,
+		name: "accounts",
+		url: process.env.ACCOUNTS_SERVICE_URL,
+	},
+	{
+		port: `tcp:${process.env.PROFILES_SERVICE_PORT}`,
+		name: "profiles",
+		url: process.env.PROFILES_SERVICE_URL,
+	},
+];
+
 const options = {
-	resources: [
-		// `tcp:${process.env.ACCOUNTS_SERVICE_PORT}`,
-		`tcp:${process.env.PROFILES_SERVICE_PORT}`,
-	],
+	resources: SERVICES.map((resource) => resource.port),
 };
 
-export const dynamicServiceList = [
-	// { name: "accounts", url: process.env.ACCOUNTS_SERVICE_URL },
-	{ name: "profiles", url: process.env.PROFILES_SERVICE_URL },
-];
+export const dynamicServiceList = SERVICES.map(({ name, url }) => {
+	return {
+		name,
+		url,
+	};
+});
 
 export const wait = async () => {
 	await waitOn(options)

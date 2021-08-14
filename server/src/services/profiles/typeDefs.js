@@ -1,7 +1,6 @@
 import { gql } from "apollo-server";
 
 const typeDefs = gql`
-	# This is a "stub" of the Account entity
 	extend type Account @key(fields: "id") {
 		id: ID! @external
 		"Metadata about the user that owns this account."
@@ -10,6 +9,7 @@ const typeDefs = gql`
 
 	"""
 	Profile Entity
+	The Accounts type above is a "stub" of the Account entity
 
 	A profile contains metadata about a specific user.
 	"""

@@ -23,13 +23,17 @@ import typeDefs from "./typeDefs";
 			const user = req.headers.user ? JSON.parse(req.headers.user) : null;
 			return { user };
 		},
-		dataSources: {
-			profilesAPI: new ProfilesDataSource({ Profile }),
+		dataSources: () => {
+			return {
+				profilesAPI: new ProfilesDataSource({ Profile }),
+			};
 		},
 	});
 
 	initMongoose();
 
-	const { url } = await server.listen({ port });
-	console.log(`Profiles service is ready at ${url} 👽`);
+	const { url } = await server.listen({ port }).catch((error) => {
+		throw new ApolloError("Error starting the profiles service");
+	});
+	console.log(`👽 Profiles service is ready | ${url}`);
 })();

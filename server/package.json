@@ -5,10 +5,10 @@
 	"main": "index.js",
 	"scripts": {
 		"dev": "concurrently -k npm:dev:*",
-		"-dev:accounts": "nodemon -r dotenv/config -r esm ./src/services/accounts/index.js",
+		"dev:accounts": "nodemon -r dotenv/config -r esm ./src/services/accounts/index.js",
 		"dev:profiles": "nodemon -r dotenv/config -r esm ./src/services/profiles/index.js",
 		"dev:gateway": "nodemon -r dotenv/config -r esm ./src/index.js",
-		"format": "npx prettier --write ."
+		"format": "prettier --write ."
 	},
 	"keywords": [],
 	"author": "Steve",
@@ -34,6 +34,7 @@
 	},
 	"devDependencies": {
 		"concurrently": "^6.2.1",
-		"nodemon": "^2.0.12"
+		"nodemon": "^2.0.12",
+		"prettier": "^2.3.2"
 	}
 }

@@ -1,6 +1,6 @@
 import { ApolloGateway, RemoteGraphQLDataSource } from "@apollo/gateway";
 import { ApolloServer } from "apollo-server-express";
-import { wait, dynamicServiceList } from "../index";
+import { wait, dynamicServiceList } from "../../index";
 
 export default async function () {
 	await wait();
@@ -9,12 +9,10 @@ export default async function () {
 		serviceList: dynamicServiceList,
 		buildService(service) {
 			const { name, url } = service;
-			console.log(`Building the ${name} service for ${url}`);
-			console.log(service);
+			console.log(`⚙️\tBuilding the ${name} service ${url}`);
 			return new RemoteGraphQLDataSource({
 				url,
 				willSendRequest({ request, context }) {
-					console.log({ request, context });
 					request.http.headers.set(
 						"user",
 						context.user ? JSON.stringify(context.user) : null
