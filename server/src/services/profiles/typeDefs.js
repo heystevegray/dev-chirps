@@ -8,6 +8,26 @@ const typeDefs = gql`
 	}
 
 	"""
+	Provides the unique username of an existing profile.
+	"""
+	input ProfileWhereUniqueInput {
+		"The unique username of the user."
+		username: String!
+	}
+
+	"""
+	Provides data to update and existing profile.
+	"""
+	input UpdateProfileInput {
+		"The updated user description."
+		description: String
+		"The updated full name of the user."
+		fullName: String
+		"The updated unique username of the user."
+		username: String
+	}
+
+	"""
 	Provides data to create a new user profile.
 	"""
 	input CreateProfileInput {
@@ -57,6 +77,10 @@ const typeDefs = gql`
 	extend type Mutation {
 		"Creates a new profile tied to an Auth0 account."
 		createProfile(data: CreateProfileInput!): Profile!
+		updateProfile(
+			data: UpdateProfileInput!
+			where: ProfileWhereUniqueInput!
+		): Profile!
 	}
 `;
 

@@ -21,6 +21,26 @@ class ProfilesDataSource extends DataSource {
 		return this.Profile.findById(id);
 	}
 
+	updateProfile(currentUsername, { description, fullName, username }) {
+		if (!description && !fullName && !username) {
+			throw new UserInputError(
+				"You must supply some profile data to update."
+			);
+		}
+
+		const data = {
+			...(description && { description }),
+			...(fullName && { fullName }),
+			...(username && { username }),
+		};
+
+		return this.Profile.findOneAndUpdate(
+			{ username: currentUsername },
+			data,
+			{ new: true }
+		);
+	}
+
 	async checkViewerFollowsProfile(viewerAccountId, profileId) {
 		const viewerProfile = await this.Profile.findOne({
 			accountId: viewerAccountId,
