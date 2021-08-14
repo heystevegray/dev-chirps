@@ -77,10 +77,13 @@ const typeDefs = gql`
 	extend type Mutation {
 		"Creates a new profile tied to an Auth0 account."
 		createProfile(data: CreateProfileInput!): Profile!
+		"Updates a user's profile details."
 		updateProfile(
 			data: UpdateProfileInput!
 			where: ProfileWhereUniqueInput!
 		): Profile!
+		"Deletes a user profile."
+		deleteProfile(where: ProfileWhereUniqueInput!): ID!
 	}
 `;
 
