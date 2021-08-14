@@ -41,6 +41,8 @@ const typeDefs = gql`
 	}
 
 	"""
+	Account Entity
+
 	An account is an Auth0 user that provides authentication details.
 	"""
 	type Account @key(fields: "id") {

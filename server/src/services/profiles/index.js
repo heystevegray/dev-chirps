@@ -10,7 +10,7 @@ import resolvers from "./resolvers";
 import typeDefs from "./typeDefs";
 
 (async () => {
-	const port = process.env.PROFILE_SERVICE_PORT;
+	const port = process.env.PROFILES_SERVICE_PORT;
 
 	const schema = applyMiddleware(
 		buildFederatedSchema([{ typeDefs, resolvers }]),
