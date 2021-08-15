@@ -17,6 +17,11 @@ const resolvers = {
 				profile._id
 			);
 		},
+		following(profile, args, { dataSources }, info) {
+			return dataSources.profilesAPI.getFollowedProfiles(
+				profile.following
+			);
+		},
 	},
 	Account: {
 		profile(account, args, { dataSources }, info) {
@@ -55,6 +60,28 @@ const resolvers = {
 		},
 		deleteProfile(parent, { where: { username } }, { dataSources }, info) {
 			return dataSources.profilesAPI.deleteProfile(username);
+		},
+		followProfile(
+			parent,
+			{ data: { followingProfileId }, where: { username } },
+			{ dataSources },
+			info
+		) {
+			return dataSources.profilesAPI.followProfile(
+				username,
+				followingProfileId
+			);
+		},
+		unfollowProfile(
+			parent,
+			{ data: { followingProfileId }, where: { username } },
+			{ dataSources },
+			info
+		) {
+			return dataSources.profilesAPI.unfollowProfile(
+				username,
+				followingProfileId
+			);
 		},
 	},
 };
