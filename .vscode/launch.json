@@ -10,5 +10,11 @@
 			"request": "launch",
 			"type": "node-terminal"
 		},
+		{
+			"command": "cd server && npm run dev:gateway",
+			"name": "Run npm dev:gateway",
+			"request": "launch",
+			"type": "node-terminal"
+		},
 	]
 }

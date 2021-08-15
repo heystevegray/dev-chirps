@@ -1,4 +1,4 @@
-import { ApolloServer } from "apollo-server";
+import { ApolloServer, ApolloError } from "apollo-server";
 import { applyMiddleware } from "graphql-middleware";
 import { buildFederatedSchema } from "@apollo/federation";
 
@@ -29,8 +29,8 @@ import typeDefs from "./typeDefs";
 	});
 
 	const { url } = await server.listen({ port }).catch((error) => {
-		throw new Error(error.message);
+		throw new ApolloError(error.message);
 	});
 
-	console.log(`Accounts service ready at ${url} 🤖`);
+	console.log(`🤖 Accounts service is ready | ${url}`);
 })();

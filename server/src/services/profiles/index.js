@@ -2,6 +2,7 @@ import { ApolloError, ApolloServer } from "apollo-server";
 import { applyMiddleware } from "graphql-middleware";
 import { buildFederatedSchema } from "@apollo/federation";
 
+import auth0 from "../../config/auth0";
 import initMongoose from "../../config/mongoose";
 import permissions from "./permissions";
 import Profile from "../../models/Profile";
@@ -10,7 +11,7 @@ import resolvers from "./resolvers";
 import typeDefs from "./typeDefs";
 
 (async () => {
-	const port = process.env.PROFILE_SERVICE_PORT;
+	const port = process.env.PROFILES_SERVICE_PORT;
 
 	const schema = applyMiddleware(
 		buildFederatedSchema([{ typeDefs, resolvers }]),
@@ -23,13 +24,17 @@ import typeDefs from "./typeDefs";
 			const user = req.headers.user ? JSON.parse(req.headers.user) : null;
 			return { user };
 		},
-		dataSources: {
-			profilesAPI: new ProfilesDataSource({ Profile }),
+		dataSources: () => {
+			return {
+				profilesAPI: new ProfilesDataSource({ auth0, Profile }),
+			};
 		},
 	});
 
 	initMongoose();
 
-	const { url } = await server.listen({ port });
-	console.log(`Profiles service is ready at ${url} 👽`);
+	const { url } = await server.listen({ port }).catch((error) => {
+		throw new ApolloError("Error starting the profiles service");
+	});
+	console.log(`👽 Profiles service is ready | ${url}`);
 })();

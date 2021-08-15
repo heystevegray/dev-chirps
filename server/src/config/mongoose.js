@@ -11,7 +11,9 @@ export default function () {
 	});
 
 	mongoose.connection.on("connected", () => {
-		console.log(`Mongoose default connection read at ${connectionUrl} 💾`);
+		console.log(
+			`💾 Mongoose default connection is ready | ${connectionUrl}`
+		);
 	});
 
 	mongoose.connection.on("error", (error) => {

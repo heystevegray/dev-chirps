@@ -17,13 +17,15 @@ const profileSchema = new mongoose.Schema({
 		type: String,
 		trim: true,
 	},
-	userName: {
+	username: {
 		type: String,
 		required: true,
 		trim: true,
 		unique: true,
 	},
 });
+
+profileSchema.index({ fullName: "text", username: "text" });
 
 const Profile = mongoose.model("Profile", profileSchema);
 
