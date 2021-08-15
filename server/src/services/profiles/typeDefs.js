@@ -8,6 +8,50 @@ const typeDefs = gql`
 	}
 
 	"""
+	A list of profile edges with pagination information.
+	"""
+	type ProfileConnection {
+		"A list of profile edges."
+		edges: [ProfileEdge]
+		"Information to assist with pagination."
+		pageInfo: PageInfo!
+	}
+
+	"""
+	A single Profile node with its cursor.
+	"""
+	type ProfileEdge {
+		"A cursor for use in pagination."
+		cursor: ID!
+		"A profile at the end of an edge."
+		node: Profile!
+	}
+
+	"""
+	Information about pagination in a connection.
+	"""
+	type PageInfo {
+		"The cursor to continue from when paginating forward."
+		endCursor: String
+		"Whether there are more items when paginating forward."
+		hasNextPage: Boolean!
+		"Whether there are more items when paginating backward."
+		hasPreviousPage: Boolean!
+		"The cursor to continue from when paginating backward."
+		startCursor: String
+	}
+
+	"""
+	Sorting options for profile connections.
+	"""
+	enum ProfileOrderByInput {
+		"Order profiles ascending by username."
+		username_ASC
+		"Order profiles descending by username."
+		username_DESC
+	}
+
+	"""
 	Provides the unique MongoDB document ID of an existing profile.
 	"""
 	input FollowingProfileInput {
@@ -73,7 +117,13 @@ const typeDefs = gql`
 		"A short bio or description about the user (max. 256 characters)."
 		description: String
 		"Other users that the users follows."
-		following: [Profile]
+		following(
+			first: Int
+			after: String
+			last: Int
+			before: String
+			orderBy: ProfileOrderByInput
+		): ProfileConnection
 		"The full name of the user."
 		fullName: String
 		"The unique username of the user."
