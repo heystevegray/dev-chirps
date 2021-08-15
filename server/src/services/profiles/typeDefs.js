@@ -36,6 +36,14 @@ const typeDefs = gql`
 	}
 
 	"""
+	Provides a search string to query users by username or full names.
+	"""
+	input ProfileSearchInput {
+		"The text string to search for in usernames or full names."
+		text: String!
+	}
+
+	"""
 	Provides data to create a new user profile.
 	"""
 	input CreateProfileInput {
@@ -80,6 +88,9 @@ const typeDefs = gql`
 
 		"Retrieves a list of profiles."
 		profiles: [Profile]
+
+		"Performs a search of user profiles."
+		searchProfiles(query: ProfileSearchInput!): [Profile]
 	}
 
 	extend type Mutation {
