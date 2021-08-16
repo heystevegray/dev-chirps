@@ -15,9 +15,48 @@ class Pagination {
 			filter = {},
 			sort = {},
 		} = queryArgs;
-		let edges;
 
-		if (first) {
+		let edges;
+		const isSearch = this._isSearchQuery(sort);
+
+		// Handle user input errors
+		if (!first && !last) {
+			throw new UserInputError(
+				"Provide a `first` or `last` value to paginate this connection."
+			);
+		} else if (first && last) {
+			throw new UserInputError(
+				"Passing `first` and `last` arguments is not supported with this connection."
+			);
+		} else if (first < 0 || last < 0) {
+			throw new UserInputError(
+				"Minimum record request for `first` and `last` arguments is 0."
+			);
+		} else if (first > 100 || last > 100) {
+			throw new UserInputError(
+				"Maximum record request for `first` and `last` arguments is 100."
+			);
+		} else if (!first && isSearch) {
+			throw new UserInputError(
+				"Search queries may only be paginated forward."
+			);
+		}
+
+		if (isSearch) {
+			const operator = this._getOperator(sort);
+			const pipeline = await this._getSearchPipeline(
+				after,
+				filter,
+				first,
+				operator,
+				sort
+			);
+
+			const docs = await this.Model.aggregate(pipeline);
+			edges = docs.length
+				? docs.map((doc) => ({ node: doc, cursor: doc._id }))
+				: [];
+		} else if (first) {
 			// forward pagination happens here
 			const operator = this._getOperator(sort);
 			const queryDoc = after
@@ -52,25 +91,6 @@ class Pagination {
 			edges = docs.length
 				? docs.map((doc) => ({ cursor: doc._id, node: doc })).reverse()
 				: [];
-		}
-
-		// Handle user input errors
-		if (!first && !last) {
-			this._throwError(
-				"Provide a `first` or `last` value to paginate this connection."
-			);
-		} else if (first && last) {
-			this._throwError(
-				"Passing `first` and `last` arguments is not supported with this connection."
-			);
-		} else if (first < 0 || last < 0) {
-			this._throwError(
-				"Minimum record request for `first` or `last` arguments is 0."
-			);
-		} else if (first > 100 || last > 100) {
-			this._throwError(
-				"Maximum record request for `first` and `last` arguments is 100."
-			);
 		}
 
 		return edges;
@@ -128,7 +148,7 @@ class Pagination {
 			.exec();
 
 		if (!fromDoc) {
-			throw new UserInputError(
+			this._throwUserInputError(
 				`No record found for ID '${fromCursorId}'`
 			);
 		}
@@ -139,7 +159,45 @@ class Pagination {
 	}
 
 	// Create the aggregation pipeline to paginate a full text-search
-	async _getSearchPipeline(fromCursorId, filter, first, operator, sort) {}
+	async _getSearchPipeline(fromCursorId, filter, first, operator, sort) {
+		const textSearchPipeline = [
+			{ $match: filter },
+			{ $addFields: { score: { $meta: "textScore" } } },
+			{ $sort: sort },
+		];
+
+		if (fromCursorId) {
+			// Add a `$match` stage to get results after a specific cursor
+			const fromDoc = await this.Model.findOne({
+				_id: fromCursorId,
+				$text: { $search: filter.$text.$search },
+			})
+				.select({ score: { $meta: "textScore" } })
+				.exec();
+
+			if (!fromDoc) {
+				this._throwUserInputError(
+					`No record found for ID '${fromCursorId}'`
+				);
+			}
+
+			textSearchPipeline.push({
+				$match: {
+					$or: [
+						{ score: { [operator]: fromDoc._doc.score } },
+						{
+							score: { $eq: fromDoc._doc.score },
+							_id: { [operator]: fromCursorId },
+						},
+					],
+				},
+			});
+		}
+
+		textSearchPipeline.push({ $limit: first });
+
+		return textSearchPipeline;
+	}
 
 	// Reverse the sort direction when queries need to look in the opposite direction of the set sore order (e.g. next/previous page checks)
 	_reverseSortDirection(sort) {
@@ -156,42 +214,93 @@ class Pagination {
 	// Get the correct comparison operator based on the sort order
 	_getOperator(sort, options = {}) {
 		const orderArray = Object.values(sort);
-		return orderArray.length && orderArray[0] === -1 ? "$lt" : "$gt";
+		const checkPreviousTextScore =
+			options && options.checkPreviousTextScore
+				? options.checkPreviousTextScore
+				: false;
+		let operator;
+
+		if (this._isSearchQuery(sort)) {
+			operator = checkPreviousTextScore ? "$gt" : "$lt";
+		} else {
+			operator =
+				orderArray.length && orderArray[0] === -1 ? "$lt" : "$gt";
+		}
+
+		return operator;
 	}
 
-	/// Determine if a query is a full-text search based on the sort expression
-	_isSearchQuery(sort) {}
+	// Determine if a query is a full-text search based on the sort expression
+	_isSearchQuery(sort) {
+		const fieldArray = Object.keys(sort);
+		return fieldArray.length && fieldArray[0] === "score";
+	}
 
 	// Check if a next page of results is available
 	async _getHasNextPage(endCursor, filter, sort) {
+		const isSearch = this._isSearchQuery(sort);
 		const operator = this._getOperator(sort);
-		const queryDoc = await this._getFilterWithCursor(
-			endCursor,
-			filter,
-			operator,
-			sort
-		);
-		const nextPage = await this.Model.findOne(queryDoc)
-			.select("_id")
-			.sort(sort);
+		let nextPage;
+
+		if (isSearch) {
+			const pipeline = await this._getSearchPipeline(
+				endCursor,
+				filter,
+				1,
+				operator,
+				sort
+			);
+
+			const result = await this.Model.aggregate(pipeline);
+			nextPage = result.length;
+		} else {
+			const queryDoc = await this._getFilterWithCursor(
+				endCursor,
+				filter,
+				operator,
+				sort
+			);
+			nextPage = await this.Model.findOne(queryDoc)
+				.select("_id")
+				.sort(sort);
+		}
 
 		return Boolean(nextPage);
 	}
 
 	// Check if a previous page of results is available
 	async _getHasPreviousPage(startCursor, filter, sort) {
-		const reverseSort = this._reverseSortDirection(sort);
-		const operator = this._getOperator(reverseSort);
-		const queryDoc = await this._getFilterWithCursor(
-			startCursor,
-			filter,
-			operator,
-			reverseSort
-		);
+		const isSearch = this._isSearchQuery(sort);
+		let previousPage;
 
-		const previousPage = await this.Model.findOne(queryDoc)
-			.select("_id")
-			.sort(reverseSort);
+		if (isSearch) {
+			const operator = this._getOperator(sort, {
+				checkPreviousTextScore: true,
+			});
+			const pipeline = await this._getSearchPipeline(
+				startCursor,
+				filter,
+				1,
+				operator,
+				sort
+			);
+
+			const result = await this.Model.aggregate(pipeline);
+			previousPage = result.length;
+		} else {
+			const reverseSort = this._reverseSortDirection(sort);
+			const operator = this._getOperator(reverseSort);
+			const queryDoc = await this._getFilterWithCursor(
+				startCursor,
+				filter,
+				operator,
+				reverseSort
+			);
+
+			previousPage = await this.Model.findOne(queryDoc)
+				.select("_id")
+				.sort(reverseSort);
+		}
 
 		return Boolean(previousPage);
 	}
@@ -214,7 +323,7 @@ class Pagination {
 		return edges[edges.length - 1].cursor;
 	}
 
-	_throwError(message) {
+	_throwUserInputError(message) {
 		throw new UserInputError(message);
 	}
 }
