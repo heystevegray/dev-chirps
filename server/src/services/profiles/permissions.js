@@ -12,7 +12,7 @@ const canEditOwnProfile = rule()((parent, args, { user }, info) => {
 });
 
 const isCreatingOwnProfile = rule()(
-	(parent, { data: accountId }, { user }, info) => {
+	(parent, { data: { accountId } }, { user }, info) => {
 		return user.sub === accountId;
 	}
 );
