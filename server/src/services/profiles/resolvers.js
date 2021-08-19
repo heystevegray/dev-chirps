@@ -23,6 +23,11 @@ const resolvers = {
 				following: profile.following,
 			});
 		},
+		username(profile, args, { dataSources }, info) {
+			return dataSources.profilesAPI
+				.getProfileById(profile.id)
+				.then((result) => result.username);
+		},
 	},
 	Account: {
 		profile(account, args, { dataSources }, info) {
