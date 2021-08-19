@@ -1,4 +1,3 @@
-import { UserInputError } from "apollo-server";
 import { DateTimeResolver } from "../../lib/customScalars";
 
 const resolvers = {

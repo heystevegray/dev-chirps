@@ -74,6 +74,19 @@ class ContentDataSource extends DataSource {
 		return { edges, pageInfo };
 	}
 
+	async createPost({ text, username }) {
+		const profile = await this.Profile.findOne({ username }).exec();
+
+		if (!profile) {
+			throw new UserInputError(
+				"You must provide a valid username as the author of this post."
+			);
+		}
+
+		const newPost = new this.Post({ authorProfileId: profile._id, text });
+		return newPost.save();
+	}
+
 	_getContentSort(sortEnum) {
 		let sort = {};
 
