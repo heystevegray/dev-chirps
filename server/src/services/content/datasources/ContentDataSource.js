@@ -87,6 +87,14 @@ class ContentDataSource extends DataSource {
 		return newPost.save();
 	}
 
+	async deletePost(id) {
+		const deletedPost = await this.Post.findByIdAndDelete(id).exec();
+		if (!deletedPost) {
+			throw new UserInputError("The provided post id does not exist.");
+		}
+		return deletedPost._id;
+	}
+
 	_getContentSort(sortEnum) {
 		let sort = {};
 

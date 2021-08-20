@@ -37,6 +37,14 @@ const typeDefs = gql`
 	}
 
 	"""
+	Provides the unique ID of an existing piece of content.
+	"""
+	input ContentWhereUniqueInput {
+		"The unique MongoDB document ID associated with the content."
+		id: ID!
+	}
+
+	"""
 	Information about pagination in a connection.
 	"""
 	type PageInfo {
@@ -112,6 +120,9 @@ const typeDefs = gql`
 	extend type Mutation {
 		"Creates a new post."
 		createPost(data: CreatePostInput!): Post!
+
+		"Deletes a post."
+		deletePost(where: ContentWhereUniqueInput!): ID!
 	}
 
 	extend type Query {
