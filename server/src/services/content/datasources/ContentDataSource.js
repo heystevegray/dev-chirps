@@ -95,6 +95,90 @@ class ContentDataSource extends DataSource {
 		return deletedPost._id;
 	}
 
+	getReplyById(id) {
+		return this.Reply.findById(id);
+	}
+
+	async getReplies({
+		after,
+		before,
+		first,
+		last,
+		orderBy,
+		filter: rawFilter,
+	}) {
+		const { to, from } = rawFilter;
+		if (!to && !from) {
+			throw new UserInputError(
+				"You must provide a username to get replies to or from."
+			);
+		} else if (to && from) {
+			throw new UserInputError(
+				"You may only provide a `to` or `from` argument."
+			);
+		}
+
+		let filter = {};
+		const profile = await this.Profile.findOne({
+			username: from || to,
+		}).exec();
+
+		if (!profile) {
+			throw new UserInputError(
+				"User with that username cannot be found."
+			);
+		}
+
+		if (from) {
+			filter.authorizeProfileId = profile._id;
+		} else {
+			filter.postAuthorProfileId = profile._id;
+		}
+
+		const sort = this._getContentSort(orderBy);
+		const queryArgs = { after, before, first, last, filter, sort };
+		const edges = this.replyPagination.getEdges(queryArgs);
+		const pageInfo = await this.replyPagination.getPageInfo(
+			edges,
+			queryArgs
+		);
+
+		return { edges, pageInfo };
+	}
+
+	async getOwnReplies({
+		after,
+		before,
+		first,
+		last,
+		orderBy,
+		authorProfileId,
+	}) {
+		const sort = this._getContentSort(orderBy);
+		const filter = { authorizeProfileId };
+		const queryArgs = { after, before, first, last, filter, sort };
+		const edges = await this.replyPagination.getEdges(queryArgs);
+		const pageInfo = await this.replyPagination.getPageInfo(
+			edges,
+			queryArgs
+		);
+
+		return { edges, pageInfo };
+	}
+
+	async getPostReplies({ after, before, first, last, orderBy, postId }) {
+		const sort = this._getContentSort(orderBy);
+		const filter = { postId };
+		const queryArgs = { after, before, first, last, filter, sort };
+		const edges = await this.replyPagination.getEdges(queryArgs);
+		const pageInfo = await this.replyPagination.getPageInfo(
+			edges,
+			queryArgs
+		);
+
+		return { edges, pageInfo };
+	}
+
 	_getContentSort(sortEnum) {
 		let sort = {};
 

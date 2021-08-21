@@ -9,7 +9,7 @@ const typeDefs = gql`
 	"""
 	A post contains content authored by a user.
 	"""
-	type Post {
+	type Post implements Content {
 		"The unique MongoDB document ID of the post."
 		id: ID!
 		"The profile of the user who authored the post."
@@ -22,6 +22,14 @@ const typeDefs = gql`
 		media: String
 		"The body content of the post (max. 256 characters)."
 		text: String!
+		"Replies to this post."
+		replies(
+			after: String
+			before: String
+			first: Int
+			last: Int
+			orderBy: ReplyOrderInput
+		): ReplyConnection
 	}
 
 	extend type Profile @key(fields: "id") {
@@ -34,6 +42,80 @@ const typeDefs = gql`
 			last: Int
 			orderBy: PostOrderByInput
 		): PostConnection
+		"A list of replies written by the user."
+		replies(
+			after: String
+			before: String
+			first: Int
+			last: Int
+			orderBy: replyOrderByInput
+		): ReplyConnection
+	}
+
+	"""
+	A reply contains content that is a response to another post.
+	"""
+	type Reply implements Content {
+		"The parent post of the reply."
+		post: Post
+		"The author of the parent post of the reply."
+		postAuthor: Profile
+	}
+
+	"""
+	Sorting options for reply connections.
+	"""
+	enum ReplyOrderByInput {
+		"Order replies ascending by creation time."
+		createdAt_ASC
+		"Order replies descending by creation time."
+		createdAt_DESC
+	}
+
+	"""
+	Provides a filter on which replies may be queried.
+	"""
+	input ReplyWhereInput {
+		"The unique username of the user who sent the replies."
+		from: String
+		"The unique username of the user who received the replies."
+		to: String
+	}
+
+	"""
+	A list of reply edges with pagination information.
+	"""
+	type ReplyConnection {
+		"A list of reply edges."
+		edges: [ReplyEdge]
+		"Information to assist with pagination."
+		pageInfo: PageInfo!
+	}
+
+	"""
+	A single reply node with its cursor.
+	"""
+	type ReplyEdge {
+		"A cursor for use in pagination."
+		cursor: ID!
+		"A reply at the end of an edge."
+		node: Reply!
+	}
+
+	"""
+	Specifies common fields for posts and replies.
+	"""
+	interface Content {
+		"The unique MongoDB document ID of the reply."
+		author: Profile!
+		"The data and time the reply was created."
+		createdAt: DateTime!
+		"Whether the reply is blocked."
+		isBlocked: Boolean!
+		"The URL of the media file associated with the content."
+		media: String
+		"The body content of the reply (max. 256 characters)."
+		text: String!
 	}
 
 	"""
@@ -138,6 +220,19 @@ const typeDefs = gql`
 			orderBy: PostOrderByInput
 			filter: PostWhereInput
 		): PostConnection
+
+		"Retrieves a single reply by MongoDB document ID."
+		reply(id: ID!): Reply!
+
+		"Retrieves a list of replies."
+		replies(
+			after: String
+			before: String
+			first: Int
+			last: Int
+			orderBy: ReplyOrderByInput
+			filter: ReplyWhereInput!
+		): ReplyConnection
 	}
 `;
 
