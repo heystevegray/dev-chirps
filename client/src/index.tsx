@@ -1,6 +1,7 @@
 import { ApolloProvider } from "@apollo/client";
 import { Grommet } from "grommet";
 import { Router } from "react-router-dom";
+import { ReactElement } from "react";
 
 import ReactDOM from "react-dom";
 
@@ -10,7 +11,7 @@ import history from "./routes/history";
 import theme from "./styles/theme";
 import Routes from "./routes";
 
-const App = () => (
+const App = (): ReactElement => (
 	<ApolloProvider client={client}>
 		<GlobalStyle />
 		<Grommet theme={theme}>
