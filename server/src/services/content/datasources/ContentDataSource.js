@@ -95,6 +95,19 @@ class ContentDataSource extends DataSource {
 		return deletedPost._id;
 	}
 
+	async searchPosts({ after, first, searchString }) {
+		const sort = { score: { $meta: "textScore" }, _id: -1 };
+		const filter = { $text: { $search: searchString } };
+		const queryArgs = { after, first, filter, sort };
+		const edges = await this.postPagination.getEdges(queryArgs);
+		const pageInfo = await this.postPagination.getPageInfo(
+			edges,
+			queryArgs
+		);
+
+		return { edges, pageInfo };
+	}
+
 	getReplyById(id) {
 		return this.Reply.findById(id);
 	}

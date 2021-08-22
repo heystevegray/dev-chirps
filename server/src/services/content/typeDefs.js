@@ -32,6 +32,14 @@ const typeDefs = gql`
 		): ReplyConnection
 	}
 
+	"""
+	Provides a search string to query posts by text in their body content.
+	"""
+	input PostSearchInput {
+		"The text string to search for in the post content."
+		text: String!
+	}
+
 	extend type Profile @key(fields: "id") {
 		id: ID! @external
 		"A list of post written by the user."
@@ -263,6 +271,17 @@ const typeDefs = gql`
 			orderBy: ReplyOrderByInput
 			filter: ReplyWhereInput!
 		): ReplyConnection
+
+		"""
+		Performs a search of posts.
+
+		Results are available in descending order by relevance only.
+		"""
+		searchPosts(
+			after: String
+			first: Int
+			query: PostSearchInput!
+		): PostConnection
 	}
 `;
 
