@@ -47,7 +47,7 @@ export const wait = async () => {
 
 	const server = await initGateway();
 	await server.start();
-	server.applyMiddleware({ app });
+	server.applyMiddleware({ app, cors: false });
 	app.listen({ port }, async () => {
 		console.log(
 			`🚀 Server ready at http://localhost:${port}${server.graphqlPath} 🚀`
