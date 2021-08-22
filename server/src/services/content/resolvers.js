@@ -80,6 +80,12 @@ const resolvers = {
 		deletePost(parent, { where: { id } }, { dataSources }, info) {
 			return dataSources.contentAPI.deletePost(id);
 		},
+		createReply(parent, { data }, { dataSources }, info) {
+			return dataSources.contentAPI.createReply(data);
+		},
+		deleteReply(parent, { where: { id } }, { dataSources }, info) {
+			return dataSources.contentAPI.deleteReply(id);
+		},
 	},
 };
 

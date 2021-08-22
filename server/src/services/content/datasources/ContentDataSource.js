@@ -108,6 +108,7 @@ class ContentDataSource extends DataSource {
 		filter: rawFilter,
 	}) {
 		const { to, from } = rawFilter;
+
 		if (!to && !from) {
 			throw new UserInputError(
 				"You must provide a username to get replies to or from."
@@ -130,7 +131,7 @@ class ContentDataSource extends DataSource {
 		}
 
 		if (from) {
-			filter.authorizeProfileId = profile._id;
+			filter.authorProfileId = profile._id;
 		} else {
 			filter.postAuthorProfileId = profile._id;
 		}
@@ -155,7 +156,7 @@ class ContentDataSource extends DataSource {
 		authorProfileId,
 	}) {
 		const sort = this._getContentSort(orderBy);
-		const filter = { authorizeProfileId };
+		const filter = { authorProfileId };
 		const queryArgs = { after, before, first, last, filter, sort };
 		const edges = await this.replyPagination.getEdges(queryArgs);
 		const pageInfo = await this.replyPagination.getPageInfo(
@@ -177,6 +178,38 @@ class ContentDataSource extends DataSource {
 		);
 
 		return { edges, pageInfo };
+	}
+
+	async createReply({ postId, text, username }) {
+		const post = await this.Post.findById(postId).exec();
+		const profile = await this.Profile.findOne({ username }).exec();
+
+		if (!profile) {
+			throw new UserInputError(
+				"You must provide a valid username as the author of this reply."
+			);
+		} else if (!post) {
+			throw new UserInputError(
+				"You must provide a valid parent post ID for this reply."
+			);
+		}
+
+		const newReply = new this.Reply({
+			authorProfileId: profile._id,
+			text,
+			postId,
+			postAuthorProfileId: post.authorProfileId,
+		});
+
+		return newReply.save();
+	}
+
+	async deleteReply(id) {
+		const deleteReply = await this.Reply.findByIdAndDelete(id).exec();
+		if (!deleteReply) {
+			throw new UserInputError("The provided reply id does not exist.");
+		}
+		return deleteReply._id;
 	}
 
 	_getContentSort(sortEnum) {

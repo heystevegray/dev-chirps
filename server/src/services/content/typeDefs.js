@@ -28,7 +28,7 @@ const typeDefs = gql`
 			before: String
 			first: Int
 			last: Int
-			orderBy: ReplyOrderInput
+			orderBy: ReplyOrderByInput
 		): ReplyConnection
 	}
 
@@ -48,7 +48,7 @@ const typeDefs = gql`
 			before: String
 			first: Int
 			last: Int
-			orderBy: replyOrderByInput
+			orderBy: ReplyOrderByInput
 		): ReplyConnection
 	}
 
@@ -56,10 +56,22 @@ const typeDefs = gql`
 	A reply contains content that is a response to another post.
 	"""
 	type Reply implements Content {
+		"The unique MongoDB document ID of the reply."
+		id: ID!
+		"The profile of the user who authored the reply."
+		author: Profile!
+		"The date and time the reply was created."
+		createdAt: DateTime!
+		"Whether the reply is blocked."
+		isBlocked: Boolean
+		"The URL of a media file associated with the content."
+		media: String
 		"The parent post of the reply."
 		post: Post
 		"The author of the parent post of the reply."
 		postAuthor: Profile
+		"The body content of the reply (max. 256 characters)."
+		text: String!
 	}
 
 	"""
@@ -103,6 +115,18 @@ const typeDefs = gql`
 	}
 
 	"""
+	Provides data to create a reply to a post.
+	"""
+	input CreateReplyInput {
+		"The unique MongoDB document ID if the parent post."
+		postId: ID!
+		"The body content of the reply (max. 256 characters)."
+		text: String!
+		"The unique username of the user who authored the reply."
+		username: String!
+	}
+
+	"""
 	Specifies common fields for posts and replies.
 	"""
 	interface Content {
@@ -111,7 +135,7 @@ const typeDefs = gql`
 		"The data and time the reply was created."
 		createdAt: DateTime!
 		"Whether the reply is blocked."
-		isBlocked: Boolean!
+		isBlocked: Boolean
 		"The URL of the media file associated with the content."
 		media: String
 		"The body content of the reply (max. 256 characters)."
@@ -205,6 +229,12 @@ const typeDefs = gql`
 
 		"Deletes a post."
 		deletePost(where: ContentWhereUniqueInput!): ID!
+
+		"Creates a new reply to a post."
+		createReply(data: CreateReplyInput!): Reply!
+
+		"Deletes a reply to a post."
+		deleteReply(where: ContentWhereUniqueInput!): ID!
 	}
 
 	extend type Query {
