@@ -6,8 +6,8 @@ const theme = {
 			height: "20px",
 		},
 		colors: {
-			brand: '#ac83fb'
-		}
+			brand: "#ac83fb",
+		},
 	},
 };
 

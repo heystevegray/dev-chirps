@@ -10,16 +10,19 @@ import GlobalStyle from "./styles/global";
 import history from "./routes/history";
 import theme from "./styles/theme";
 import Routes from "./routes";
+import { AuthProvider } from "./context/AuthContext";
 
 const App = (): ReactElement => (
-	<ApolloProvider client={client}>
-		<GlobalStyle />
-		<Grommet theme={theme}>
-			<Router history={history}>
-				<Routes />
-			</Router>
-		</Grommet>
-	</ApolloProvider>
+	<AuthProvider>
+		<ApolloProvider client={client}>
+			<GlobalStyle />
+			<Grommet theme={theme}>
+				<Router history={history}>
+					<Routes />
+				</Router>
+			</Grommet>
+		</ApolloProvider>
+	</AuthProvider>
 );
 
 ReactDOM.render(<App />, document.getElementById("root"));
