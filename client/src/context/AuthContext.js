@@ -50,6 +50,7 @@ const AuthProvider = ({ children }) => {
 		<AuthContext.Provider
 			value={{
 				checkingSession,
+				getToken: (options) => auth0Client.getTokenSilently(options),
 				isAuthenticated,
 				login: (options) => auth0Client?.loginWithRedirect(options),
 				logout: (options) =>
