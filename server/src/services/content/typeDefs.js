@@ -243,6 +243,12 @@ const typeDefs = gql`
 
 		"Deletes a reply to a post."
 		deleteReply(where: ContentWhereUniqueInput!): ID!
+
+		"Toggles the current blocked state of the post."
+		togglePostBlock(where: ContentWhereUniqueInput!): Post!
+
+		"Toggles the current blocked state of the reply."
+		toggleReplyBlock(where: ContentWhereUniqueInput!): Reply!
 	}
 
 	extend type Query {

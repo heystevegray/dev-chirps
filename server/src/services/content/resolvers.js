@@ -98,6 +98,12 @@ const resolvers = {
 		deleteReply(parent, { where: { id } }, { dataSources }, info) {
 			return dataSources.contentAPI.deleteReply(id);
 		},
+		togglePostBlock(parent, { where: { id } }, { dataSources }, info) {
+			return dataSources.contentAPI.togglePostBlock(id);
+		},
+		toggleReplyBlock(parent, { where: { id } }, { dataSources }, info) {
+			return dataSources.contentAPI.toggleReplyBlock(id);
+		},
 	},
 };
 
