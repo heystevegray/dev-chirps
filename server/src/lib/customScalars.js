@@ -12,7 +12,11 @@ export const DateTimeResolver = new GraphQLScalarType({
 		throw new ApolloError("DateTime must be a valid ISO 8601 Date string");
 	},
 	serialize: (value) => {
-		if (typeof value !== "string") {
+		const type = typeof value;
+
+		if (type === "object") {
+			value = new Date(value).toISOString();
+		} else if (type !== "string") {
 			value = value.toString();
 		}
 
@@ -20,7 +24,9 @@ export const DateTimeResolver = new GraphQLScalarType({
 			return value;
 		}
 
-		throw new ApolloError("DateTime must be a valid ISO 8601 Date string");
+		throw new ApolloError(
+			`DateTime must be a valid ISO 8601 Date string, received ${type} '${value}' instead.'`
+		);
 	},
 	parseLiteral: (ast) => {
 		if (isISO8601(ast.value)) {

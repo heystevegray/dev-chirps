@@ -14,6 +14,11 @@ const SERVICES = [
 		name: "profiles",
 		url: process.env.PROFILES_SERVICE_URL,
 	},
+	{
+		port: `tcp:${process.env.CONTENT_SERVICE_PORT}`,
+		name: "content",
+		url: process.env.CONTENT_SERVICE_URL,
+	},
 ];
 
 const options = {
