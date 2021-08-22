@@ -5,7 +5,7 @@ import Footer from "../../components/Footer";
 import Container from "../../components/Container";
 
 interface Props {
-	centered: boolean;
+	centered?: boolean;
 	children: ReactElement;
 }
 
