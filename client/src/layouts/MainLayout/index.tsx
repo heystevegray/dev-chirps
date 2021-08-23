@@ -6,7 +6,7 @@ import Container from "../../components/Container";
 
 interface Props {
 	centered?: boolean;
-	children: ReactElement;
+	children: ReactElement | ReactElement[];
 }
 
 const MainLayout = ({ centered, children }: Props) => (

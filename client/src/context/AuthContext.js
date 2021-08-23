@@ -1,5 +1,7 @@
 import createAuth0Client from "@auth0/auth0-spa-js";
 import { createContext, useContext, useEffect, useState } from "react";
+import { createApolloClient } from "../graphql/apollo";
+import { GET_VIEWER } from "../graphql/queryies";
 import history from "../routes/history";
 
 const AuthContext = createContext();
@@ -16,6 +18,7 @@ const AuthProvider = ({ children }) => {
 	const [auth0Client, setAuth0Client] = useState();
 	const [checkingSession, setCheckingSession] = useState(true);
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
+	const [viewerQuery, setViewerQuery] = useState(null);
 
 	useEffect(() => {
 		const initializeAuth0 = async () => {
@@ -28,14 +31,24 @@ const AuthProvider = ({ children }) => {
 					history.replace({ pathname: "/home", search: "" });
 				}
 
-				if (history.location.pathname === "/login" && isAuthenticated) {
+								const authenticated = await client.isAuthenticated();
+				setIsAuthenticated(authenticated);
+
+				if (history.location.pathname === "/login" && authenticated) {
 					history.replace("/home");
 				} else if (history.location.pathname === "/login") {
 					history.replace("/");
+				} else if (authenticated) {
+					const apolloClient = createApolloClient((options) =>
+						client.getTokenSilently(options)
+					);
+					const viewer = await apolloClient.query({
+						query: GET_VIEWER,
+					});
+					setViewerQuery(viewer);
 				}
 
-				const authenticated = await client.isAuthenticated();
-				setIsAuthenticated(authenticated);
+
 			} catch {
 				history.location.pathname !== "/" && history.replace("/");
 			} finally {
@@ -58,6 +71,9 @@ const AuthProvider = ({ children }) => {
 						...options,
 						returnTo: process.env.AUTH0_LOGOUT_URL,
 					}),
+				updateViewer: (viewer) =>
+					setViewerQuery({ ...viewerQuery, data: { viewer } }),
+				viewerQuery,
 			}}
 		>
 			{children}
