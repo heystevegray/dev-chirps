@@ -31,7 +31,14 @@ app.use(jwtCheck, (err, req, res, next) => {
 });
 
 if (process.env.NODE_ENV === "development") {
-	app.use(cors({ origin: ["http://localhost:3000", "https://studio.apollographql.com"] }));
+	app.use(
+		cors({
+			origin: [
+				"http://localhost:3000",
+				"https://studio.apollographql.com",
+			],
+		})
+	);
 }
 
 export default app;

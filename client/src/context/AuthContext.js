@@ -31,7 +31,7 @@ const AuthProvider = ({ children }) => {
 					history.replace({ pathname: "/home", search: "" });
 				}
 
-								const authenticated = await client.isAuthenticated();
+				const authenticated = await client.isAuthenticated();
 				setIsAuthenticated(authenticated);
 
 				if (history.location.pathname === "/login" && authenticated) {
@@ -47,8 +47,6 @@ const AuthProvider = ({ children }) => {
 					});
 					setViewerQuery(viewer);
 				}
-
-
 			} catch {
 				history.location.pathname !== "/" && history.replace("/");
 			} finally {
