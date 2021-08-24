@@ -22,6 +22,13 @@ const PrivateRoute = ({ component: Component, render, ...rest }: Props) => {
 
 		if (checkingSession) {
 			content = <Loader centered />;
+		} else if (
+			isAuthenticated &&
+			props.location.pathname !== "/settings/profile" &&
+			viewer &&
+			!viewer.profile
+		) {
+			content = <Redirect to="/settings/profile" />;
 		} else if (isAuthenticated && render && viewer) {
 			content = render(props);
 		} else if (isAuthenticated && viewer && Component) {
