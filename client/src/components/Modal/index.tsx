@@ -44,7 +44,13 @@ const Modal = ({
 						/>
 					)}
 				</Box>
-				<Box background="dark-2" pad="small" gap="small" width={width}>
+				<Box
+					height="100%"
+					background="dark-1"
+					pad="large"
+					gap="large"
+					width={width}
+				>
 					{children}
 				</Box>
 			</Layer>
