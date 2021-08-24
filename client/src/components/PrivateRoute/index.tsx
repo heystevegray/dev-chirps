@@ -1,13 +1,18 @@
-import { Component } from "react";
-import { Redirect, Route } from "react-router";
+import { ReactElement } from "react";
+import { Redirect, Route, RouteProps } from "react-router";
 import { useAuth } from "../../context/AuthContext";
 
 import Loader from "../Loader";
 
-const PrivateRoute = ({ component: Component, ...rest }) => {
+interface Props extends RouteProps {
+	component?: () => ReactElement;
+	render?: (props: any) => ReactElement | ReactElement[];
+}
+
+const PrivateRoute = ({ component: Component, render, ...rest }: Props) => {
 	const { checkingSession, isAuthenticated, viewerQuery } = useAuth();
 
-	const renderRoute = (props) => {
+	const renderRoute = (props: any) => {
 		let content = null;
 		let viewer;
 
@@ -17,7 +22,9 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 
 		if (checkingSession) {
 			content = <Loader centered />;
-		} else if (isAuthenticated && viewer) {
+		} else if (isAuthenticated && render && viewer) {
+			content = render(props);
+		} else if (isAuthenticated && viewer && Component) {
 			content = <Component {...props} />;
 		} else if (!viewerQuery || !viewer) {
 			content = <Redirect to="/" />;
