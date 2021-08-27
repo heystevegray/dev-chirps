@@ -1,6 +1,10 @@
-import { Button, Form, FormField } from "grommet";
+import { useMutation } from "@apollo/client";
+import { Box, Button, Form, FormExtendedEvent, FormField } from "grommet";
 import { FormEventHandler, useState } from "react";
+import { CREATE_PROFILE } from "../../graphql/mutations";
+import { GET_VIEWER } from "../../graphql/queryies";
 import CharacterCountLabel from "../CharacterCountLabel";
+import Loader from "../Loader";
 import RequiredLabel from "../RequiredLabel";
 
 interface Props {
@@ -10,12 +14,44 @@ interface Props {
 
 const CreateProfileForm = ({ accountId, updateViewer }: Props) => {
 	const [descCharCount, setDescCharCount] = useState(0);
+	const errorMessage = `Username is already in use 😞`;
+	const [createProfile, { error: createProfileError, loading }] = useMutation(
+		CREATE_PROFILE,
+		{
+			update: (cache, { data: { createProfile } }) => {
+				// @ts-ignore
+				const { viewer } = cache.readQuery({ query: GET_VIEWER });
+				const viewerWithProfile = { ...viewer, profile: createProfile };
+				cache.writeQuery({
+					query: GET_VIEWER,
+					data: { viewer: viewerWithProfile },
+				});
+				updateViewer(viewerWithProfile);
+			},
+		}
+	);
 
 	return (
 		<Form
 			messages={{ required: "This field is required 😬" }}
-			onSubmit={(event) => {
-				console.log("Submitted: ", event.value);
+			errors={{
+				username:
+					createProfileError &&
+					createProfileError.message.includes("duplicate key") &&
+					errorMessage,
+			}}
+			onSubmit={(event: any) => {
+				createProfile({
+					variables: {
+						data: {
+							accountId,
+							...event.value,
+						},
+					},
+				}).catch((error) => {
+					console.error(errorMessage);
+					console.log(error);
+				});
 			}}
 		>
 			<FormField
@@ -31,6 +67,7 @@ const CreateProfileForm = ({ accountId, updateViewer }: Props) => {
 					}
 				}}
 			/>
+
 			<FormField
 				htmlFor="fullName"
 				id="fullName"
@@ -62,7 +99,23 @@ const CreateProfileForm = ({ accountId, updateViewer }: Props) => {
 				}}
 			/>
 
-			<Button label="Create Profile" primary type="submit" />
+			<Box
+				align="center"
+				direction="row"
+				justify="end"
+				gap="small"
+				pad={{
+					vertical: "small",
+				}}
+			>
+				{loading && <Loader size="medium" />}
+				<Button
+					disabled={loading}
+					label="Create Profile"
+					primary
+					type="submit"
+				/>
+			</Box>
 		</Form>
 	);
 };

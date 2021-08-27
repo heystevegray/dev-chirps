@@ -13,8 +13,8 @@ const NavBar = () => {
 				align="center"
 				border={{
 					color: "dark-2",
-					size: "xsmall",
 					style: "solid",
+					size: "xsmall",
 					side: "bottom",
 				}}
 				direction="row"

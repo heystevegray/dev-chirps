@@ -1,5 +1,6 @@
 import { Box, Text } from "grommet";
-import { ReactElement, useState } from "react";
+import { ReactElement, useRef, useState } from "react";
+import { Redirect } from "react-router";
 import CreateProfileForm from "../../../components/CreateProfileForm";
 import Modal from "../../../components/Modal";
 import { useAuth } from "../../../context/AuthContext";
@@ -8,7 +9,11 @@ const Profile = ({ history }: { history: any }): ReactElement => {
 	const [modalOpen, setModalOpen] = useState(true);
 	const { viewerQuery, updateViewer } = useAuth();
 	const { id, profile } = viewerQuery.data.viewer;
-	console.log({ profile });
+	const profileRef = useRef(profile);
+
+	if (!profileRef.current && profile) {
+		return <Redirect to={"/profile"} />;
+	}
 
 	return (
 		<Modal

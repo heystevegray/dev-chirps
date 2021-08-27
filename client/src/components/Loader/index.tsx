@@ -5,7 +5,7 @@ import StyledLoader from "./styles";
 export interface LoaderProps {
 	centered?: boolean;
 	color?: string;
-	size?: string;
+	size?: "small" | "medium" | "large" | "xlarge" | string;
 }
 
 const Loader = ({ centered, color, size }: LoaderProps) => (
