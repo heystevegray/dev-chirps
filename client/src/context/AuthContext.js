@@ -1,7 +1,7 @@
 import createAuth0Client from "@auth0/auth0-spa-js";
 import { createContext, useContext, useEffect, useState } from "react";
 import { createApolloClient } from "../graphql/apollo";
-import { GET_VIEWER } from "../graphql/queryies";
+import { GET_VIEWER } from "../graphql/queries";
 import history from "../routes/history";
 
 const AuthContext = createContext();

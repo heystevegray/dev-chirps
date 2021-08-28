@@ -1,7 +1,8 @@
 import { Box, Text } from "grommet";
 import { ReactElement, useRef, useState } from "react";
 import { Redirect } from "react-router";
-import CreateProfileForm from "../../../components/CreateProfileForm";
+import CreateProfileForm from "../../../components/Forms/CreateProfileForm";
+import EditProfileForm from "../../../components/Forms/EditProfileForm";
 import Modal from "../../../components/Modal";
 import { useAuth } from "../../../context/AuthContext";
 
@@ -34,7 +35,12 @@ const Profile = ({ history }: { history: any }): ReactElement => {
 						? "Update your user information below:"
 						: "Please create your user profile before proceeding:"}
 				</Text>
-				{profile && (
+				{profile ? (
+					<EditProfileForm
+						profileData={profile}
+						updateViewer={updateViewer}
+					/>
+				) : (
 					<CreateProfileForm
 						accountId={id}
 						updateViewer={updateViewer}

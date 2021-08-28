@@ -1,11 +1,16 @@
 import { useMutation } from "@apollo/client";
-import { Box, Button, Form, FormField } from "grommet";
+import { Form, FormField } from "grommet";
 import { useState } from "react";
-import { CREATE_PROFILE } from "../../graphql/mutations";
-import { GET_VIEWER } from "../../graphql/queryies";
-import CharacterCountLabel from "../CharacterCountLabel";
-import Loader from "../Loader";
-import RequiredLabel from "../RequiredLabel";
+import { CREATE_PROFILE } from "../../../graphql/mutations";
+import { GET_VIEWER } from "../../../graphql/queries";
+import CharacterCountLabel from "../../CharacterCountLabel";
+import { LoadingButton } from "../../LoadingButton";
+import RequiredLabel from "../../RequiredLabel";
+import {
+	getUsernameErrors,
+	validateDescription,
+	validateUsername,
+} from "../EditProfileForm";
 
 interface Props {
 	accountId: string;
@@ -14,7 +19,6 @@ interface Props {
 
 const CreateProfileForm = ({ accountId, updateViewer }: Props) => {
 	const [descCharCount, setDescCharCount] = useState(0);
-	const errorMessage = `Username is already in use 😞`;
 	const [createProfile, { error: createProfileError, loading }] = useMutation(
 		CREATE_PROFILE,
 		{
@@ -35,10 +39,7 @@ const CreateProfileForm = ({ accountId, updateViewer }: Props) => {
 		<Form
 			messages={{ required: "This field is required 😬" }}
 			errors={{
-				username:
-					createProfileError &&
-					createProfileError.message.includes("duplicate key") &&
-					errorMessage,
+				username: getUsernameErrors(createProfileError),
 			}}
 			onSubmit={(event: any) => {
 				createProfile({
@@ -49,8 +50,7 @@ const CreateProfileForm = ({ accountId, updateViewer }: Props) => {
 						},
 					},
 				}).catch((error) => {
-					console.error(errorMessage);
-					console.log(error);
+					console.error(error);
 				});
 			}}
 		>
@@ -61,11 +61,7 @@ const CreateProfileForm = ({ accountId, updateViewer }: Props) => {
 				name="username"
 				required
 				placeholder="Pick a unique username"
-				validate={(fieldData) => {
-					if (!/^[A-Za-z\d_]*$/.test(fieldData)) {
-						return "Alphanumeric characters only (use underscores for whitespace)";
-					}
-				}}
+				validate={(fieldData) => validateUsername(fieldData)}
 			/>
 
 			<FormField
@@ -92,30 +88,9 @@ const CreateProfileForm = ({ accountId, updateViewer }: Props) => {
 					const characterCount = event.target.value.length;
 					setDescCharCount(characterCount);
 				}}
-				validate={(fieldData) => {
-					if (fieldData && fieldData.length > 256) {
-						return "256 maximum character count exceeded";
-					}
-				}}
+				validate={(fieldData) => validateDescription(fieldData)}
 			/>
-
-			<Box
-				align="center"
-				direction="row"
-				justify="end"
-				gap="small"
-				pad={{
-					vertical: "small",
-				}}
-			>
-				{loading && <Loader size="medium" />}
-				<Button
-					disabled={loading}
-					label="Create Profile"
-					primary
-					type="submit"
-				/>
-			</Box>
+			<LoadingButton loading={loading} label="Save Profile" />
 		</Form>
 	);
 };
