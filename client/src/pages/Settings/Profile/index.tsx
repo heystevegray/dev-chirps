@@ -21,21 +21,26 @@ const Profile = ({ history }: { history: any }): ReactElement => {
 				profile &&
 				(() => {
 					setModalOpen(false);
-					history.push("/profile");
+					history.push(`/profile/${profile.username}`);
 				})
 			}
 			isOpen={modalOpen}
 			title={profile ? "Edit Profile" : "Create Profile"}
 			width="600px"
 		>
-			<Text as="p" textAlign="center">
-				{profile
-					? "Update your user information below:"
-					: "Please create your user profile before proceeding:"}
-			</Text>
-			{profile ?? (
-				<CreateProfileForm accountId={id} updateViewer={updateViewer} />
-			)}
+			<Box gap="medium">
+				<Text as="p" textAlign="center">
+					{profile
+						? "Update your user information below:"
+						: "Please create your user profile before proceeding:"}
+				</Text>
+				{profile && (
+					<CreateProfileForm
+						accountId={id}
+						updateViewer={updateViewer}
+					/>
+				)}
+			</Box>
 		</Modal>
 	);
 };

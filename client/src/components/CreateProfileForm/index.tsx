@@ -1,6 +1,6 @@
 import { useMutation } from "@apollo/client";
-import { Box, Button, Form, FormExtendedEvent, FormField } from "grommet";
-import { FormEventHandler, useState } from "react";
+import { Box, Button, Form, FormField } from "grommet";
+import { useState } from "react";
 import { CREATE_PROFILE } from "../../graphql/mutations";
 import { GET_VIEWER } from "../../graphql/queryies";
 import CharacterCountLabel from "../CharacterCountLabel";

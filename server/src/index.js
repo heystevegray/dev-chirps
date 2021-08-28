@@ -54,5 +54,5 @@ export const wait = async () => {
 		);
 	});
 })().catch((error) => {
-	throw new ApolloError(`Error starting the main server 😬 \n${error}`);
+	throw new ApolloError(`Error starting the main server 😬 \n\n\n\n${error}`);
 });

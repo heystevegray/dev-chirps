@@ -1,5 +1,4 @@
 import { Box, Text } from "grommet";
-import React, { ReactElement } from "react";
 
 const RequiredLabel = ({ children }: { children: any }) => (
 	<Box direction="row">

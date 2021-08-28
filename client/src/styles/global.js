@@ -8,6 +8,7 @@ ${reset}
 	box-sizing: border-box
 }
 
+html,
 body {
 	background: #202020;
 	color: #fff;
