@@ -1,6 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { match as MatchInterface, Route } from "react-router";
 import Loader from "../../components/Loader";
+import ProfileHeader from "../../components/ProfileHeader";
 import { GET_PROFILE } from "../../graphql/queryies";
 import MainLayout from "../../layouts/MainLayout";
 import NotFound from "../NotFound";
@@ -26,7 +27,7 @@ const Profile = ({ match }: Props) => {
 	} else if (data && data.profile) {
 		return (
 			<MainLayout>
-				<p>My name is {name}</p>
+				<ProfileHeader profileData={data.profile} />
 			</MainLayout>
 		);
 	} else if (error) {
