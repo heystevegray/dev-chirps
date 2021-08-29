@@ -4,6 +4,7 @@ import { Profile } from "../../graphql/types";
 import dayjs from "dayjs";
 import AccentButton from "../AccentButton";
 import { useHistory } from "react-router";
+import Avatar from "../Avatar";
 
 interface Props {
 	profileData: Profile;
@@ -12,19 +13,23 @@ interface Props {
 const ProfileHeader = ({ profileData }: Props) => {
 	const { account, avatar, description, fullName, username } = profileData;
 	const value = useAuth();
-	const { username: viewerUsername } = value.viewerQuery.data.viewer.profile;
+	const profile = value.viewerQuery.data.viewer.profile;
+
+	const { username: viewerUsername } = profile;
 
 	const history = useHistory();
 
 	const renderButton = () => {
 		if (username === viewerUsername) {
 			return (
-				<AccentButton
-					label="Edit Profile"
-					onClick={() => {
-						history.push("/settings/profile");
-					}}
-				/>
+				<Box margin={{ top: "large" }} alignSelf="center">
+					<AccentButton
+						label="Edit Profile"
+						onClick={() => {
+							history.push("/settings/profile");
+						}}
+					/>
+				</Box>
 			);
 		}
 
@@ -33,7 +38,7 @@ const ProfileHeader = ({ profileData }: Props) => {
 
 	return (
 		<Box
-			pad="large"
+			pad="medium"
 			alignSelf="center"
 			flex={{ grow: 1, shrink: 0 }}
 			gap="medium"
@@ -42,25 +47,18 @@ const ProfileHeader = ({ profileData }: Props) => {
 			justify="center"
 		>
 			<Box gap="medium">
-				<Box
-					flex={{ grow: 1, shrink: 0 }}
-					border={{ color: "brand", size: "small" }}
-					height="xsmall"
-					overflow="hidden"
-					round="full"
-					alignSelf="center"
-					width="xsmall"
-				>
-					<Image
-						fit="cover"
-						src={avatar}
-						alt={`${fullName} profile image`}
-					/>
+				<Box alignSelf="center">
+					<Avatar fullName={fullName} avatar={avatar} size="xlarge" />
 				</Box>
 				<Text as="p" textAlign="center" color="dark-4">
 					@{username} {account.isModerator && "(Moderator)"}
 				</Text>
-				<Box gap="medium" justify="center" alignSelf="center" margin={{ left: "xlarge", right: "xlarge" }}>
+				<Box
+					gap="medium"
+					justify="center"
+					alignSelf="center"
+					margin={{ left: "xlarge", right: "xlarge" }}
+				>
 					{fullName && (
 						<Heading textAlign="center" level="2">
 							{fullName}
@@ -72,11 +70,9 @@ const ProfileHeader = ({ profileData }: Props) => {
 							: "404: description not found."}
 					</Text>
 					<Text as="p" color="dark-4" textAlign="center">
-						Joined: {dayjs(account.createdAt).format("MMMM YYYY")}
+						Joined: {dayjs().format("MMMM YYYY")}
 					</Text>
-					<Box margin={{ top: "large" }} alignSelf="center">
-						{renderButton()}
-					</Box>
+					{renderButton()}
 				</Box>
 			</Box>
 		</Box>

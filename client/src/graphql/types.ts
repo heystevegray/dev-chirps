@@ -38,3 +38,22 @@ export interface AuthProps {
 	logout: (options: any) => void;
 	updateViewer: (viewer: Viewer) => void;
 }
+
+export interface ContentNode {
+	node: Content;
+}
+
+export interface Content {
+	id: string;
+	author: Author;
+	createdAt: Date;
+	isBlocked: boolean;
+	postAuthor: any;
+	text: string;
+}
+
+export interface Author {
+	avatar: string;
+	fullName: string;
+	username: string;
+}

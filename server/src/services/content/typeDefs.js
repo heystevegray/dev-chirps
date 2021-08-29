@@ -42,7 +42,7 @@ const typeDefs = gql`
 
 	extend type Profile @key(fields: "id") {
 		id: ID! @external
-		"A list of post written by the user."
+		"A list of posts written by the user."
 		posts(
 			after: String
 			before: String

@@ -6,8 +6,9 @@ import {
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { useAuth } from "../context/AuthContext";
+import typePolicies from "./typePolicies";
 
-const cache = new InMemoryCache();
+const cache = new InMemoryCache({ typePolicies });
 
 const createApolloClient = (getToken) => {
 	const httpLink = createHttpLink({

@@ -2,6 +2,7 @@ import { useQuery } from "@apollo/client";
 import { match as MatchInterface, Route } from "react-router";
 import Loader from "../../components/Loader";
 import ProfileHeader from "../../components/ProfileHeader";
+import ProfileTabs from "../../components/ProfileTabs";
 import { useAuth } from "../../context/AuthContext";
 import { GET_PROFILE } from "../../graphql/queries";
 import MainLayout from "../../layouts/MainLayout";
@@ -36,6 +37,7 @@ const Profile = ({ match }: Props) => {
 		return (
 			<MainLayout>
 				<ProfileHeader profileData={data.profile} />
+				<ProfileTabs username={username} />
 			</MainLayout>
 		);
 	} else if (error) {
