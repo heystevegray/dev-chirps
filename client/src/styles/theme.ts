@@ -1,5 +1,7 @@
 import { ThemeType } from "grommet";
 
+const secondary = "#32a852";
+
 const theme: ThemeType = {
 	tab: {
 		color: "red",
@@ -8,7 +10,7 @@ const theme: ThemeType = {
 		},
 		border: {
 			hover: { color: "dark-3" },
-			active: { color: "#32a852" },
+			active: { color: secondary },
 			color: "brand",
 		},
 	},
@@ -20,15 +22,15 @@ const theme: ThemeType = {
 		},
 		colors: {
 			brand: "#ac83fb",
-			secondary: "#32a852",
+			secondary: secondary,
 			"status-error": {
 				light: "#ff4141",
 			},
 			"dark-3": "#bababa",
 		},
 		focus: {
-			outline: { color: "#32a852" },
-			border: { color: "#32a852" },
+			outline: { color: secondary },
+			border: { color: secondary },
 		},
 	},
 };
