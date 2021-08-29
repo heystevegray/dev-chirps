@@ -33,51 +33,34 @@ const ProfileHeader = ({ profileData }: Props) => {
 
 	return (
 		<Box
-			margin={{ top: "xlarge" }}
+			pad="large"
 			alignSelf="center"
 			flex={{ grow: 1, shrink: 0 }}
-			gap="large"
+			gap="medium"
+			border={{ side: "bottom", color: "brand", size: "small" }}
 			direction="row-responsive"
 			justify="center"
 		>
-			<Box>
+			<Box gap="medium">
 				<Box
-					align="center"
-					direction="row-responsive"
-					pad="medium"
+					flex={{ grow: 1, shrink: 0 }}
+					border={{ color: "brand", size: "small" }}
+					height="xsmall"
+					overflow="hidden"
+					round="full"
 					alignSelf="center"
-					gap="medium"
+					width="xsmall"
 				>
-					<Box gap="small">
-						<Box
-							alignSelf="center"
-							border={{ color: "brand", size: "small" }}
-							height="xsmall"
-							overflow="hidden"
-							round="full"
-							width="xsmall"
-						>
-							<Image
-								fit="cover"
-								src={avatar}
-								alt={`${fullName} profile image`}
-							/>
-						</Box>
-						<Text as="p" textAlign="center" color="dark-4">
-							@{username} {account.isModerator && "(Moderator)"}
-						</Text>
-						<Text as="p" textAlign="center" color="dark-4">
-							Joined:{" "}
-							{dayjs(account.createdAt).format("MMMM YYYY")}
-						</Text>
-					</Box>
+					<Image
+						fit="cover"
+						src={avatar}
+						alt={`${fullName} profile image`}
+					/>
 				</Box>
-				<Box
-					gap="medium"
-					justify="center"
-					alignSelf="center"
-					margin={{ left: "large", right: "large" }}
-				>
+				<Text as="p" textAlign="center" color="dark-4">
+					@{username} {account.isModerator && "(Moderator)"}
+				</Text>
+				<Box gap="medium" justify="center" alignSelf="center" margin={{ left: "xlarge", right: "xlarge" }}>
 					{fullName && (
 						<Heading textAlign="center" level="2">
 							{fullName}
@@ -88,10 +71,13 @@ const ProfileHeader = ({ profileData }: Props) => {
 							? description
 							: "404: description not found."}
 					</Text>
+					<Text as="p" color="dark-4" textAlign="center">
+						Joined: {dayjs(account.createdAt).format("MMMM YYYY")}
+					</Text>
+					<Box margin={{ top: "large" }} alignSelf="center">
+						{renderButton()}
+					</Box>
 				</Box>
-			</Box>
-			<Box margin={{ top: "xlarge" }} alignSelf="center">
-				{renderButton()}
 			</Box>
 		</Box>
 	);

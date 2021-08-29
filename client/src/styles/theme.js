@@ -7,6 +7,7 @@ const theme = {
 		},
 		colors: {
 			brand: "#ac83fb",
+			secondary: "#32a852",
 		},
 	},
 };

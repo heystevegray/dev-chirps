@@ -28,7 +28,9 @@ export const LoadingButton = ({
 		>
 			{loading && <Loader size="medium" />}
 			{showSavedMessage && (
-				<Text as="p">{savedMessage || "Changes Saved!"}</Text>
+				<Text as="p" color="status-ok">
+					{savedMessage || "Changes Saved!"}
+				</Text>
 			)}
 			<AccentButton
 				primary

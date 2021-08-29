@@ -1,7 +1,7 @@
 import StyledAccentButton from "./Styles";
 
 const AccentButton = (props: any) => (
-	<StyledAccentButton color={"accent-3"} {...props} />
+	<StyledAccentButton color="secondary" {...props} />
 );
 
 export default AccentButton;
