@@ -24,7 +24,10 @@ const theme: ThemeType = {
 			brand: "#ac83fb",
 			secondary: secondary,
 			"status-error": {
-				light: "#ff4141",
+				light: "#ff7e7e",
+			},
+			"status-ok": {
+				dark: "#00faa2",
 			},
 			"dark-3": "#bababa",
 		},

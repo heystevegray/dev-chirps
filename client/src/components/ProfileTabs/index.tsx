@@ -2,7 +2,8 @@ import { useQuery } from "@apollo/client";
 import { Box, Tab, Tabs, Text } from "grommet";
 import { ChatOption, Group, Note } from "grommet-icons";
 import { GET_PROFILE_CONTENT } from "../../graphql/queries";
-import ContentList from "../Content/ContentList";
+import ContentList from "../Lists/ContentList";
+import ProfileList from "../Lists/ProfileList";
 import Loader from "../Loader";
 import RichTabTitle from "../RichTabTitle";
 
@@ -81,7 +82,13 @@ const ProfileTabs = ({ username }: { username: string }) => {
 					/>
 				}
 			>
-				<p>Followed users go here...</p>
+				<Box margin={{ top: "medium" }}>
+					{following.edges.length ? (
+						<ProfileList profileData={following.edges} />
+					) : (
+						<Text as="p">No followed users to display yet!</Text>
+					)}
+				</Box>
 			</Tab>
 		</Tabs>
 	);

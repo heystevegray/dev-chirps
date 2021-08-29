@@ -10,7 +10,7 @@ ${reset}
 
 html,
 body {
-	background: #202020;
+	background: #101010;
 	color: #fff;
 	min-height: 100vh
 }

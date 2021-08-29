@@ -5,6 +5,8 @@ import { Content } from "../../../graphql/types";
 import displayRelativeDateOrTime from "../../../lib/displayDatetime";
 import Avatar from "../../Avatar";
 import NotAvailableMessage from "../../NotAvailableMessage";
+import UsernameHeader from "../../UsernameHeader";
+import ListItem from "../ListItem";
 
 const ContentListItem = ({ contentData }: { contentData: Content }) => {
 	const value = useAuth();
@@ -19,27 +21,12 @@ const ContentListItem = ({ contentData }: { contentData: Content }) => {
 	} = contentData;
 
 	return (
-		<Box
-			border={{
-				color: "dark-2",
-				size: "xsmall",
-				style: "solid",
-				side: "bottom",
-			}}
-			gap="small"
-			direction="row"
-			pad={{ left: "small", top: "medium", right: "small" }}
-		>
-			<Avatar fullName={author.fullName} avatar={author.avatar} />
+		<ListItem fullName={author.fullName} avatar={author.avatar}>
 			<Box flex margin={{ bottom: "medium" }}>
-				<Text as="p">
-					<Text weight="bold">{author.fullName}</Text>{" "}
-					<Link to={`/profile/${author.username}`}>
-						<Anchor color="brand" as="span">
-							@{author.username}
-						</Anchor>
-					</Link>
-				</Text>
+				<UsernameHeader
+					fullName={author.fullName}
+					username={author.username}
+				/>
 				{parentPostAuthor && (
 					<Text as="p">
 						<Text color="dark-3">Replying to </Text>
@@ -73,7 +60,7 @@ const ContentListItem = ({ contentData }: { contentData: Content }) => {
 					</Text>
 				</Box>
 			</Box>
-		</Box>
+		</ListItem>
 	);
 };
 

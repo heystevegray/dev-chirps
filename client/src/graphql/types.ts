@@ -1,3 +1,5 @@
+import { ReactElement } from "react";
+
 export interface Profile extends IsModerator, IsBlocked {
 	id: string;
 	account: Account;
@@ -8,6 +10,8 @@ export interface Profile extends IsModerator, IsBlocked {
 	username: string;
 	viewerIsFollowing: boolean;
 }
+
+export type Children = ReactElement | ReactElement[] | null;
 
 export interface Account extends IsModerator, IsBlocked {
 	id: string;
@@ -37,6 +41,10 @@ export interface AuthProps {
 	login: (options: any) => void;
 	logout: (options: any) => void;
 	updateViewer: (viewer: Viewer) => void;
+}
+
+export interface ProfileNode {
+	node: Profile;
 }
 
 export interface ContentNode {
