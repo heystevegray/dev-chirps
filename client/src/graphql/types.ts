@@ -1,5 +1,5 @@
 import { ReactElement } from "react";
-
+import { match as MatchInterface } from "react-router";
 export interface Profile extends IsModerator, IsBlocked {
 	id: string;
 	account: Account;
@@ -13,6 +13,13 @@ export interface Profile extends IsModerator, IsBlocked {
 
 export type Children = ReactElement | ReactElement[] | null;
 
+export interface MatchUsername {
+	match: MatchInterface<{ username?: string }>;
+}
+
+export interface MatchId {
+	match: MatchInterface<{ id?: string }>;
+}
 export interface Account extends IsModerator, IsBlocked {
 	id: string;
 	createdAt: Date;

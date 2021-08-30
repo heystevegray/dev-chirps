@@ -19,6 +19,7 @@ const ListItem = ({ children, fullName, avatar }: Props) => {
 			}}
 			gap="small"
 			direction="row"
+			width="100%"
 			pad={{ left: "small", top: "medium", right: "small" }}
 		>
 			<Avatar fullName={fullName} avatar={avatar} />

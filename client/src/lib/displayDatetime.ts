@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-const displayRelativeDateOrTime = (dateString: Date): string => {
+export const displayRelativeDateOrTime = (dateString: Date): string => {
 	const today = new Date();
 	const previousDate = new Date(dateString);
 
@@ -17,4 +17,7 @@ const displayRelativeDateOrTime = (dateString: Date): string => {
 	}
 };
 
-export default displayRelativeDateOrTime;
+export const displayFullDatetime = (dateString: Date): string => {
+	const datetime = new Date(dateString);
+	return dayjs(datetime).format("MMMM D, YYYY [at] h:mm a");
+};

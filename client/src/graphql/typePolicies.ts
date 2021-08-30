@@ -19,6 +19,13 @@ const typePolicies = {
 			},
 		},
 	},
+	Post: {
+		fields: {
+			replies: {
+				keyArgs: [],
+			},
+		},
+	},
 };
 
 export default typePolicies;

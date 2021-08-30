@@ -5,14 +5,11 @@ import ProfileHeader from "../../components/ProfileHeader";
 import ProfileTabs from "../../components/ProfileTabs";
 import { useAuth } from "../../context/AuthContext";
 import { GET_PROFILE } from "../../graphql/queries";
+import { MatchUsername } from "../../graphql/types";
 import MainLayout from "../../layouts/MainLayout";
 import NotFound from "../NotFound";
 
-interface Props {
-	match: MatchInterface<{ username?: string }>;
-}
-
-const Profile = ({ match }: Props) => {
+const Profile = ({ match }: MatchUsername) => {
 	const { checkingSession, viewerQuery } = useAuth();
 	let username;
 
