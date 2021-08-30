@@ -1,6 +1,7 @@
 import express from "express";
 import jwt from "express-jwt";
 import jwksClient from "jwks-rsa";
+import cors from "cors";
 
 const app = express();
 
@@ -28,5 +29,16 @@ app.use(jwtCheck, (err, req, res, next) => {
 	}
 	return next(err);
 });
+
+if (process.env.NODE_ENV === "development") {
+	app.use(
+		cors({
+			origin: [
+				"http://localhost:3000",
+				"https://studio.apollographql.com",
+			],
+		})
+	);
+}
 
 export default app;

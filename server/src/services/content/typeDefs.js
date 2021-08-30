@@ -42,7 +42,7 @@ const typeDefs = gql`
 
 	extend type Profile @key(fields: "id") {
 		id: ID! @external
-		"A list of post written by the user."
+		"A list of posts written by the user."
 		posts(
 			after: String
 			before: String
@@ -179,7 +179,7 @@ const typeDefs = gql`
 		"A list of post edges."
 		edges: [PostEdge]
 		"Information to assist with pagination."
-		pageInfo: PageInfo
+		pageInfo: PageInfo!
 	}
 
 	"""

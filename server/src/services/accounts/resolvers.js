@@ -9,8 +9,19 @@ const resolvers = {
 		id(account, args, context, info) {
 			return account.user_id;
 		},
-		createdAt(account, args, context, info) {
-			return account.created_at;
+		createdAt(account, args, { dataSources }, info) {
+			if (account.created_at) {
+				return account.created_at;
+			}
+
+			/*
+			 * TODO: Why do I have to do this????
+			 * Why is account.created_at null when fetching the profile query?
+			 * You are extending the Account type that's defined in the Accounts federated schema
+			 */
+			return dataSources.accountsAPI
+				.getAccountById(account.id)
+				.then((result) => result.created_at);
 		},
 		isModerator(account, args, context, info) {
 			return (

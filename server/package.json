@@ -9,6 +9,7 @@
 		"dev:profiles": "nodemon -r dotenv/config -r esm ./src/services/profiles/index.js",
 		"dev:content": "nodemon -r dotenv/config -r esm ./src/services/content/index.js",
 		"dev:gateway": "nodemon -r dotenv/config -r esm ./src/index.js",
+		"seed": "node -r dotenv/config -r esm src/scripts/seedData.js superHARDpa55!",
 		"format": "prettier --write ."
 	},
 	"keywords": [],
@@ -36,6 +37,7 @@
 	},
 	"devDependencies": {
 		"concurrently": "^6.2.1",
+		"faker": "^4.1.0",
 		"nodemon": "^2.0.12",
 		"prettier": "^2.3.2"
 	}
