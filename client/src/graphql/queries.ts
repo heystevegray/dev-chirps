@@ -126,3 +126,16 @@ export const GET_POST = gql`
 	${basicReply}
 	${repliesNextPage}
 `;
+
+export const GET_REPLY = gql`
+	query GET_REPLY($id: ID!) {
+		reply(id: $id) {
+			...basicReply
+			post {
+				...basicPost
+			}
+		}
+	}
+	${basicPost}
+	${basicReply}
+`;

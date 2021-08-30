@@ -3,7 +3,7 @@ import { Box, Text, TextProps } from "grommet";
 import StyledText from "./styles";
 
 interface Props {
-	margin: TextProps["margin"];
+	margin?: TextProps["margin"];
 	text: string;
 }
 

@@ -10,7 +10,13 @@ import UsernameHeader from "../UsernameHeader";
 const SingleContent = ({ contentData }: { contentData: Content }) => {
 	const value = useAuth();
 	const { username } = value.viewerQuery.data.viewer.profile;
-	const { author, createdAt, isBlocked, text } = contentData;
+	const {
+		author,
+		createdAt,
+		isBlocked,
+		text,
+		postAuthor: parentPostAuthor,
+	} = contentData;
 
 	return (
 		<Box
@@ -41,6 +47,16 @@ const SingleContent = ({ contentData }: { contentData: Content }) => {
 				</Box>
 			</Box>
 			<Box margin={{ top: "medium" }}>
+				{parentPostAuthor && (
+					<Text as="p">
+						<Text color="dark-3">Replying to </Text>
+						<Link to={`/profile/${parentPostAuthor.username}`}>
+							<Anchor as="span">
+								@{parentPostAuthor.username}
+							</Anchor>
+						</Link>
+					</Text>
+				)}
 				{isBlocked && (
 					<NotAvailableMessage
 						margin={{ bottom: "small", top: "xsmall" }}
