@@ -55,7 +55,13 @@ const Post = ({ match }: MatchId) => {
 						/>
 					</Box>
 				)}
-				{!post.replies.pageInfo.hasNextPage && <EndOfList />}
+				{post.replies.edges.length === 0 && (
+					<EndOfList text="No replies yet" />
+				)}
+				{post.replies.edges.length > 0 &&
+					!post.replies.pageInfo.hasNextPage && (
+						<EndOfList text="End of replies" />
+					)}
 			</MainLayout>
 		);
 	}
