@@ -1,9 +1,27 @@
-export function updateSubfieldPageResults(
+export const updateFieldPageResults = (
+	field: string,
+	fetchMoreResult: any,
+	previousResult: any
+) => {
+	const { edges: newEdges, pageInfo } = fetchMoreResult[field];
+
+	return newEdges.length
+		? {
+				[field]: {
+					__typename: previousResult[field].__typename,
+					edges: [...previousResult[field].edges, ...newEdges],
+					pageInfo,
+				},
+		  }
+		: previousResult;
+};
+
+export const updateSubfieldPageResults = (
 	field: string,
 	subfield: string,
 	fetchMoreResult: any,
 	previousResult: any
-) {
+) => {
 	const { edges: newEdges, pageInfo } = fetchMoreResult[field][subfield];
 	const previousEdges = previousResult[field][subfield].edges;
 
@@ -19,4 +37,4 @@ export function updateSubfieldPageResults(
 				},
 		  }
 		: previousResult;
-}
+};

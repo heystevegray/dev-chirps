@@ -92,3 +92,18 @@ export const GET_PROFILE_CONTENT = gql`
 	${profilesNextPage}
 	${repliesNextPage}
 `;
+
+export const GET_POSTS = gql`
+	query GET_POSTS($cursor: String, $filter: PostWhereInput) {
+		posts(first: 30, after: $cursor, filter: $filter) {
+			edges {
+				node {
+					...basicPost
+				}
+			}
+			...postsNextPage
+		}
+	}
+	${basicPost}
+	${postsNextPage}
+`;

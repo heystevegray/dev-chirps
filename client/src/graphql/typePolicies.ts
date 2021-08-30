@@ -12,6 +12,13 @@ const typePolicies = {
 			keyArgs: [],
 		},
 	},
+	Query: {
+		fields: {
+			posts: {
+				keyArgs: ["filter"],
+			},
+		},
+	},
 };
 
 export default typePolicies;
