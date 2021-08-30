@@ -13,7 +13,7 @@ const Profile = ({ history }: { history: any }): ReactElement => {
 	const profileRef = useRef(profile);
 
 	if (!profileRef.current && profile) {
-		return <Redirect to={"/profile"} />;
+		return <Redirect to={`/profile/${profile.username}`} />;
 	}
 
 	return (

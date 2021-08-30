@@ -28,7 +28,7 @@ const ContentListItem = ({ contentData }: { contentData: Content }) => {
 				/>
 				{parentPostAuthor && (
 					<Text as="p">
-						<Text color="dark-1">Replying to </Text>
+						<Text color="dark-2">Replying to </Text>
 						<Link to={`/profile/${parentPostAuthor.username}`}>
 							<Anchor as="span">
 								@{parentPostAuthor.username}
@@ -54,7 +54,7 @@ const ContentListItem = ({ contentData }: { contentData: Content }) => {
 					</Text>
 				)}
 				<Box align="center" direction="row" margin={{ top: "small" }}>
-					<Text as="p" color="dark-3" size="small">
+					<Text as="p" color="dark-2" size="small">
 						{displayRelativeDateOrTime(createdAt)}
 					</Text>
 				</Box>
