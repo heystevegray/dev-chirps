@@ -1,4 +1,4 @@
-export default {
+const typePolicies = {
 	Profile: {
 		fields: {
 			following: {
@@ -13,3 +13,5 @@ export default {
 		},
 	},
 };
+
+export default typePolicies;

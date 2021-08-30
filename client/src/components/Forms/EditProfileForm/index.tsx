@@ -1,11 +1,11 @@
 import { ApolloError, useMutation } from "@apollo/client";
-import { Form, FormField, Text } from "grommet";
+import { Form, FormField } from "grommet";
 import { useEffect, useState } from "react";
 import { UPDATE_PROFILE } from "../../../graphql/mutations";
 import { GET_VIEWER } from "../../../graphql/queries";
 import { AuthProps, Profile } from "../../../graphql/types";
+import { LoadingButton } from "../../Buttons/LoadingButton";
 import CharacterCountLabel from "../../CharacterCountLabel";
-import { LoadingButton } from "../../LoadingButton";
 import RequiredLabel from "../../RequiredLabel";
 
 interface Props {

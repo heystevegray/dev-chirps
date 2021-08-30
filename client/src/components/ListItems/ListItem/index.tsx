@@ -1,5 +1,4 @@
-import { Anchor, Box, Text } from "grommet";
-import { Link } from "react-router-dom";
+import { Box } from "grommet";
 import { Children } from "../../../graphql/types";
 import Avatar from "../../Avatar";
 
@@ -13,7 +12,7 @@ const ListItem = ({ children, fullName, avatar }: Props) => {
 	return (
 		<Box
 			border={{
-				color: "dark-2",
+				color: "dark-1",
 				size: "xsmall",
 				style: "solid",
 				side: "bottom",

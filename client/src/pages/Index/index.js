@@ -1,10 +1,10 @@
 import { ChatOption } from "grommet-icons";
 import MainLayout from "../../layouts/MainLayout";
-import AccentButton from "../../components/AccentButton";
 import { Box } from "grommet";
 import { useAuth } from "../../context/AuthContext";
 import Loader from "../../components/Loader";
 import { Redirect } from "react-router";
+import AccentButton from "../../components/Buttons/AccentButton";
 
 const Index = () => {
 	const { checkingSession, isAuthenticated, login, viewerQuery } = useAuth();

@@ -29,7 +29,9 @@ const theme: ThemeType = {
 			"status-ok": {
 				dark: "#00faa2",
 			},
-			"dark-3": "#bababa",
+			"dark-1": "#8e8d8d",
+			"dark-2": "#bababa",
+			"dark-3": "#d4d4d4",
 		},
 		focus: {
 			outline: { color: secondary },

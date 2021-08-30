@@ -1,7 +1,6 @@
-import { Anchor, Box, Text } from "grommet";
+import { Box, Text } from "grommet";
 import { Profile } from "../../../graphql/types";
-import AccentButton from "../../AccentButton";
-import Avatar from "../../Avatar";
+import AccentButton from "../../Buttons/AccentButton";
 import UsernameHeader from "../../UsernameHeader";
 import ListItem from "../ListItem";
 

@@ -1,10 +1,10 @@
-import { Box, Heading, Image, Text } from "grommet";
+import { Box, Heading, Text } from "grommet";
 import { useAuth } from "../../context/AuthContext";
 import { Profile } from "../../graphql/types";
 import dayjs from "dayjs";
-import AccentButton from "../AccentButton";
 import { useHistory } from "react-router";
 import Avatar from "../Avatar";
+import AccentButton from "../Buttons/AccentButton";
 
 interface Props {
 	profileData: Profile;

@@ -1,6 +1,13 @@
 import { gql } from "@apollo/client";
 
-import { basicPost, basicProfile, basicReply } from "./fragments";
+import {
+	basicPost,
+	basicProfile,
+	basicReply,
+	postsNextPage,
+	profilesNextPage,
+	repliesNextPage,
+} from "./fragments";
 
 export const GET_PROFILE = gql`
 	query GET_PROFILE($username: String!) {
@@ -35,17 +42,23 @@ export const GET_VIEWER = gql`
 `;
 
 export const GET_PROFILE_CONTENT = gql`
-	query GET_PROFILE_CONTENT($username: String!) {
+	query GET_PROFILE_CONTENT(
+		$followingCursor: String
+		$postsCursor: String
+		$repliesCursor: String
+		$username: String!
+	) {
 		profile(username: $username) {
 			id
-			following(first: 30) {
+			following(first: 30, after: $followingCursor) {
 				edges {
 					node {
 						...basicProfile
 					}
 				}
+				...profilesNextPage
 			}
-			posts(first: 30) {
+			posts(first: 30, after: $postsCursor) {
 				edges {
 					node {
 						...basicPost
@@ -60,17 +73,22 @@ export const GET_PROFILE_CONTENT = gql`
 						text
 					}
 				}
+				...postsNextPage
 			}
-			replies(first: 30) {
+			replies(first: 30, after: $repliesCursor) {
 				edges {
 					node {
 						...basicReply
 					}
 				}
+				...repliesNextPage
 			}
 		}
 	}
 	${basicProfile}
 	${basicPost}
 	${basicReply}
+	${postsNextPage}
+	${profilesNextPage}
+	${repliesNextPage}
 `;

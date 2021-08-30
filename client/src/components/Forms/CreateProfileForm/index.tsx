@@ -3,8 +3,8 @@ import { Form, FormField } from "grommet";
 import { useState } from "react";
 import { CREATE_PROFILE } from "../../../graphql/mutations";
 import { GET_VIEWER } from "../../../graphql/queries";
+import { LoadingButton } from "../../Buttons/LoadingButton";
 import CharacterCountLabel from "../../CharacterCountLabel";
-import { LoadingButton } from "../../LoadingButton";
 import RequiredLabel from "../../RequiredLabel";
 import {
 	getUsernameErrors,

@@ -1,9 +1,8 @@
-import { Box, Image, Text, Anchor } from "grommet";
+import { Box, Text, Anchor } from "grommet";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import { Content } from "../../../graphql/types";
 import displayRelativeDateOrTime from "../../../lib/displayDatetime";
-import Avatar from "../../Avatar";
 import NotAvailableMessage from "../../NotAvailableMessage";
 import UsernameHeader from "../../UsernameHeader";
 import ListItem from "../ListItem";
@@ -29,7 +28,7 @@ const ContentListItem = ({ contentData }: { contentData: Content }) => {
 				/>
 				{parentPostAuthor && (
 					<Text as="p">
-						<Text color="dark-3">Replying to </Text>
+						<Text color="dark-1">Replying to </Text>
 						<Link to={`/profile/${parentPostAuthor.username}`}>
 							<Anchor as="span">
 								@{parentPostAuthor.username}

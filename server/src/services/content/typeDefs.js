@@ -179,7 +179,7 @@ const typeDefs = gql`
 		"A list of post edges."
 		edges: [PostEdge]
 		"Information to assist with pagination."
-		pageInfo: PageInfo
+		pageInfo: PageInfo!
 	}
 
 	"""

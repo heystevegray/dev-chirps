@@ -1,6 +1,6 @@
 import { Box, Text } from "grommet";
+import Loader from "../../Loader";
 import AccentButton from "../AccentButton";
-import Loader from "../Loader";
 
 interface Props {
 	loading: boolean;

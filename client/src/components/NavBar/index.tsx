@@ -12,7 +12,7 @@ const NavBar = () => {
 			<Box
 				align="center"
 				border={{
-					color: "dark-2",
+					color: "dark-1",
 					style: "solid",
 					size: "xsmall",
 					side: "bottom",

@@ -1,6 +1,4 @@
-import { useAuth } from "../../context/AuthContext";
-
-import { Box, Image, Text, Avatar as GrommetAvatar, TextProps } from "grommet";
+import { Box, Text, Avatar as GrommetAvatar, TextProps } from "grommet";
 
 interface Props {
 	fullName: string;

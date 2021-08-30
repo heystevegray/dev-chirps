@@ -2,13 +2,16 @@ import { useQuery } from "@apollo/client";
 import { Box, Tab, Tabs, Text } from "grommet";
 import { ChatOption, Group, Note } from "grommet-icons";
 import { GET_PROFILE_CONTENT } from "../../graphql/queries";
+import { updateSubfieldPageResults } from "../../lib/updateQueries";
+import LoadMoreButton from "../Buttons/LoadMoreButton";
+import EndOfList from "../EndOfList";
 import ContentList from "../Lists/ContentList";
 import ProfileList from "../Lists/ProfileList";
 import Loader from "../Loader";
 import RichTabTitle from "../RichTabTitle";
 
 const ProfileTabs = ({ username }: { username: string }) => {
-	const { data, loading, error } = useQuery(GET_PROFILE_CONTENT, {
+	const { data, loading, error, fetchMore } = useQuery(GET_PROFILE_CONTENT, {
 		variables: {
 			username,
 		},
@@ -20,7 +23,7 @@ const ProfileTabs = ({ username }: { username: string }) => {
 			<Box align="center" margin={{ top: "medium" }}>
 				<Text as="p" color="status-error">
 					Yikes! Something went wrong loading{" "}
-					<Text as="span" color="brand">
+					<Text as="span" color="dark-3">
 						{username}'s
 					</Text>{" "}
 					Profile Content.
@@ -49,8 +52,36 @@ const ProfileTabs = ({ username }: { username: string }) => {
 				}
 			>
 				<Box margin={{ top: "medium" }}>
-					{posts?.edges.length ? (
-						<ContentList contentData={posts.edges} />
+					{posts.edges.length ? (
+						<>
+							<ContentList contentData={posts.edges} />
+							{posts.pageInfo.hasNextPage && (
+								<Box direction="row" justify="center">
+									<LoadMoreButton
+										onClick={() =>
+											fetchMore({
+												variables: {
+													postsCursor:
+														posts.pageInfo
+															.endCursor,
+												},
+												updateQuery: (
+													previousResult,
+													{ fetchMoreResult }
+												) =>
+													updateSubfieldPageResults(
+														"profile",
+														"posts",
+														fetchMoreResult,
+														previousResult
+													),
+											})
+										}
+									/>
+								</Box>
+							)}
+							{!posts.pageInfo.hasNextPage && <EndOfList />}
+						</>
 					) : (
 						<Text as="p">No posts to display yet!</Text>
 					)}
@@ -66,8 +97,36 @@ const ProfileTabs = ({ username }: { username: string }) => {
 				}
 			>
 				<Box margin={{ top: "medium" }}>
-					{replies?.edges.length ? (
-						<ContentList contentData={replies.edges} />
+					{replies.edges.length ? (
+						<>
+							<ContentList contentData={replies.edges} />
+							{replies.pageInfo.hasNextPage && (
+								<Box direction="row" justify="center">
+									<LoadMoreButton
+										onClick={() =>
+											fetchMore({
+												variables: {
+													repliesCursor:
+														replies.pageInfo
+															.endCursor,
+												},
+												updateQuery: (
+													previousResult,
+													{ fetchMoreResult }
+												) =>
+													updateSubfieldPageResults(
+														"profile",
+														"replies",
+														fetchMoreResult,
+														previousResult
+													),
+											})
+										}
+									/>
+								</Box>
+							)}
+							{!replies.pageInfo.hasNextPage && <EndOfList />}
+						</>
 					) : (
 						<Text as="p">No replies to display yet!</Text>
 					)}
@@ -84,7 +143,35 @@ const ProfileTabs = ({ username }: { username: string }) => {
 			>
 				<Box margin={{ top: "medium" }}>
 					{following.edges.length ? (
-						<ProfileList profileData={following.edges} />
+						<>
+							<ProfileList profileData={following.edges} />
+							{following.pageInfo.hasNextPage && (
+								<Box direction="row" justify="center">
+									<LoadMoreButton
+										onClick={() =>
+											fetchMore({
+												variables: {
+													followingCursor:
+														following.pageInfo
+															.endCursor,
+												},
+												updateQuery: (
+													previousResult,
+													{ fetchMoreResult }
+												) =>
+													updateSubfieldPageResults(
+														"profile",
+														"following",
+														fetchMoreResult,
+														previousResult
+													),
+											})
+										}
+									/>
+								</Box>
+							)}
+							{!following.pageInfo.hasNextPage && <EndOfList />}
+						</>
 					) : (
 						<Text as="p">No followed users to display yet!</Text>
 					)}
