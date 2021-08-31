@@ -3,6 +3,13 @@ import { ThemeType } from "grommet";
 const secondary = "#32a852";
 
 const theme: ThemeType = {
+	select: {
+		options: {
+			container: {
+				background: "dark-1",
+			},
+		},
+	},
 	tab: {
 		color: "red",
 		hover: {
@@ -21,6 +28,7 @@ const theme: ThemeType = {
 			height: "20px",
 		},
 		colors: {
+			paper: "#101010",
 			brand: "#ac83fb",
 			secondary: secondary,
 			"status-error": {

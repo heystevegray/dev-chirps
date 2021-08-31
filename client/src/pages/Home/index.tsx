@@ -2,6 +2,7 @@ import { useQuery } from "@apollo/client";
 import { Box, Text } from "grommet";
 import LoadMoreButton from "../../components/Buttons/LoadMoreButton";
 import EndOfList from "../../components/EndOfList";
+import SearchForm from "../../components/Forms/SearchForm";
 import ContentList from "../../components/Lists/ContentList";
 import Loader from "../../components/Loader";
 import { useAuth } from "../../context/AuthContext";
@@ -48,6 +49,9 @@ const Home = () => {
 
 	return (
 		<MainLayout>
+			<Box margin={{ top: "medium" }}>
+				<SearchForm />
+			</Box>
 			<Box margin={{ top: "medium" }}>
 				{posts.edges.length ? (
 					<>
