@@ -28,7 +28,7 @@ const SearchForm = () => {
 		queryStringValues.type &&
 		options.find((option) => option.value === queryStringValues.type);
 
-	const [type, setType] = useState(initialType || "");
+	const [type, setType] = useState(initialType?.label || "");
 
 	const getTypeFromLabel = (label: string): string | undefined => {
 		const option = options.find(
@@ -53,8 +53,14 @@ const SearchForm = () => {
 				}
 			}}
 		>
-			<Box align="start" direction="row" justify="between">
-				<Box flex={{ grow: 1, shrink: 0 }} margin={{ right: "medium" }}>
+			<Box
+				align="start"
+				margin={{ bottom: "large" }}
+				direction="row-responsive"
+				justify="between"
+				gap="large"
+			>
+				<Box flex={{ grow: 1, shrink: 0 }}>
 					<FormField
 						a11yTitle="Search Text"
 						id="searchText"
@@ -67,36 +73,42 @@ const SearchForm = () => {
 						value={text}
 					/>
 				</Box>
-				<Box margin={{ right: "small" }}>
-					<FormField
-						a11yTitle="Type of Search"
-						id="searchLabel"
-						required
-						name="searchLabel"
-						placeholder="Type"
-						control
-						value={type}
-						component={Select}
-						options={options.map((option) => option.label)}
-						plain
-						onChange={(event: any) => {
-							setType(event.target.value);
-						}}
-					/>
-				</Box>
-				<Box
-					align="center"
-					background="secondary"
-					justify="center"
-					overflow="hidden"
-					round="full"
-				>
-					<Button
-						primary
-						a11yTitle="Search..."
-						icon={<Search color="paper" size="22px" />}
-						type="submit"
-					/>
+				<Box direction="row" justify="start" gap="large">
+					<Box>
+						<FormField
+							a11yTitle="Type of Search"
+							id="searchLabel"
+							required
+							name="searchLabel"
+							placeholder="Type"
+							control
+							value={type}
+							component={Select}
+							options={options.map((option) => option.label)}
+							plain
+							onChange={(event: any) => {
+								setType(event.target.value);
+							}}
+						/>
+					</Box>
+					<Box
+						align="center"
+						width="40px"
+						height="40px"
+						background="secondary"
+						justify="center"
+						overflow="hidden"
+						round="full"
+					>
+						<Button
+							focusIndicator
+							hoverIndicator
+							secondary
+							a11yTitle="Search..."
+							icon={<Search color="paper" size="22px" />}
+							type="submit"
+						/>
+					</Box>
 				</Box>
 			</Box>
 		</Form>

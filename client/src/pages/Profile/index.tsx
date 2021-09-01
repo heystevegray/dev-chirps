@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { match as MatchInterface, Route } from "react-router";
+import { Route } from "react-router";
 import Loader from "../../components/Loader";
 import ProfileHeader from "../../components/ProfileHeader";
 import ProfileTabs from "../../components/ProfileTabs";

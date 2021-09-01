@@ -10,7 +10,7 @@ interface Props {
 const NotAvailableMessage = ({ text, ...rest }: Props) => (
 	<Box {...rest}>
 		<Text as="p" color="status-error">
-			<StyledText>{`😬 ${text} 😬`}</StyledText>
+			<StyledText>{`😬 ${text}`}</StyledText>
 		</Text>
 	</Box>
 );

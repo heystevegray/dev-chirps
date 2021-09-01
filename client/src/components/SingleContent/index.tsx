@@ -1,11 +1,10 @@
-import { Box, Image, Text, Anchor } from "grommet";
+import { Box, Text, Anchor } from "grommet";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { Content } from "../../graphql/types";
 import { displayFullDatetime } from "../../lib/displayDatetime";
 import Avatar from "../Avatar";
 import NotAvailableMessage from "../NotAvailableMessage";
-import UsernameHeader from "../UsernameHeader";
 
 const SingleContent = ({ contentData }: { contentData: Content }) => {
 	const value = useAuth();

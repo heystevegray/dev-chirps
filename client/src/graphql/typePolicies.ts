@@ -17,6 +17,9 @@ const typePolicies = {
 			posts: {
 				keyArgs: ["filter"],
 			},
+			searchPosts: {
+				keyArgs: ["query"],
+			},
 		},
 	},
 	Post: {

@@ -6,7 +6,7 @@ const theme: ThemeType = {
 	select: {
 		options: {
 			container: {
-				background: "dark-1",
+				// background: "dark-1",
 			},
 		},
 	},
