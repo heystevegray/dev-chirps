@@ -29,15 +29,24 @@ const resolvers = {
 			 * Why is profile.username null when fetching the profile query?
 			 * You are extending the Account type that's defined in the Accounts federated schema
 			 */
+
+			if (profile.username) {
+				return profile.username;
+			}
+
 			return dataSources.profilesAPI
 				.getProfileById(profile.id)
 				.then((result) => result.username);
-			// return profile.username
 		},
 		avatar(profile, args, { dataSources }, info) {
 			/*
 			 * TODO: Why do I have to do this????
 			 */
+
+			if (profile.avatar) {
+				return profile.avatar;
+			}
+
 			return dataSources.profilesAPI
 				.getProfileById(profile.id)
 				.then((result) => result.avatar);
@@ -46,6 +55,11 @@ const resolvers = {
 			/*
 			 * TODO: Why do I have to do this????
 			 */
+
+			if (profile.fullName) {
+				return profile.fullName;
+			}
+
 			return dataSources.profilesAPI
 				.getProfileById(profile.id)
 				.then((result) => result.fullName);
@@ -54,6 +68,10 @@ const resolvers = {
 			/*
 			 * TODO: Why do I have to do this????
 			 */
+
+			if (profile.description) {
+				return profile.description;
+			}
 			return dataSources.profilesAPI
 				.getProfileById(profile.id)
 				.then((result) => result.description);

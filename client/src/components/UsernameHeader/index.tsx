@@ -11,7 +11,13 @@ const UsernameHeader = ({ fullName, username }: Props) => {
 		<Text as="p">
 			<Text weight="bold">{fullName}</Text>{" "}
 			<Link to={`/profile/${username}`}>
-				<Anchor color="brand" as="span">
+				<Anchor
+					color="brand"
+					as="span"
+					onClick={(event) => {
+						event.stopPropagation();
+					}}
+				>
 					@{username}
 				</Anchor>
 			</Link>

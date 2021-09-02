@@ -24,13 +24,13 @@ const Index = () => {
 		<MainLayout centered>
 			<Box align="center" margin={{ top: "small" }} width="100%">
 				<ChatOption color="brand" size="300px" />
-				<div>
+				<Box margin="xlarge">
 					<AccentButton
 						label="Login / Sign-up"
 						margin={{ top: "medium" }}
 						onClick={login}
 					/>
-				</div>
+				</Box>
 			</Box>
 		</MainLayout>
 	);
