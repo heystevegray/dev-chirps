@@ -37,7 +37,7 @@ const theme: ThemeType = {
 			"status-ok": {
 				dark: "#00faa2",
 			},
-			"dark-2": "#868686",
+			"dark-2": "#a2a2a2",
 			"dark-3": "#d4d4d4",
 		},
 		focus: {

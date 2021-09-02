@@ -20,6 +20,9 @@ const typePolicies = {
 			searchPosts: {
 				keyArgs: ["query"],
 			},
+			searchProfiles: {
+				keyArgs: ["query"],
+			},
 		},
 	},
 	Post: {

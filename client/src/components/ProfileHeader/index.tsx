@@ -22,7 +22,7 @@ const ProfileHeader = ({ profileData }: Props) => {
 	const renderButton = () => {
 		if (username === viewerUsername) {
 			return (
-				<Box margin={{ top: "large" }} alignSelf="center">
+				<Box margin="large" alignSelf="center">
 					<AccentButton
 						label="Edit Profile"
 						onClick={() => {
@@ -57,7 +57,11 @@ const ProfileHeader = ({ profileData }: Props) => {
 					gap="medium"
 					justify="center"
 					alignSelf="center"
-					margin={{ left: "xlarge", right: "xlarge" }}
+					margin={{
+						left: "xlarge",
+						right: "xlarge",
+						bottom: "medium",
+					}}
 				>
 					{fullName && (
 						<Heading textAlign="center" level="2">

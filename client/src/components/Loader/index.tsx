@@ -1,16 +1,22 @@
-import { Refresh } from "grommet-icons";
+import { Box, Spinner } from "grommet";
 
 import StyledLoader from "./styles";
 
 export interface LoaderProps {
 	centered?: boolean;
 	color?: string;
-	size?: "small" | "medium" | "large" | "xlarge" | string;
 }
 
-const Loader = ({ centered, color, size }: LoaderProps) => (
+const Loader = ({ centered, color }: LoaderProps) => (
 	<StyledLoader centered={centered}>
-		<Refresh color={color} size={size} />
+		<Box align="center" direction="row" gap="medium">
+			<Spinner
+				border={[
+					{ side: "all", color: "transparent", size: "medium" },
+					{ side: "horizontal", color, size: "medium" },
+				]}
+			/>
+		</Box>
 	</StyledLoader>
 );
 

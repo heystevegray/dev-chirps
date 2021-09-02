@@ -24,7 +24,6 @@ const ContentListItem = ({ contentData }: { contentData: Content }) => {
 
 	return (
 		<HoverBox
-			direction="row"
 			onClick={() => {
 				history.push(
 					`/${

@@ -3,10 +3,11 @@ import { Search } from "grommet-icons";
 import { useHistory, useLocation } from "react-router-dom";
 import queryString from "query-string";
 import { useState } from "react";
+import { SearchTypes } from "../../../graphql/types";
 
 interface SearchOption {
 	label: string;
-	value: string;
+	value: SearchTypes;
 }
 
 const SearchForm = () => {

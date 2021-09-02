@@ -1,5 +1,7 @@
 import { ReactElement } from "react";
 import { match as MatchInterface } from "react-router";
+
+export type SearchTypes = "searchPosts" | "searchProfiles";
 export interface Profile extends IsModerator, IsBlocked {
 	id: string;
 	account: Account;
@@ -57,7 +59,6 @@ export interface ProfileNode {
 export interface ContentNode {
 	node: Content;
 }
-
 export interface Content {
 	id: string;
 	author: Author;
@@ -71,4 +72,9 @@ export interface Author {
 	avatar: string;
 	fullName: string;
 	username: string;
+}
+
+export interface QueryResults {
+	searchPosts: ContentNode[];
+	searchProfiles: ProfileNode[];
 }

@@ -2,28 +2,22 @@ import { useQuery } from "@apollo/client";
 import { Box, Text } from "grommet";
 import { Location } from "history";
 import queryString from "query-string";
+import { ReactElement } from "react";
 import LoadMoreButton from "../../components/Buttons/LoadMoreButton";
 import EndOfList from "../../components/EndOfList";
 import SearchForm from "../../components/Forms/SearchForm";
 import ContentList from "../../components/Lists/ContentList";
+import ProfileList from "../../components/Lists/ProfileList";
 import Loader from "../../components/Loader";
 import NotAvailableMessage from "../../components/NotAvailableMessage";
-import { SEARCH_POSTS } from "../../graphql/queries";
+import { SEARCH_POSTS, SEARCH_PROFILES } from "../../graphql/queries";
 import MainLayout from "../../layouts/MainLayout";
 import { updateFieldPageResults } from "../../lib/updateQueries";
 
 const Search = ({ location }: { location: Location }) => {
-	const SEARCH_QUERY = SEARCH_POSTS;
 	const { text, type } = queryString.parse(location.search);
-	const validSearch =
-		text && type && (type === "searchPosts" || type === "searchProfiles");
-	const message = validSearch ? (
-		<NotAvailableMessage
-			text={`Sorry, no results for your search "${text}"`}
-		/>
-	) : (
-		"Submit a search query above to see results."
-	);
+	const SEARCH_QUERY =
+		type === "searchPosts" ? SEARCH_POSTS : SEARCH_PROFILES;
 
 	const { data, fetchMore, loading } = useQuery(SEARCH_QUERY, {
 		variables: {
@@ -31,7 +25,15 @@ const Search = ({ location }: { location: Location }) => {
 		},
 	});
 
-	console.log({ data });
+	const validSearch =
+		text && type && (type === "searchPosts" || type === "searchProfiles");
+	const message = validSearch ? (
+		<NotAvailableMessage
+			text={`Sorry, no results for your search \"${text}\"`}
+		/>
+	) : (
+		"Submit a search query above to see results."
+	);
 
 	if (loading) {
 		return (
@@ -43,13 +45,19 @@ const Search = ({ location }: { location: Location }) => {
 		);
 	}
 
+	const listView = data.searchPosts ? (
+		<ContentList contentData={data[type]?.edges} />
+	) : (
+		<ProfileList profileData={data[type]?.edges} />
+	);
+
 	return (
 		<MainLayout>
 			<Box margin={{ top: "medium" }}>
 				<SearchForm />
 				{data && data[type] && data[type].edges.length ? (
 					<>
-						<ContentList contentData={data[type].edges} />
+						{listView}
 						{data[type].pageInfo.hasNextPage && (
 							<Box direction="row" justify="center">
 								<LoadMoreButton
