@@ -21,3 +21,11 @@ export const UPDATE_PROFILE = gql`
 	}
 	${basicProfile}
 `;
+
+export const CREATE_POST = gql`
+	mutation CREATE_POST($data: CreatePostInput!) {
+		createPost(data: $data) {
+			id
+		}
+	}
+`;

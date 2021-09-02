@@ -7,6 +7,7 @@ interface Props {
 	label: string;
 	showSavedMessage?: boolean;
 	savedMessage?: string;
+	type?: string;
 }
 
 export const LoadingButton = ({
@@ -14,9 +15,11 @@ export const LoadingButton = ({
 	label,
 	showSavedMessage = false,
 	savedMessage = "",
+	...rest
 }: Props) => {
 	return (
 		<Box
+			{...rest}
 			align="center"
 			direction="row"
 			justify="end"
