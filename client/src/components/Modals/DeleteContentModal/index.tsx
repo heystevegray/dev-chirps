@@ -5,6 +5,11 @@ import { useState } from "react";
 import { useHistory } from "react-router";
 import { useAuth } from "../../../context/AuthContext";
 import { DELETE_POST, DELETE_REPLY } from "../../../graphql/mutations";
+import {
+	GET_POST,
+	GET_POSTS,
+	GET_PROFILE_CONTENT,
+} from "../../../graphql/queries";
 import Modal from "../../Modal";
 
 interface Props {
@@ -30,8 +35,33 @@ const DeleteContentModal = ({
 		history.push("/home");
 	};
 
-	const [deletePost, { loading }] = useMutation(DELETE_POST, { onCompleted });
-	const [deleteReply] = useMutation(DELETE_REPLY, { onCompleted });
+	const [deletePost, { loading }] = useMutation(DELETE_POST, {
+		onCompleted,
+		refetchQueries: () => [
+			{
+				query: GET_POSTS,
+				variables: {
+					filter: {
+						followedBy: username,
+						includeBlocked: false,
+					},
+				},
+			},
+			{ query: GET_PROFILE_CONTENT, variables: { username } },
+		],
+	});
+	const [deleteReply] = useMutation(DELETE_REPLY, {
+		onCompleted,
+		refetchQueries: () => [
+			...(parentPostId
+				? [{ query: GET_POST, variables: { id: parentPostId } }]
+				: []),
+			{
+				query: GET_PROFILE_CONTENT,
+				variables: { username },
+			},
+		],
+	});
 
 	return (
 		<Box direction="row" onClick={(event: any) => event.stopPropagation()}>
@@ -48,6 +78,7 @@ const DeleteContentModal = ({
 				</Text>
 				<Box direction="row" justify="end">
 					<Button
+						disabled={loading}
 						color="status-critical"
 						label="Delete"
 						primary

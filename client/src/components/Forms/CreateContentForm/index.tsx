@@ -4,6 +4,11 @@ import { useState } from "react";
 import { useHistory } from "react-router";
 import { useAuth } from "../../../context/AuthContext";
 import { CREATE_POST, CREATE_REPLY } from "../../../graphql/mutations";
+import {
+	GET_POST,
+	GET_POSTS,
+	GET_PROFILE_CONTENT,
+} from "../../../graphql/queries";
 import { LoadingButton } from "../../Buttons/LoadingButton";
 import CharacterCountLabel from "../../CharacterCountLabel";
 import RequiredLabel from "../../RequiredLabel";
@@ -22,12 +27,30 @@ const CreateContentForm = ({ parentPostId }: Props) => {
 		onCompleted: ({ createPost: { id } }) => {
 			history.push(`/post/${id}`);
 		},
+		refetchQueries: () => [
+			{
+				query: GET_POSTS,
+				variables: {
+					filter: { followedBy: username, includeBlocked: false },
+				},
+			},
+			{
+				query: GET_PROFILE_CONTENT,
+				variables: {
+					username,
+				},
+			},
+		],
 	});
 
 	const [createReply] = useMutation(CREATE_REPLY, {
 		onCompleted: ({ createReply: { id } }) => {
 			history.push(`/reply/${id}`);
 		},
+		refetchQueries: () => [
+			{ query: GET_POST, variables: { id: parentPostId } },
+			{ query: GET_PROFILE_CONTENT, variables: { username } },
+		],
 	});
 
 	return (
