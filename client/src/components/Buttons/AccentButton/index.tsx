@@ -1,12 +1,13 @@
 import StyledAccentButton from "./Styles";
 import theme from "../../../styles/theme";
+import { Button } from "grommet";
 
 const AccentButton = (props: any) => (
-	<StyledAccentButton
-		{...props}
+	<Button
 		primary
-		background={props?.background || theme.global?.colors?.secondary}
-		color="secondary"
+		disabled={props?.disabled}
+		color={props?.color ? props?.color : theme.global?.colors?.secondary}
+		{...props}
 	/>
 );
 

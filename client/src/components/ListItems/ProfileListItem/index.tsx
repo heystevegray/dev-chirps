@@ -29,6 +29,7 @@ const ProfileListItem = ({ profileData }: { profileData: Profile }) => {
 				</Box>
 				<Box>
 					<AccentButton
+						background="secondary"
 						label="Unfollow"
 						onClick={(event: any) => {
 							event.stopPropagation();

@@ -28,6 +28,9 @@ const theme: ThemeType = {
 			height: "20px",
 		},
 		colors: {
+			text: {
+				// dark: "#FFF",
+			},
 			paper: "#101010",
 			brand: "#ac83fb",
 			secondary: secondary,

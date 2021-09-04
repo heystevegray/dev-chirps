@@ -52,3 +52,25 @@ export const DELETE_REPLY = gql`
 		deleteReply(where: $where)
 	}
 `;
+
+export const FOLLOW_PROFILE = gql`
+	mutation FOLLOW_PROFILE(
+		$data: FollowingProfileInput!
+		$where: ProfileWhereUniqueInput!
+	) {
+		followProfile(data: $data, where: $where) {
+			id
+		}
+	}
+`;
+
+export const UNFOLLOW_PROFILE = gql`
+	mutation UNFOLLOW_PROFILE(
+		$data: FollowingProfileInput!
+		$where: ProfileWhereUniqueInput!
+	) {
+		unfollowProfile(data: $data, where: $where) {
+			id
+		}
+	}
+`;
