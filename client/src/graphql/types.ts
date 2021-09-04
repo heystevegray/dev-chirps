@@ -62,6 +62,7 @@ export interface ContentNode {
 export interface Content extends Post {
 	isBlocked: boolean;
 	postAuthor: any;
+	post: Post;
 }
 
 export interface Post {

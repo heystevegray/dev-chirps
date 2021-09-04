@@ -5,7 +5,7 @@ const StyledAccentButton = styled(Button)`
 	color: #000;
 	font-weight: bold;
 	width: "100%";
-	max-width: 150px;
+	min-width: 150px;
 `;
 
 export default StyledAccentButton;

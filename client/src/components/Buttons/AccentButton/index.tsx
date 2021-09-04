@@ -3,11 +3,10 @@ import theme from "../../../styles/theme";
 
 const AccentButton = (props: any) => (
 	<StyledAccentButton
+		{...props}
 		primary
 		background={props?.background || theme.global?.colors?.secondary}
-		width={props?.width || 150}
 		color="secondary"
-		{...props}
 	/>
 );
 

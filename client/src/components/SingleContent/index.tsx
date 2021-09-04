@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import { Content } from "../../graphql/types";
 import { displayFullDatetime } from "../../lib/displayDatetime";
 import Avatar from "../Avatar";
+import DeleteContentModal from "../Modals/DeleteContentModal";
 import NewReplyModal from "../Modals/NewReplyModal";
 import NotAvailableMessage from "../NotAvailableMessage";
 
@@ -15,6 +16,7 @@ const SingleContent = ({ contentData }: { contentData: Content }) => {
 		id,
 		createdAt,
 		isBlocked,
+		post: parentPost,
 		text,
 		postAuthor: parentPostAuthor,
 	} = contentData;
@@ -72,11 +74,25 @@ const SingleContent = ({ contentData }: { contentData: Content }) => {
 					</Box>
 				)}
 			</Box>
-			<Box align="center" direction="row" margin={{ top: "small" }}>
+			<Box
+				align="center"
+				direction="row"
+				margin={{ top: "small" }}
+				gap="small"
+			>
 				<Text as="p" color="dark-3" size="small">
 					{displayFullDatetime(createdAt)}
 				</Text>
+				{author.username === username && (
+					<DeleteContentModal
+						iconSize="18px"
+						id={id}
+						isReply={parentPost !== undefined}
+						parentPostId={parentPost && parentPost.id}
+					/>
+				)}
 			</Box>
+
 			{parentPostAuthor === undefined && !isBlocked && (
 				<Box margin={{ top: "medium" }} align="end">
 					<NewReplyModal

@@ -77,7 +77,7 @@ const NewReplyModal = ({
 				</Box>
 				<CreateContentForm parentPostId={id} />
 			</Modal>
-			<AccentButton
+			<Button
 				hoverIndicator={!showButtonLabel}
 				a11yTitle="Reply"
 				icon={

@@ -4,6 +4,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { Content } from "../../../graphql/types";
 import { displayRelativeDateOrTime } from "../../../lib/displayDatetime";
 import HoverBox from "../../HoverBox";
+import DeleteContentModal from "../../Modals/DeleteContentModal";
 import NewReplyModal from "../../Modals/NewReplyModal";
 import NotAvailableMessage from "../../NotAvailableMessage";
 import UsernameHeader from "../../UsernameHeader";
@@ -19,6 +20,7 @@ const ContentListItem = ({ contentData }: { contentData: Content }) => {
 		author,
 		createdAt,
 		isBlocked,
+		post: parentPost,
 		postAuthor: parentPostAuthor,
 		text,
 	} = contentData;
@@ -89,6 +91,14 @@ const ContentListItem = ({ contentData }: { contentData: Content }) => {
 								iconSize="18px"
 								postData={{ author, createdAt, id, text }}
 								showButtonLabel={false}
+							/>
+						)}
+						{author.username === username && (
+							<DeleteContentModal
+								iconSize="18px"
+								id={id}
+								isReply={parentPost !== undefined}
+								parentPostId={parentPost && parentPost.id}
 							/>
 						)}
 					</Box>
