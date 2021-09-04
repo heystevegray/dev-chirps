@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import { Content } from "../../graphql/types";
 import { displayFullDatetime } from "../../lib/displayDatetime";
 import Avatar from "../Avatar";
+import NewReplyModal from "../Modals/NewReplyModal";
 import NotAvailableMessage from "../NotAvailableMessage";
 
 const SingleContent = ({ contentData }: { contentData: Content }) => {
@@ -11,6 +12,7 @@ const SingleContent = ({ contentData }: { contentData: Content }) => {
 	const { username } = value.viewerQuery.data.viewer.profile;
 	const {
 		author,
+		id,
 		createdAt,
 		isBlocked,
 		text,
@@ -75,6 +77,14 @@ const SingleContent = ({ contentData }: { contentData: Content }) => {
 					{displayFullDatetime(createdAt)}
 				</Text>
 			</Box>
+			{parentPostAuthor === undefined && !isBlocked && (
+				<Box margin={{ top: "medium" }} align="end">
+					<NewReplyModal
+						iconSize="18px"
+						postData={{ author, createdAt, id, text }}
+					/>
+				</Box>
+			)}
 		</Box>
 	);
 };

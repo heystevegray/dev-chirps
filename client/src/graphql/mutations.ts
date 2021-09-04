@@ -29,3 +29,14 @@ export const CREATE_POST = gql`
 		}
 	}
 `;
+
+export const CREATE_REPLY = gql`
+	mutation CREATE_REPLY($data: CreateReplyInput!) {
+		createReply(data: $data) {
+			id
+			post {
+				id
+			}
+		}
+	}
+`;

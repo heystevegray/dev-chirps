@@ -59,12 +59,15 @@ export interface ProfileNode {
 export interface ContentNode {
 	node: Content;
 }
-export interface Content {
+export interface Content extends Post {
+	isBlocked: boolean;
+	postAuthor: any;
+}
+
+export interface Post {
 	id: string;
 	author: Author;
 	createdAt: Date;
-	isBlocked: boolean;
-	postAuthor: any;
 	text: string;
 }
 

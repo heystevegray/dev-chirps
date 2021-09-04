@@ -44,6 +44,7 @@ const NavBar = () => {
 						</Modal>
 						<Box>
 							<AccentButton
+								primary
 								label="New Post"
 								margin={{ right: "small" }}
 								onClick={() => {

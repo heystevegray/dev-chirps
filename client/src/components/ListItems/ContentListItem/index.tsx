@@ -4,6 +4,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { Content } from "../../../graphql/types";
 import { displayRelativeDateOrTime } from "../../../lib/displayDatetime";
 import HoverBox from "../../HoverBox";
+import NewReplyModal from "../../Modals/NewReplyModal";
 import NotAvailableMessage from "../../NotAvailableMessage";
 import UsernameHeader from "../../UsernameHeader";
 import ListItem from "../ListItem";
@@ -75,9 +76,21 @@ const ContentListItem = ({ contentData }: { contentData: Content }) => {
 						direction="row"
 						margin={{ top: "small" }}
 					>
-						<Text as="p" color="dark-2" size="small">
+						<Text
+							as="p"
+							color="dark-2"
+							size="small"
+							margin={{ right: "small" }}
+						>
 							{displayRelativeDateOrTime(createdAt)}
 						</Text>
+						{parentPostAuthor === undefined && !isBlocked && (
+							<NewReplyModal
+								iconSize="18px"
+								postData={{ author, createdAt, id, text }}
+								showButtonLabel={false}
+							/>
+						)}
 					</Box>
 				</Box>
 			</ListItem>
