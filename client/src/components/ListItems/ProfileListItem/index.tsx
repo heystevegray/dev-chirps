@@ -57,19 +57,24 @@ const ProfileListItem = ({ profileData }: { profileData: Profile }) => {
 		>
 			<ListItem fullName={fullName} avatar={avatar}>
 				<Box direction="row-responsive" width="100%">
-					<Box
-						flex={{ grow: 1, shrink: 0 }}
-						margin={{ bottom: "medium" }}
-					>
-						<UsernameHeader
-							fullName={fullName}
-							username={username}
-						/>
-						<Text as="p" margin={{ bottom: "small", top: "small" }}>
-							{description}
-						</Text>
+					<Box width="100%">
+						<Box
+							flex={{ grow: 1, shrink: 0 }}
+							margin={{ bottom: "medium" }}
+						>
+							<UsernameHeader
+								fullName={fullName}
+								username={username}
+							/>
+							<Text
+								as="p"
+								margin={{ bottom: "small", top: "small" }}
+							>
+								{description}
+							</Text>
+						</Box>
 					</Box>
-					<Box align="center">
+					<Box align="center" width="100%" justify="center">
 						{viewerUsername !== username && (
 							<Box
 								alignSelf="end"

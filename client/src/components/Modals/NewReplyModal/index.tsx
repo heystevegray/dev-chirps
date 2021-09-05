@@ -6,7 +6,6 @@ import { displayRelativeDateOrTime } from "../../../lib/displayDatetime";
 import Avatar from "../../Avatar";
 import AccentButton from "../../Buttons/AccentButton";
 import CreateContentForm from "../../Forms/CreateContentForm";
-import ListItem from "../../ListItems/ListItem";
 import Modal from "../../Modal";
 import UsernameHeader from "../../UsernameHeader";
 
