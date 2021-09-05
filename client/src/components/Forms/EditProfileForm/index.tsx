@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { UPDATE_PROFILE } from "../../../graphql/mutations";
 import { GET_VIEWER } from "../../../graphql/queries";
 import { AuthProps, Profile } from "../../../graphql/types";
+import { updateProfileContentAuthor } from "../../../lib/updateQueries";
 import { LoadingButton } from "../../Buttons/LoadingButton";
 import CharacterCountLabel from "../../CharacterCountLabel";
 import RequiredLabel from "../../RequiredLabel";
@@ -60,6 +61,11 @@ const EditProfileForm = ({ profileData, updateViewer }: Props) => {
 					query: GET_VIEWER,
 					data: { viewer: viewerWithProfile },
 				});
+				updateProfileContentAuthor(
+					cache,
+					profileData.username,
+					updateProfile
+				);
 				updateViewer(viewerWithProfile);
 			},
 			onCompleted: () => {

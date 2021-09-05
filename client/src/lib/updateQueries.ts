@@ -1,6 +1,6 @@
 import { ApolloCache, InMemoryCache } from "@apollo/client";
 import { GET_PROFILE_CONTENT, SEARCH_PROFILES } from "../graphql/queries";
-import { ProfileNode } from "../graphql/types";
+import { Author, ContentNode, Post, ProfileNode } from "../graphql/types";
 import update from "immutability-helper";
 
 export const updateFieldPageResults = (
@@ -106,3 +106,44 @@ export function updateSearchProfilesFollowing(
 		data: { searchProfiles: updatedSearchProfiles },
 	});
 }
+
+export const updateProfileContentAuthor = (
+	cache: ApolloCache<InMemoryCache>,
+	username: string,
+	updatedAuthor: Author
+) => {
+	// @ts-ignore
+	let { profile } = cache.readQuery({
+		query: GET_PROFILE_CONTENT,
+		variables: {
+			username,
+		},
+	});
+
+	const updatedPostsEdges = profile.posts.edges.map((edge: ContentNode) =>
+		update(edge, {
+			node: {
+				author: { $set: { ...edge.node.author, ...updatedAuthor } },
+			},
+		})
+	);
+
+	const updatedRepliesEdges = profile.replies.edges.map((edge: ContentNode) =>
+		update(edge, {
+			node: {
+				author: { $set: { ...edge.node.author, ...updatedAuthor } },
+			},
+		})
+	);
+
+	cache.writeQuery({
+		query: GET_PROFILE_CONTENT,
+		data: {
+			profile: {
+				...profile,
+				posts: { ...profile.posts, edges: updatedPostsEdges },
+				replies: { ...profile.replies, edges: updatedRepliesEdges },
+			},
+		},
+	});
+};
