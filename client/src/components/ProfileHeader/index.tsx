@@ -69,7 +69,7 @@ const ProfileHeader = ({ profileData, refetchProfile }: Props) => {
 		}
 
 		return (
-			<Box margin="large" alignSelf="center">
+			<Box alignSelf="center">
 				<AccentButton
 					disabled={loading}
 					label={label}
@@ -82,7 +82,7 @@ const ProfileHeader = ({ profileData, refetchProfile }: Props) => {
 
 	return (
 		<Box
-			pad="medium"
+			pad={{ top: "medium", right: "medium", left: "medium" }}
 			alignSelf="center"
 			flex={{ grow: 1, shrink: 0 }}
 			gap="medium"
