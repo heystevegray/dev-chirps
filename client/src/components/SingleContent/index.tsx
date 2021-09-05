@@ -67,7 +67,7 @@ const SingleContent = ({ contentData }: { contentData: Content }) => {
 				{isBlocked && (
 					<NotAvailableMessage
 						margin={{ bottom: "small", top: "xsmall" }}
-						text="This content was blocked by a moderator."
+						text="Oof. This content was blocked by a moderator."
 					/>
 				)}
 				{(!isBlocked || author.username === username) && (
