@@ -1,12 +1,12 @@
-import { Anchor, Box, Button, Text } from "grommet";
+import { Box, Text } from "grommet";
 import { ChatOption } from "grommet-icons";
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { Post } from "../../../graphql/types";
 import { displayRelativeDateOrTime } from "../../../lib/displayDatetime";
 import Avatar from "../../Avatar";
 import AccentButton from "../../Buttons/AccentButton";
 import CreateContentForm from "../../Forms/CreateContentForm";
+import ListItem from "../../ListItems/ListItem";
 import Modal from "../../Modal";
 import UsernameHeader from "../../UsernameHeader";
 
@@ -38,13 +38,12 @@ const NewReplyModal = ({
 				width="large"
 			>
 				<Box height={{ min: "132px" }} margin={{ vertical: "small" }}>
-					<Box direction="row">
+					<Box direction="row" gap="medium">
 						<Box
 							height="48px"
-							margin={{ right: "medium" }}
 							overflow="hidden"
 							round="full"
-							width="48px"
+							width={{ min: "48px" }}
 						>
 							<Avatar
 								fullName={author.fullName}
@@ -77,7 +76,7 @@ const NewReplyModal = ({
 				</Box>
 				<CreateContentForm parentPostId={id} />
 			</Modal>
-			<Button
+			<AccentButton
 				hoverIndicator={!showButtonLabel}
 				a11yTitle="Reply"
 				icon={

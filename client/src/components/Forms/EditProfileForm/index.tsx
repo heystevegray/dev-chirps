@@ -128,7 +128,7 @@ const EditProfileForm = ({ profileData, updateViewer }: Props) => {
 					<CharacterCountLabel
 						currentCharacters={descCharacterCount}
 						label="Description"
-						max={266}
+						max={256}
 					/>
 				}
 				name="description"

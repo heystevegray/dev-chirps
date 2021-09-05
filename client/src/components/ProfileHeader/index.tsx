@@ -1,4 +1,4 @@
-import { Box, Button, Heading, Text } from "grommet";
+import { Box, Heading, Text } from "grommet";
 import { useAuth } from "../../context/AuthContext";
 import { Profile } from "../../graphql/types";
 import dayjs from "dayjs";

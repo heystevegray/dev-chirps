@@ -164,6 +164,7 @@ export const SEARCH_PROFILES = gql`
 			edges {
 				node {
 					...basicProfile
+					viewerIsFollowing
 				}
 			}
 			...profilesNextPage

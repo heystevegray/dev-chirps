@@ -1,12 +1,21 @@
 import { ThemeType } from "grommet";
 
-const secondary = "#32a852";
+const secondary = "#006481";
 
 const theme: ThemeType = {
 	select: {
 		options: {
 			container: {
 				// background: "dark-1",
+				// hoverIndicator: {
+				// 	opacity: 1,
+				// 	dark: "red",
+				// 	elevation: "small",
+				// 	background: 'red',
+				// 	color: 'orange',
+				// 	light: "blue"
+				// },
+				// color: '#fff'
 			},
 		},
 	},
@@ -21,6 +30,9 @@ const theme: ThemeType = {
 			color: "brand",
 		},
 	},
+	button: {
+		color: "#000",
+	},
 	global: {
 		font: {
 			family: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif',
@@ -28,12 +40,10 @@ const theme: ThemeType = {
 			height: "20px",
 		},
 		colors: {
-			text: {
-				// dark: "#FFF",
-			},
 			paper: "#101010",
-			brand: "#ac83fb",
-			secondary: secondary,
+			// brand: "#ac83fb",
+			brand: "#00a7d8",
+			// secondary: secondary,
 			"status-error": {
 				light: "#ff7e7e",
 			},

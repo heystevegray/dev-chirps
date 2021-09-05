@@ -1,4 +1,4 @@
-import { Anchor, Box, Button, Heading, Menu } from "grommet";
+import { Anchor, Box, Heading, Menu } from "grommet";
 import { Menu as MenuIcon } from "grommet-icons";
 import { useState } from "react";
 import { useHistory, useLocation } from "react-router";

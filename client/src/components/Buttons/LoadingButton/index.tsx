@@ -36,7 +36,7 @@ export const LoadingButton = ({
 				</Text>
 			)}
 			<AccentButton
-				primary
+				color="brand"
 				disabled={loading}
 				label={label}
 				type="submit"
