@@ -74,3 +74,21 @@ export const UNFOLLOW_PROFILE = gql`
 		}
 	}
 `;
+
+export const TOGGLE_POST_BLOCK = gql`
+	mutation TOGGLE_POST_BLOCK($where: ContentWhereUniqueInput!) {
+		togglePostBlock(where: $where) {
+			id
+			isBlocked
+		}
+	}
+`;
+
+export const TOGGLE_REPLY_BLOCK = gql`
+	mutation TOGGLE_REPLY_BLOCK($where: ContentWhereUniqueInput!) {
+		toggleReplyBlock(where: $where) {
+			id
+			isBlocked
+		}
+	}
+`;

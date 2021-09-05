@@ -4,13 +4,17 @@ import { useAuth } from "../../context/AuthContext";
 import { Content } from "../../graphql/types";
 import { displayFullDatetime } from "../../lib/displayDatetime";
 import Avatar from "../Avatar";
+import ContentBlockButton from "../Buttons/ContentBlockButton";
 import DeleteContentModal from "../Modals/DeleteContentModal";
 import NewReplyModal from "../Modals/NewReplyModal";
 import NotAvailableMessage from "../NotAvailableMessage";
 
 const SingleContent = ({ contentData }: { contentData: Content }) => {
 	const value = useAuth();
-	const { username } = value.viewerQuery.data.viewer.profile;
+	const {
+		isModerator,
+		profile: { username },
+	} = value.viewerQuery.data.viewer;
 	const {
 		author,
 		id,
@@ -91,8 +95,15 @@ const SingleContent = ({ contentData }: { contentData: Content }) => {
 						parentPostId={parentPost && parentPost.id}
 					/>
 				)}
+				{isModerator && username !== author.username && (
+					<ContentBlockButton
+						iconSize="18px"
+						id={id}
+						isBlocked={isBlocked}
+						isReply={parentPost !== undefined}
+					/>
+				)}
 			</Box>
-
 			{parentPostAuthor === undefined && !isBlocked && (
 				<Box margin={{ top: "medium" }} align="end">
 					<NewReplyModal
