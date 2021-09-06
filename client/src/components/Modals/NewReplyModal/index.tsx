@@ -78,6 +78,7 @@ const NewReplyModal = ({
 			<AccentButton
 				hoverIndicator={!showButtonLabel}
 				a11yTitle="Reply"
+				tip={!showButtonLabel ? "Reply" : ""}
 				icon={
 					<ChatOption
 						color={showButtonLabel ? "paper" : "brand"}

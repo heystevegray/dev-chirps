@@ -23,15 +23,37 @@ const resolvers = {
 				.getAccountById(account.id)
 				.then((result) => result.created_at);
 		},
-		isModerator(account, args, context, info) {
-			return (
-				account.app_metadata &&
-				account.app_metadata.roles &&
-				account.app_metadata.roles.includes("moderator")
-			);
+		isModerator(account, args, { dataSources }, info) {
+			if (account.app_metadata) {
+				return (
+					account.app_metadata &&
+					account.app_metadata.roles &&
+					account.app_metadata.roles.includes("moderator")
+				);
+			}
+
+			/*
+			 * TODO: Why do I have to do this????
+			 */
+			return dataSources.accountsAPI
+				.getAccountById(account.id)
+				.then((result) => {
+					return (
+						result.app_metadata &&
+						result.app_metadata.roles &&
+						result.app_metadata.roles.includes("moderator")
+					);
+				});
 		},
-		isBlocked(account, args, context, info) {
-			return account.blocked;
+		isBlocked(account, args, { dataSources }, info) {
+			// return account.blocked;
+
+			/*
+			 * TODO: Why do I have to do this????
+			 */
+			return dataSources.accountsAPI
+				.getAccountById(account.id)
+				.then((result) => result.blocked);
 		},
 	},
 	Query: {

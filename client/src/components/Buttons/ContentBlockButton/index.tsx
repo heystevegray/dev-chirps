@@ -21,13 +21,15 @@ const ContentBlockButton = ({
 }: Props) => {
 	const [togglePostBlock, { loading }] = useMutation(TOGGLE_POST_BLOCK);
 	const [toggleReplyBlock] = useMutation(TOGGLE_REPLY_BLOCK);
+	const label = `Block ${isReply ? "Reply" : "Post"}`;
 
 	return (
 		<Button
+			tip={label}
 			disabled={loading}
 			hoverIndicator
 			focusIndicator
-			a11yTitle={`Block ${isReply ? "Reply" : "Post"}`}
+			a11yTitle={label}
 			icon={
 				<Halt
 					color={isBlocked ? "status-critical" : "dark-4"}

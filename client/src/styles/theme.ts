@@ -33,6 +33,12 @@ const theme: ThemeType = {
 	button: {
 		color: "#000",
 	},
+	tip: {
+		content: {
+			background: "dark-1",
+			elevation: "none",
+		},
+	},
 	global: {
 		font: {
 			family: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif',

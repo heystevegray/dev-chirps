@@ -7,6 +7,9 @@ import Avatar from "../Avatar";
 import AccentButton from "../Buttons/AccentButton";
 import { ApolloQueryResult, useMutation } from "@apollo/client";
 import { FOLLOW_PROFILE, UNFOLLOW_PROFILE } from "../../graphql/mutations";
+import NotAvailableMessage from "../NotAvailableMessage";
+import AccountBlockButton from "../Buttons/AccountBlockedButton";
+import ModeratorRoleButton from "../Buttons/ModeratorRoleButton";
 
 interface Props {
 	profileData: Profile;
@@ -31,8 +34,10 @@ const ProfileHeader = ({ profileData, refetchProfile }: Props) => {
 		viewerIsFollowing,
 		id,
 	} = profileData;
-	const profile = value.viewerQuery.data.viewer.profile;
-	const { username: viewerUsername } = profile;
+	const {
+		isModerator: viewerIsModerator,
+		profile: { username: viewerUsername },
+	} = value.viewerQuery.data.viewer;
 
 	const [followProfile, { loading }] = useMutation(FOLLOW_PROFILE);
 	const [unfollowProfile] = useMutation(UNFOLLOW_PROFILE);
@@ -95,7 +100,7 @@ const ProfileHeader = ({ profileData, refetchProfile }: Props) => {
 					<Avatar fullName={fullName} avatar={avatar} size="xlarge" />
 				</Box>
 				<Text as="p" textAlign="center" color="dark-4">
-					@{username} {account.isModerator && "(Moderator)"}
+					@{username} {account.isModerator && `(Moderator)`}
 				</Text>
 				<Box
 					gap="medium"
@@ -112,14 +117,46 @@ const ProfileHeader = ({ profileData, refetchProfile }: Props) => {
 							{fullName}
 						</Heading>
 					)}
+					{account.isBlocked && (
+						<Box align="center">
+							<NotAvailableMessage text="This account has been temporarily suspended." />
+						</Box>
+					)}
 					<Text as="p" textAlign="center">
 						{description
 							? description
 							: "404: description not found."}
 					</Text>
-					<Text as="p" color="dark-4" textAlign="center">
-						Joined: {dayjs().format("MMMM YYYY")}
-					</Text>
+					<Box
+						align="center"
+						direction="row-responsive"
+						gap="small"
+						justify="center"
+					>
+						<Text as="p" color="dark-4" textAlign="center">
+							Joined: {dayjs().format("MMMM YYYY")}
+						</Text>
+						<Box direction="row" align="center" justify="center">
+							{viewerIsModerator &&
+								username !== viewerUsername && (
+									<AccountBlockButton
+										accountId={account.id}
+										iconSize="18px"
+										isBlocked={account.isBlocked}
+									/>
+								)}
+							{viewerIsModerator && (
+								<ModeratorRoleButton
+									label={`Change ${
+										fullName || `@${username}`
+									}'s Moderator Role`}
+									accountId={account.id}
+									iconSize="18px"
+									isModerator={account.isModerator}
+								/>
+							)}
+						</Box>
+					</Box>
 					{renderButton()}
 				</Box>
 			</Box>

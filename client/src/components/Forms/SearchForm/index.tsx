@@ -102,8 +102,7 @@ const SearchForm = () => {
 						round="full"
 					>
 						<Button
-							hoverIndicator
-							focusIndicator
+							tip="Search"
 							a11yTitle="Search..."
 							icon={<Search color="paper" size="22px" />}
 							type="submit"

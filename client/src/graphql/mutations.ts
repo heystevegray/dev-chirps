@@ -92,3 +92,21 @@ export const TOGGLE_REPLY_BLOCK = gql`
 		}
 	}
 `;
+
+export const CHANGE_ACCOUNT_BLOCKED_STATUS = gql`
+	mutation CHANGE_ACCOUNT_BLOCKED_STATUS($where: AccountWhereUniqueInput!) {
+		changeAccountBlockedStatus(where: $where) {
+			id
+			isBlocked
+		}
+	}
+`;
+
+export const CHANGE_ACCOUNT_MODERATOR_ROLE = gql`
+	mutation CHANGE_ACCOUNT_MODERATOR_ROLE($where: AccountWhereUniqueInput!) {
+		changeAccountModeratorRole(where: $where) {
+			id
+			isModerator
+		}
+	}
+`;

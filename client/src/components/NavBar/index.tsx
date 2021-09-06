@@ -27,7 +27,7 @@ const NavBar = () => {
 				justify="between"
 				pad="small"
 			>
-				<Heading color="brand" level="1" size="32px">
+				<Heading as="h1" color="brand" level="1" size="32px">
 					<Anchor href="/" label="devchirps" />
 				</Heading>
 				{location.pathname !== "/" && (

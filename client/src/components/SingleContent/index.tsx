@@ -72,7 +72,7 @@ const SingleContent = ({ contentData }: { contentData: Content }) => {
 				)}
 				{(!isBlocked || author.username === username) && (
 					<Box>
-						<Text as="p" size="xlarge">
+						<Text as="h2" size="xlarge">
 							{text}
 						</Text>
 					</Box>

@@ -105,6 +105,7 @@ const DeleteContentModal = ({
 				</Box>
 			</Modal>
 			<Button
+				tip="Delete"
 				a11yTitle="Delete"
 				hoverIndicator
 				icon={<Trash color="status-critical" size={iconSize} />}

@@ -1,6 +1,6 @@
 import { ApolloCache, InMemoryCache } from "@apollo/client";
 import { GET_PROFILE_CONTENT, SEARCH_PROFILES } from "../graphql/queries";
-import { Author, ContentNode, Post, ProfileNode } from "../graphql/types";
+import { Author, ContentNode, ProfileNode } from "../graphql/types";
 import update from "immutability-helper";
 
 export const updateFieldPageResults = (

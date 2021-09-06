@@ -84,7 +84,7 @@ const ProfileListItem = ({ profileData }: { profileData: Profile }) => {
 								}}
 							>
 								<AccentButton
-									background={
+									color={
 										viewerIsFollowing
 											? "brand"
 											: "secondary"
