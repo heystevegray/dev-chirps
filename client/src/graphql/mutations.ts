@@ -110,3 +110,14 @@ export const CHANGE_ACCOUNT_MODERATOR_ROLE = gql`
 		}
 	}
 `;
+
+export const UPDATE_ACCOUNT = gql`
+	mutation UPDATE_ACCOUNT(
+		$data: UpdateAccountInput!
+		$where: AccountWhereUniqueInput!
+	) {
+		updateAccount(data: $data, where: $where) {
+			id
+		}
+	}
+`;

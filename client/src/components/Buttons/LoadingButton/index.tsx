@@ -8,6 +8,7 @@ interface Props {
 	showSavedMessage?: boolean;
 	savedMessage?: string;
 	type?: string;
+	disabled?: boolean;
 }
 
 export const LoadingButton = ({
@@ -15,6 +16,7 @@ export const LoadingButton = ({
 	label,
 	showSavedMessage = false,
 	savedMessage = "",
+	disabled = false,
 	...rest
 }: Props) => {
 	return (
@@ -37,7 +39,7 @@ export const LoadingButton = ({
 			)}
 			<AccentButton
 				color="brand"
-				disabled={loading}
+				disabled={loading || disabled}
 				label={label}
 				type="submit"
 			/>

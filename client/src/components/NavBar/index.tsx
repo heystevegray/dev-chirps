@@ -66,6 +66,12 @@ const NavBar = () => {
 										);
 									},
 								},
+								{
+									label: "Account Settings",
+									onClick: () => {
+										history.push(`/settings/account`);
+									},
+								},
 								{ label: "Logout", onClick: logout },
 							]}
 							justifyContent="end"
