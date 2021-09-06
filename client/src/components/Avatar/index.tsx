@@ -28,7 +28,7 @@ const Avatar = ({ fullName, avatar, size = "medium" }: Props) => {
 			{!avatar && (
 				<GrommetAvatar
 					background="brand"
-					style={{ color: "#FFF" }}
+					style={{ color: "paper" }}
 					src={avatar}
 					size={size}
 					aria-label={`${initials} profile image`}

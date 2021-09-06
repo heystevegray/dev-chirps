@@ -7,7 +7,7 @@ interface Props {
 	handleClose: () => void;
 	isOpen: boolean;
 	title: string;
-	width: string;
+	width?: string;
 }
 
 const Modal = ({

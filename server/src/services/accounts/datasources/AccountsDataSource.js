@@ -16,8 +16,8 @@ class AccountsDataSource extends DataSource {
 
 	moderatorPermissions = [
 		"read:any_account",
-		"block:any_accounts",
-		"promote:any_accounts",
+		"block:any_account",
+		"promote:any_account",
 		"block:any_content",
 	];
 

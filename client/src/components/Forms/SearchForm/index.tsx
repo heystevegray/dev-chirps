@@ -96,15 +96,13 @@ const SearchForm = () => {
 						align="center"
 						width="40px"
 						height="40px"
-						background="secondary"
+						background="brand"
 						justify="center"
 						overflow="hidden"
 						round="full"
 					>
 						<Button
-							focusIndicator
-							hoverIndicator
-							secondary
+							tip="Search"
 							a11yTitle="Search..."
 							icon={<Search color="paper" size="22px" />}
 							type="submit"

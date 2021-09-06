@@ -11,7 +11,7 @@ const resolvers = {
 		id(profile, args, context, info) {
 			return profile._id;
 		},
-		viewerIsFollowing(profile, args, { dataSources }, info) {
+		viewerIsFollowing(profile, args, { dataSources, user }, info) {
 			return dataSources.profilesAPI.checkViewerFollowsProfile(
 				user.sub,
 				profile._id

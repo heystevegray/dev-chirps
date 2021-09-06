@@ -19,7 +19,7 @@ const Profile = ({ match }: MatchUsername) => {
 		username = viewerQuery.data.viewer.profile.username;
 	}
 
-	const { data, error, loading } = useQuery(GET_PROFILE, {
+	const { data, error, loading, refetch } = useQuery(GET_PROFILE, {
 		skip: !username,
 		variables: { username },
 	});
@@ -33,7 +33,10 @@ const Profile = ({ match }: MatchUsername) => {
 	} else if (data && data.profile) {
 		return (
 			<MainLayout>
-				<ProfileHeader profileData={data.profile} />
+				<ProfileHeader
+					profileData={data.profile}
+					refetchProfile={refetch}
+				/>
 				<ProfileTabs username={username} />
 			</MainLayout>
 		);

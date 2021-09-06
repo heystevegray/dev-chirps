@@ -20,6 +20,7 @@ export const GET_PROFILE = gql`
 				isBlocked
 				isModerator
 			}
+			viewerIsFollowing
 		}
 	}
 	${basicProfile}
@@ -54,6 +55,7 @@ export const GET_PROFILE_CONTENT = gql`
 				edges {
 					node {
 						...basicProfile
+						viewerIsFollowing
 					}
 				}
 				...profilesNextPage
@@ -146,6 +148,7 @@ export const SEARCH_POSTS = gql`
 			edges {
 				node {
 					...basicPost
+					viewerIsFollowing
 				}
 			}
 			...postsNextPage
@@ -161,6 +164,7 @@ export const SEARCH_PROFILES = gql`
 			edges {
 				node {
 					...basicProfile
+					viewerIsFollowing
 				}
 			}
 			...profilesNextPage

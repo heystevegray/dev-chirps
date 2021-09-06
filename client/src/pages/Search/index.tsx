@@ -2,7 +2,6 @@ import { useQuery } from "@apollo/client";
 import { Box, Text } from "grommet";
 import { Location } from "history";
 import queryString from "query-string";
-import { ReactElement } from "react";
 import LoadMoreButton from "../../components/Buttons/LoadMoreButton";
 import EndOfList from "../../components/EndOfList";
 import SearchForm from "../../components/Forms/SearchForm";
@@ -29,7 +28,7 @@ const Search = ({ location }: { location: Location }) => {
 		text && type && (type === "searchPosts" || type === "searchProfiles");
 	const message = validSearch ? (
 		<NotAvailableMessage
-			text={`Sorry, no results for your search \"${text}\"`}
+			text={`Sorry, no results for your search "${text}"`}
 		/>
 	) : (
 		"Submit a search query above to see results."

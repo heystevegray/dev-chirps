@@ -5,40 +5,89 @@ import dayjs from "dayjs";
 import { useHistory } from "react-router";
 import Avatar from "../Avatar";
 import AccentButton from "../Buttons/AccentButton";
+import { ApolloQueryResult, useMutation } from "@apollo/client";
+import { FOLLOW_PROFILE, UNFOLLOW_PROFILE } from "../../graphql/mutations";
+import NotAvailableMessage from "../NotAvailableMessage";
+import AccountBlockButton from "../Buttons/AccountBlockedButton";
+import ModeratorRoleButton from "../Buttons/ModeratorRoleButton";
 
 interface Props {
 	profileData: Profile;
+	refetchProfile: (
+		variables?:
+			| Partial<{
+					username: any;
+			  }>
+			| undefined
+	) => Promise<ApolloQueryResult<any>>;
 }
 
-const ProfileHeader = ({ profileData }: Props) => {
-	const { account, avatar, description, fullName, username } = profileData;
-	const value = useAuth();
-	const profile = value.viewerQuery.data.viewer.profile;
-
-	const { username: viewerUsername } = profile;
-
+const ProfileHeader = ({ profileData, refetchProfile }: Props) => {
 	const history = useHistory();
+	const value = useAuth();
+	const {
+		account,
+		avatar,
+		description,
+		fullName,
+		username,
+		viewerIsFollowing,
+		id,
+	} = profileData;
+	const {
+		isModerator: viewerIsModerator,
+		profile: { username: viewerUsername },
+	} = value.viewerQuery.data.viewer;
+
+	const [followProfile, { loading }] = useMutation(FOLLOW_PROFILE);
+	const [unfollowProfile] = useMutation(UNFOLLOW_PROFILE);
+
+	const variables = {
+		data: {
+			followingProfileId: id,
+		},
+		where: {
+			username: viewerUsername,
+		},
+	};
 
 	const renderButton = () => {
+		let label, onClick;
+
 		if (username === viewerUsername) {
-			return (
-				<Box margin="large" alignSelf="center">
-					<AccentButton
-						label="Edit Profile"
-						onClick={() => {
-							history.push("/settings/profile");
-						}}
-					/>
-				</Box>
-			);
+			label = "Edit Profile";
+			onClick = () => {
+				history.push("/settings/profile");
+			};
+		} else if (viewerIsFollowing) {
+			label = "Unfollow";
+			onClick = () => {
+				unfollowProfile({ variables });
+				refetchProfile();
+			};
+		} else {
+			label = "Follow";
+			onClick = () => {
+				followProfile({ variables });
+				refetchProfile();
+			};
 		}
 
-		return null;
+		return (
+			<Box alignSelf="center">
+				<AccentButton
+					disabled={loading}
+					label={label}
+					onClick={onClick}
+					primary
+				/>
+			</Box>
+		);
 	};
 
 	return (
 		<Box
-			pad="medium"
+			pad={{ top: "medium", right: "medium", left: "medium" }}
 			alignSelf="center"
 			flex={{ grow: 1, shrink: 0 }}
 			gap="medium"
@@ -51,7 +100,7 @@ const ProfileHeader = ({ profileData }: Props) => {
 					<Avatar fullName={fullName} avatar={avatar} size="xlarge" />
 				</Box>
 				<Text as="p" textAlign="center" color="dark-4">
-					@{username} {account.isModerator && "(Moderator)"}
+					@{username} {account.isModerator && `(Moderator)`}
 				</Text>
 				<Box
 					gap="medium"
@@ -68,14 +117,46 @@ const ProfileHeader = ({ profileData }: Props) => {
 							{fullName}
 						</Heading>
 					)}
+					{account.isBlocked && (
+						<Box align="center">
+							<NotAvailableMessage text="This account has been temporarily suspended." />
+						</Box>
+					)}
 					<Text as="p" textAlign="center">
 						{description
 							? description
 							: "404: description not found."}
 					</Text>
-					<Text as="p" color="dark-4" textAlign="center">
-						Joined: {dayjs().format("MMMM YYYY")}
-					</Text>
+					<Box
+						align="center"
+						direction="row-responsive"
+						gap="small"
+						justify="center"
+					>
+						<Text as="p" color="dark-4" textAlign="center">
+							Joined: {dayjs().format("MMMM YYYY")}
+						</Text>
+						<Box direction="row" align="center" justify="center">
+							{viewerIsModerator &&
+								username !== viewerUsername && (
+									<AccountBlockButton
+										accountId={account.id}
+										iconSize="18px"
+										isBlocked={account.isBlocked}
+									/>
+								)}
+							{viewerIsModerator && (
+								<ModeratorRoleButton
+									label={`Change ${
+										fullName || `@${username}`
+									}'s Moderator Role`}
+									accountId={account.id}
+									iconSize="18px"
+									isModerator={account.isModerator}
+								/>
+							)}
+						</Box>
+					</Box>
 					{renderButton()}
 				</Box>
 			</Box>

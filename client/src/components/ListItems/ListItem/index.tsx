@@ -17,12 +17,18 @@ const ListItem = ({ children, fullName, avatar }: Props) => {
 				style: "solid",
 				side: "bottom",
 			}}
-			gap="small"
+			gap="medium"
 			direction="row"
 			width="100%"
-			pad={{ left: "small", top: "medium", right: "small" }}
+			pad={{
+				left: "small",
+				top: "medium",
+				right: "small",
+			}}
 		>
-			<Avatar fullName={fullName} avatar={avatar} />
+			<Box width={{ min: "48px" }}>
+				<Avatar fullName={fullName} avatar={avatar} />
+			</Box>
 			{children}
 		</Box>
 	);

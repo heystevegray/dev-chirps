@@ -4,15 +4,23 @@ import { useAuth } from "../../context/AuthContext";
 import { Content } from "../../graphql/types";
 import { displayFullDatetime } from "../../lib/displayDatetime";
 import Avatar from "../Avatar";
+import ContentBlockButton from "../Buttons/ContentBlockButton";
+import DeleteContentModal from "../Modals/DeleteContentModal";
+import NewReplyModal from "../Modals/NewReplyModal";
 import NotAvailableMessage from "../NotAvailableMessage";
 
 const SingleContent = ({ contentData }: { contentData: Content }) => {
 	const value = useAuth();
-	const { username } = value.viewerQuery.data.viewer.profile;
+	const {
+		isModerator,
+		profile: { username },
+	} = value.viewerQuery.data.viewer;
 	const {
 		author,
+		id,
 		createdAt,
 		isBlocked,
+		post: parentPost,
 		text,
 		postAuthor: parentPostAuthor,
 	} = contentData;
@@ -59,22 +67,51 @@ const SingleContent = ({ contentData }: { contentData: Content }) => {
 				{isBlocked && (
 					<NotAvailableMessage
 						margin={{ bottom: "small", top: "xsmall" }}
-						text="This content was blocked by a moderator."
+						text="Oof. This content was blocked by a moderator."
 					/>
 				)}
 				{(!isBlocked || author.username === username) && (
 					<Box>
-						<Text as="p" size="xlarge">
+						<Text as="h2" size="xlarge">
 							{text}
 						</Text>
 					</Box>
 				)}
 			</Box>
-			<Box align="center" direction="row" margin={{ top: "small" }}>
+			<Box
+				align="center"
+				direction="row"
+				margin={{ top: "small" }}
+				gap="small"
+			>
 				<Text as="p" color="dark-3" size="small">
 					{displayFullDatetime(createdAt)}
 				</Text>
+				{author.username === username && (
+					<DeleteContentModal
+						iconSize="18px"
+						id={id}
+						isReply={parentPost !== undefined}
+						parentPostId={parentPost && parentPost.id}
+					/>
+				)}
+				{isModerator && username !== author.username && (
+					<ContentBlockButton
+						iconSize="18px"
+						id={id}
+						isBlocked={isBlocked}
+						isReply={parentPost !== undefined}
+					/>
+				)}
 			</Box>
+			{parentPostAuthor === undefined && !isBlocked && (
+				<Box margin={{ top: "medium" }} align="end">
+					<NewReplyModal
+						iconSize="18px"
+						postData={{ author, createdAt, id, text }}
+					/>
+				</Box>
+			)}
 		</Box>
 	);
 };

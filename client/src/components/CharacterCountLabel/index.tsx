@@ -6,7 +6,7 @@ interface Props {
 	max: number;
 }
 
-const CharacterCountLabel = ({ currentCharacters, label, max }: Props) => {
+const CharacterCountLabel = ({ currentCharacters = 0, label, max }: Props) => {
 	return (
 		<Text color={currentCharacters > max ? "status-critical" : undefined}>
 			{`${label} (${currentCharacters}/${max} characters)`}
