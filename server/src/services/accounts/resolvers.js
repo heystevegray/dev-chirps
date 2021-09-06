@@ -46,14 +46,36 @@ const resolvers = {
 				});
 		},
 		isBlocked(account, args, { dataSources }, info) {
-			// return account.blocked;
-
 			/*
 			 * TODO: Why do I have to do this????
+			 * Why does the value of account.id change for the changeAccountBlockedStatus mutation?
+			 *
+			 * Sometimes account looks like this:
+			 * { account: { __typename: 'Account', id: 'auth0|123456789' }}
+			 *
+			 * Other times account looks like this (from Auth0):
+			 *	{
+			 *		user_id: 'auth0|123456789',
+			 *		blocked: true,
+			 *		app_metadata: {
+			 *		  groups: [],
+			 *		  roles: [],
+			 *		  permissions: []
+			 *		}
+			 *		...
+			 *		...
+			 *	}
 			 */
-			return dataSources.accountsAPI
-				.getAccountById(account.id)
-				.then((result) => result.blocked);
+
+			const id = account.user_id || account.id;
+
+			if (id) {
+				return dataSources.accountsAPI
+					.getAccountById(id)
+					.then((result) => result.blocked);
+			}
+
+			return account.blocked;
 		},
 	},
 	Query: {
