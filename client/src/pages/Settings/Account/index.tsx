@@ -4,7 +4,6 @@ import passwordValidator from "password-validator";
 import validator from "validator";
 import { useState } from "react";
 import { Box, Heading, Form, FormField, Text } from "grommet";
-import AccentButton from "../../../components/Buttons/AccentButton";
 import RequiredLabel from "../../../components/RequiredLabel";
 import { LoadingButton } from "../../../components/Buttons/LoadingButton";
 import { UPDATE_ACCOUNT } from "../../../graphql/mutations";
@@ -36,7 +35,7 @@ const Account = () => {
 		onCompleted: logout,
 	});
 
-	const [updateAccountPassword, { loading: loadingAccountPassword, error }] =
+	const [updateAccountPassword, { loading: loadingAccountPassword }] =
 		useMutation(UPDATE_ACCOUNT, {
 			onCompleted: logout,
 		});
