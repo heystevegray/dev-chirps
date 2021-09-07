@@ -10,7 +10,10 @@
 		"dev:content": "nodemon -r dotenv/config -r esm ./src/services/content/index.js",
 		"dev:gateway": "nodemon -r dotenv/config -r esm ./src/index.js",
 		"seed": "node -r dotenv/config -r esm src/scripts/seedData.js superHARDpa55!",
-		"format": "prettier --write ."
+		"format": "prettier --write .",
+		"redis": "brew services start redis",
+		"stopRedis": "brew services stop redis",
+		"testQueue": "ts-node -r dotenv/config src/scripts/testQueue.ts"
 	},
 	"keywords": [],
 	"author": "Steve",
@@ -32,6 +35,9 @@
 		"gravatar-url": "^3.1.0",
 		"jwks-rsa": "^2.0.4",
 		"mongoose": "^5.13.6",
+		"redis": "^3.0.2",
+		"rsmq": "^0.12.2",
+		"ts-node": "^10.2.1",
 		"validator": "^13.6.0",
 		"wait-on": "^6.0.0"
 	},
