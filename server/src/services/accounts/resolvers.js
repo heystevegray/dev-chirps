@@ -117,8 +117,17 @@ const resolvers = {
 		) {
 			return dataSources.accountsAPI.createAccount(email, password);
 		},
-		deleteAccount(parent, { where: { id } }, { dataSources }, info) {
-			return dataSources.accountsAPI.deleteAccount(id);
+		async deleteAccount(
+			parent,
+			{ where: { id } },
+			{ dataSources, queues },
+			info
+		) {
+			await queues.deleteAccountQueue.sendMessage(
+				JSON.stringify({ accountId: id })
+			);
+			// return dataSources.accountsAPI.deleteAccount(id);
+			return true;
 		},
 		updateAccount(parent, { data, where: { id } }, { dataSources }, info) {
 			return dataSources.accountsAPI.updateAccount(id, data);
