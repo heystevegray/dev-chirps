@@ -1,6 +1,9 @@
 import { ThemeType } from "grommet";
 
-const secondary = "#006481";
+const brand = "#00a7d8";
+const secondary = "#42f5b6";
+const ok = "#00faa2";
+const error = "#ff7e7e";
 
 const theme: ThemeType = {
 	select: {
@@ -27,7 +30,7 @@ const theme: ThemeType = {
 		border: {
 			hover: { color: "dark-3" },
 			active: { color: secondary },
-			color: "brand",
+			color: brand,
 		},
 	},
 	button: {
@@ -47,21 +50,27 @@ const theme: ThemeType = {
 		},
 		colors: {
 			paper: "#101010",
-			// brand: "#ac83fb",
-			brand: "#00a7d8",
-			// secondary: secondary,
+			secondary,
+			brand: brand,
 			"status-error": {
-				light: "#ff7e7e",
+				light: error,
+				dark: error,
+			},
+			"status-critical": {
+				light: error,
+				dark: error,
 			},
 			"status-ok": {
-				dark: "#00faa2",
+				light: ok,
+				dark: ok,
 			},
+			"dark-1": "#202020",
 			"dark-2": "#a2a2a2",
 			"dark-3": "#d4d4d4",
 		},
 		focus: {
-			outline: { color: secondary },
-			border: { color: secondary },
+			outline: { color: brand },
+			border: { color: brand },
 		},
 	},
 };

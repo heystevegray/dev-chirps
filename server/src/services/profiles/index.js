@@ -9,9 +9,23 @@ import Profile from "../../models/Profile";
 import ProfilesDataSource from "./datasources/ProfilesDataSource";
 import resolvers from "./resolvers";
 import typeDefs from "./typeDefs";
+import {
+	initDeleteAccountQueue,
+	initDeleteProfileQueue,
+	onDeleteAccount,
+} from "./queues";
 
 (async () => {
 	const port = process.env.PROFILES_SERVICE_PORT;
+	const deleteAccountQueue = await initDeleteAccountQueue();
+	const deleteProfileQueue = await initDeleteProfileQueue();
+
+	deleteAccountQueue.listen(
+		{ interval: 5000, maxReceivedCount: 5 },
+		(payload) => {
+			onDeleteAccount(payload, deleteProfileQueue);
+		}
+	);
 
 	const schema = applyMiddleware(
 		buildFederatedSchema([{ typeDefs, resolvers }]),

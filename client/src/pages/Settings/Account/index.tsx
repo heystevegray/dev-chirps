@@ -9,6 +9,7 @@ import { LoadingButton } from "../../../components/Buttons/LoadingButton";
 import { UPDATE_ACCOUNT } from "../../../graphql/mutations";
 import { useMutation } from "@apollo/client";
 import NotAvailableMessage from "../../../components/NotAvailableMessage";
+import DeleteAccountModal from "../../../components/Modals/DeleteAccountModal";
 
 const schema = new passwordValidator();
 schema
@@ -193,6 +194,25 @@ const Account = () => {
 						/>
 					</Box>
 				</Form>
+			</Box>
+			<Box
+				border={{
+					color: "dark-1",
+					size: "xsmall",
+					style: "solid",
+					side: "bottom",
+				}}
+				pad={{ bottom: "large" }}
+				margin={{ bottom: "large", top: "medium" }}
+			>
+				<Heading level={3} margin={{ bottom: "medium" }}>
+					Delete Account 👋
+				</Heading>
+				<Text as="p" color="dark-2" margin={{ bottom: "medium" }}>
+					Danger zone! Click this button to permanently delete your
+					account and all of its data.
+				</Text>
+				<DeleteAccountModal accountId={viewerId} />
 			</Box>
 		</MainLayout>
 	);

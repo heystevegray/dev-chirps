@@ -6,7 +6,7 @@ const AccentButton = (props: ButtonExtendedProps) => (
 		primary
 		tip={props?.tip}
 		disabled={props?.disabled}
-		color={props?.color ? props?.color : theme.global?.colors?.primary}
+		color={props?.color ? props?.color : theme.global?.colors?.brand}
 		{...props}
 	/>
 );
