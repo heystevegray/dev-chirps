@@ -1,6 +1,8 @@
 import { ThemeType } from "grommet";
 
 const secondary = "#006481";
+const ok = "#00faa2";
+const error = "#ff7e7e";
 
 const theme: ThemeType = {
 	select: {
@@ -47,15 +49,20 @@ const theme: ThemeType = {
 		},
 		colors: {
 			paper: "#101010",
-			// brand: "#ac83fb",
 			brand: "#00a7d8",
-			// secondary: secondary,
 			"status-error": {
-				light: "#ff7e7e",
+				light: error,
+				dark: error,
+			},
+			"status-critical": {
+				light: error,
+				dark: error,
 			},
 			"status-ok": {
-				dark: "#00faa2",
+				light: ok,
+				dark: ok,
 			},
+			"dark-1": "#202020",
 			"dark-2": "#a2a2a2",
 			"dark-3": "#d4d4d4",
 		},

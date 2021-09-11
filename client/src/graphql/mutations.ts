@@ -121,3 +121,9 @@ export const UPDATE_ACCOUNT = gql`
 		}
 	}
 `;
+
+export const DELETE_ACCOUNT = gql`
+	mutation DELETE_ACCOUNT($where: AccountWhereUniqueInput!) {
+		deleteAccount(where: $where)
+	}
+`;
