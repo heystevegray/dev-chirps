@@ -3,11 +3,11 @@ import { Button, ButtonExtendedProps } from "grommet";
 
 const AccentButton = (props: ButtonExtendedProps) => (
 	<Button
-		{...props}
 		primary
 		tip={props?.tip}
 		disabled={props?.disabled}
 		color={props?.color ? props?.color : theme.global?.colors?.brand}
+		{...props}
 	/>
 );
 
