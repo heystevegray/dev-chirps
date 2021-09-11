@@ -10,9 +10,19 @@ import Profile from "../../models/Profile";
 import Reply from "../../models/Reply";
 import resolvers from "./resolvers";
 import typeDefs from "./typeDefs";
+import { initDeleteProfileQueue, onDeleteProfile } from "./queues";
 
 (async () => {
 	const port = process.env.CONTENT_SERVICE_PORT;
+	const deleteProfileQueue = await initDeleteProfileQueue();
+
+	deleteProfileQueue.listen(
+		{
+			interval: 5000,
+			maxReceivedCount: 5,
+		},
+		onDeleteProfile
+	);
 
 	const schema = applyMiddleware(
 		buildFederatedSchema([{ typeDefs, resolvers }]),

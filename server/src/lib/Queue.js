@@ -1,16 +1,15 @@
-import RedisSMQ, { QueueMessage } from "rsmq";
 import { promisify } from "util";
 
 const wait = promisify(setTimeout);
 
 class Queue {
-	constructor(rsmq: RedisSMQ, qname: string) {
+	constructor(rsmq, qname) {
 		this.rsmq = rsmq;
 		this.qname = qname;
 	}
 
-	rsmq: RedisSMQ;
-	qname: string;
+	rsmq;
+	qname;
 
 	async createQueue() {
 		const queues = await this.rsmq.listQueuesAsync();
@@ -49,7 +48,7 @@ class Queue {
 	}
 
 	// Allow Producers to broadcast messages
-	async sendMessage(message: string) {
+	async sendMessage(message) {
 		const response = await this.rsmq.sendMessageAsync({
 			qname: this.qname,
 			message,
@@ -63,19 +62,19 @@ class Queue {
 	}
 
 	// Consumers can receive the next available message in the queue
-	async receiveMessage(): Promise<{} | RedisSMQ.QueueMessage | null> {
-		const response = (await this.rsmq.receiveMessageAsync({
+	async receiveMessage() {
+		const response = await this.rsmq.receiveMessageAsync({
 			qname: this.qname,
-		})) as QueueMessage;
+		});
 
-		if (!response || !response?.id) {
+		if (!response || !response.id) {
 			return null;
 		}
 
 		return response;
 	}
 
-	async deleteMessage(id: string) {
+	async deleteMessage(id) {
 		const response = await this.rsmq.deleteMessageAsync({
 			qname: this.qname,
 			id,
@@ -84,14 +83,11 @@ class Queue {
 		return response === 1;
 	}
 
-	async listen(
-		{ interval = 10000, maxReceivedCount = 10 },
-		callback: (response: QueueMessage) => void
-	) {
+	async listen({ interval = 10000, maxReceivedCount = 10 }, callback) {
 		const start = Date.now();
 
 		try {
-			const response = (await this.receiveMessage()) as QueueMessage;
+			const response = await this.receiveMessage();
 
 			if (response && response.rc > maxReceivedCount) {
 				await this.deleteMessage(response.id);

@@ -123,11 +123,17 @@ const resolvers = {
 			{ dataSources, queues },
 			info
 		) {
-			await queues.deleteAccountQueue.sendMessage(
-				JSON.stringify({ accountId: id })
+			const accountDeleted = await dataSources.accountsAPI.deleteAccount(
+				id
 			);
-			// return dataSources.accountsAPI.deleteAccount(id);
-			return true;
+
+			if (accountDeleted) {
+				await queues.deleteAccountQueue.sendMessage(
+					JSON.stringify({ accountId: id })
+				);
+			}
+
+			return accountDeleted;
 		},
 		updateAccount(parent, { data, where: { id } }, { dataSources }, info) {
 			return dataSources.accountsAPI.updateAccount(id, data);
