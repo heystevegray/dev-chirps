@@ -1,5 +1,5 @@
 import { useMutation } from "@apollo/client";
-import { Box, Button, Text } from "grommet";
+import { Box, Text } from "grommet";
 import { useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
 import { DELETE_ACCOUNT } from "../../../graphql/mutations";
