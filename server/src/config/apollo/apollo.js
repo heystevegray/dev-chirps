@@ -1,6 +1,8 @@
 import { ApolloGateway, RemoteGraphQLDataSource } from "@apollo/gateway";
 import { ApolloServer } from "apollo-server-express";
 import { wait, dynamicServiceList } from "../../index";
+import { readNestedFileStreams } from "../../lib/handleUploads";
+
 // https://www.apollographql.com/docs/apollo-server/integrations/plugins-event-reference/#willresolvefield
 
 const myPlugin = {
@@ -58,7 +60,8 @@ export default async function () {
 			console.log(`⚙️\tBuilding the ${name} service ${url}`);
 			return new RemoteGraphQLDataSource({
 				url,
-				willSendRequest({ request, context }) {
+				async willSendRequest({ request, context }) {
+					await readNestedFileStreams(request.variables);
 					request.http.headers.set(
 						"user",
 						context.user ? JSON.stringify(context.user) : null

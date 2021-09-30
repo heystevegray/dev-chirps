@@ -8,6 +8,11 @@ const typeDefs = gql`
 	}
 
 	"""
+	The file upload type built into Apollo Server 2.0+
+	"""
+	scalar Upload
+
+	"""
 	A list of profile edges with pagination information.
 	"""
 	type ProfileConnection {
@@ -71,6 +76,8 @@ const typeDefs = gql`
 	Provides data to update and existing profile.
 	"""
 	input UpdateProfileInput {
+		"The updated avatar with the stream, filename, mimetype, and encoding."
+		avatar: Upload
 		"The updated user description."
 		description: String
 		"The updated full name of the user."
