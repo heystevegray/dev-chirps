@@ -7,6 +7,8 @@ interface Props {
 	label: string;
 	showSavedMessage?: boolean;
 	savedMessage?: string;
+	showErrorMessage?: boolean;
+	errorMessage?: string;
 	type?: string;
 	disabled?: boolean;
 }
@@ -15,6 +17,8 @@ export const LoadingButton = ({
 	loading,
 	label,
 	showSavedMessage = false,
+	showErrorMessage = false,
+	errorMessage = "",
 	savedMessage = "",
 	disabled = false,
 	...rest
@@ -35,6 +39,11 @@ export const LoadingButton = ({
 			{showSavedMessage && (
 				<Text as="p" color="status-ok">
 					{savedMessage || "Changes Saved!"}
+				</Text>
+			)}
+			{showErrorMessage && (
+				<Text as="p" color="status-error">
+					{errorMessage}
 				</Text>
 			)}
 			<AccentButton
