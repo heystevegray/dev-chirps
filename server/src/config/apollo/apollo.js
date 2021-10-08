@@ -2,6 +2,7 @@ import { ApolloGateway, RemoteGraphQLDataSource } from "@apollo/gateway";
 import { ApolloServer } from "apollo-server-express";
 import { wait, dynamicServiceList } from "../../index";
 import { readNestedFileStreams } from "../../lib/handleUploads";
+import FileUploadDataSource from "../../lib/fileUploadDataSource";
 
 // https://www.apollographql.com/docs/apollo-server/integrations/plugins-event-reference/#willresolvefield
 
@@ -58,16 +59,41 @@ export default async function () {
 		buildService(service) {
 			const { name, url } = service;
 			console.log(`⚙️\tBuilding the ${name} service ${url}`);
-			return new RemoteGraphQLDataSource({
+			return new FileUploadDataSource({
 				url,
 				async willSendRequest({ request, context }) {
-					await readNestedFileStreams(request.variables);
+					console.log({ request, context });
+					// await readNestedFileStreams(request.variables);
 					request.http.headers.set(
 						"user",
 						context.user ? JSON.stringify(context.user) : null
 					);
 				},
 			});
+
+			// return new RemoteGraphQLDataSource({
+			// 	url,
+			// 	async willSendRequest({ request, context }) {
+			// 		console.log({ request, context });
+			// 		// await readNestedFileStreams(request.variables);
+			// 		request.http.headers.set(
+			// 			"user",
+			// 			context.user ? JSON.stringify(context.user) : null
+			// 		);
+			// 	},
+			// 	didReceiveResponse({ response, request, context }) {
+			// 		// Return the response, even when unchanged.
+			// 		console.log("didReceiveResponse", {
+			// 			response,
+			// 			request,
+			// 			context,
+			// 		});
+			// 		return response;
+			// 	},
+			// 	didEncounterError(error, fetchRequest, fetchResponse, context) {
+			// 		console.log("didEncounterError", { error });
+			// 	},
+			// });
 		},
 	});
 
@@ -80,6 +106,8 @@ export default async function () {
 			const user = req.user || null;
 			return { user };
 		},
+		// Disable automatic upload handling. We'll do it manually instead.
+		// uploads: false,
 		// plugins: [
 		// 	myPlugin,
 		// ],

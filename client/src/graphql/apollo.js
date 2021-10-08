@@ -1,8 +1,8 @@
 import {
 	ApolloClient,
 	ApolloLink,
-	InMemoryCache,
 	ApolloProvider,
+	InMemoryCache,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { useAuth } from "../context/AuthContext";
@@ -13,22 +13,6 @@ import { onError } from "apollo-link-error";
 const cache = new InMemoryCache({ typePolicies });
 
 const createApolloClient = (getToken) => {
-	const errorLink = onError(({ graphQLErrors, networkError }) => {
-		if (graphQLErrors) {
-			graphQLErrors.forEach(
-				({ extensions: { serviceName }, message, path }) => {
-					console.error(
-						`[GraphQL error]: Message: ${message}, Service: ${serviceName}, Path: ${path[0]}`
-					);
-				}
-			);
-		}
-
-		if (networkError) {
-			console.error(`[Network error]: ${networkError}`);
-		}
-	});
-
 	const uploadLink = createUploadLink({
 		uri: process.env.REACT_APP_GRAPHQL_ENDPOINT,
 	});
@@ -40,12 +24,29 @@ const createApolloClient = (getToken) => {
 		};
 	});
 
+	const errorLink = onError(({ graphQLErrors, networkError }) => {
+		debugger;
+		if (graphQLErrors) {
+			graphQLErrors.forEach(
+				({ extensions: { serviceName }, message, path }) =>
+					console.error(
+						`[GraphQL error]: Messages: ${message}, Service: ${serviceName}, Path: ${path[0]}`
+					)
+			);
+		}
+		if (networkError) {
+			console.error(`[Network error]: ${networkError}`);
+		}
+	});
+
 	return new ApolloClient({
 		cache,
 		/*  
 		 We could add even more links to this chain if we wanted to, but it’s important
 		 to note that the terminating uploadLink must always be the last item passed into
 		 the array because it sends our network request.
+
+		 Excerpt From: Mandi Wise. “Advanced GraphQL with Apollo and React.”
 		*/
 		link: ApolloLink.from([errorLink, authLink, uploadLink]),
 	});
