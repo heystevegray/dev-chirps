@@ -9,7 +9,7 @@ const typeDefs = gql`
 	"""
 	The file upload type built into Apollo Server 2.0+
 	"""
-	scalar upload
+	scalar Upload
 
 	"""
 	A post contains content authored by a user.
