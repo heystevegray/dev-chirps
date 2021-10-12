@@ -53,6 +53,7 @@ const EditProfileForm = ({ profileData, updateViewer }: Props) => {
 	const [descCharacterCount, setDescCharacterCount] =
 		useState(descriptionLength);
 	const [showSavedMessage, setShowSavedMessage] = useState(false);
+	const [showErrorMessage, setShowErrorMessage] = useState(false);
 	const [updateProfile, { error: updateProfileError, loading }] = useMutation(
 		UPDATE_PROFILE,
 		{
@@ -74,6 +75,11 @@ const EditProfileForm = ({ profileData, updateViewer }: Props) => {
 			onCompleted: () => {
 				setShowSavedMessage(true);
 			},
+			onError: (error) => {
+				console.error(error.message);
+				setShowErrorMessage(true);
+			},
+			fetchPolicy: "network-only",
 		}
 	);
 
@@ -90,6 +96,7 @@ const EditProfileForm = ({ profileData, updateViewer }: Props) => {
 	useEffect(() => {
 		const timer = setTimeout(() => {
 			setShowSavedMessage(false);
+			setShowErrorMessage(false);
 		}, 3000);
 
 		return () => {
@@ -104,15 +111,24 @@ const EditProfileForm = ({ profileData, updateViewer }: Props) => {
 			}}
 			messages={{ required: "Required" }}
 			onSubmit={() => {
+				let avatar = undefined;
 				const file = getAvatarFile();
+
+				if (file) {
+					avatar = { avatar: file };
+				}
+
+				const data = {
+					description,
+					fullName,
+					username,
+					// Only send the avatar if it is defined
+					...avatar,
+				};
+
 				updateProfile({
 					variables: {
-						data: {
-							description,
-							fullName,
-							username,
-							...(file && { avatar: file }),
-						},
+						data,
 						where: { username: profileData.username },
 					},
 				}).catch((error) => {
@@ -209,6 +225,8 @@ const EditProfileForm = ({ profileData, updateViewer }: Props) => {
 				loading={loading}
 				label="Save Profile"
 				showSavedMessage={showSavedMessage}
+				showErrorMessage={showErrorMessage}
+				errorMessage={"Error updating profile data 😬"}
 			/>
 		</Form>
 	);
