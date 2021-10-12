@@ -7,6 +7,11 @@ const typeDefs = gql`
 	scalar DateTime
 
 	"""
+	The file upload type built into Apollo Server 2.0+
+	"""
+	scalar upload
+
+	"""
 	A post contains content authored by a user.
 	"""
 	type Post implements Content {
@@ -126,6 +131,8 @@ const typeDefs = gql`
 	Provides data to create a reply to a post.
 	"""
 	input CreateReplyInput {
+		"The reply's media with the stream, filename, mimetype, and encoding."
+		media: Upload
 		"The unique MongoDB document ID if the parent post."
 		postId: ID!
 		"The body content of the reply (max. 256 characters)."
@@ -206,6 +213,8 @@ const typeDefs = gql`
 	Provides data to create a post.
 	"""
 	input CreatePostInput {
+		"The post's media with the stream, filename, mimetype, and encoding."
+		media: Upload
 		"The body content of the post (max. 256 characters)."
 		text: String!
 		"The unique username of the user who authored the post."

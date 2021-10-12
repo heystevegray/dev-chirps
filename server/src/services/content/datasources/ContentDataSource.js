@@ -13,6 +13,30 @@ class ContentDataSource extends DataSource {
 		this.replyPagination = new Pagination(Reply);
 	}
 
+	/*
+	 * We pass in fewer options to uploadStream here than we did when uploading the avatar
+	 * previously because we don’t need to standardize the size, name, or file format of
+	 * the image. And because we don’t specify a public_id in the options, when the image
+	 * is uploaded to Cloudinary it will be assigned a random name (which is fine for all
+	 * non-avatar images).
+	 *
+	 * Excerpt From: Mandi Wise. “Advanced GraphQL with Apollo and React.”
+	 */
+	async uploadMedia(media, profileId) {
+		const buffer = Buffer.from(media.buffer.data);
+		const uploadedMedia = await uploadStream(buffer, {
+			folder: `${process.env.NODE_ENV}/${profileId}`,
+			sign_url: true,
+			type: "authenticated",
+		}).catch((error) => {
+			throw new Error(
+				`Failed to upload media to the content service. ${error.message}`
+			);
+		});
+
+		return uploadedMedia.secure_url;
+	}
+
 	getPostById(id) {
 		return this.Post.findById(id);
 	}
@@ -83,7 +107,17 @@ class ContentDataSource extends DataSource {
 			);
 		}
 
-		const newPost = new this.Post({ authorProfileId: profile._id, text });
+		let uploadedMediaUrl;
+
+		if (media) {
+			uploadedMediaUrl = await this.uploadMedia(media, profile_id);
+		}
+
+		const newPost = new this.Post({
+			...(uploadedMediaUrl && { media: uploadedMediaUrl }),
+			authorProfileId: profile._id,
+			text,
+		});
 		return newPost.save();
 	}
 
@@ -227,7 +261,14 @@ class ContentDataSource extends DataSource {
 			);
 		}
 
+		let uploadedMediaUrl;
+
+		if (media) {
+			uploadedMediaUrl = await this.uploadMedia(media, profile._id);
+		}
+
 		const newReply = new this.Reply({
+			...(uploadedMediaUrl && { media: uploadedMediaUrl }),
 			authorProfileId: profile._id,
 			text,
 			postId,
