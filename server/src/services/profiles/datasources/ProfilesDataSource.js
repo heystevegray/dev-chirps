@@ -52,8 +52,6 @@ class ProfilesDataSource extends DataSource {
 				);
 			}
 
-			console.log({avatar});
-
 			/*
 			We explicitly set the public_id of the image to avatar because a random public_id
 			will be assigned to the image if we don’t provide one. For this case, we give the
@@ -85,25 +83,31 @@ class ProfilesDataSource extends DataSource {
 			
 			Excerpt From: Mandi Wise. “Advanced GraphQL with Apollo and React.”
 			*/
-			const buffer = Buffer.from(avatar.buffer.data);
-			uploadedAvatar = await uploadStream(buffer, {
-				folder: `${process.env.NODE_ENV}/${_id}`,
-				format: "png",
-				public_id: "avatar",
-				sign_url: true,
-				transformation: [
-					{ aspect_ratio: "1:1", crop: "crop" },
-					{ height: 400, width: 400, crop: "limit" },
-				],
-				type: "authenticated",
-			}).catch((error) => {
-				throw new Error(
-					`Failed to upload profile picture. ${error.message}`
-				);
-			});
+			if (avatar.buffer && avatar.buffer.data) {
+				const buffer = Buffer.from(avatar.buffer.data);
+				uploadedAvatar = await uploadStream(buffer, {
+					folder: `${process.env.NODE_ENV}/${_id}`,
+					format: "png",
+					public_id: "avatar",
+					sign_url: true,
+					transformation: [
+						{ aspect_ratio: "1:1", crop: "crop" },
+						{ height: 400, width: 400, crop: "limit" },
+					],
+					type: "authenticated",
+				})
+					.then((result) => {
+						return result;
+					})
+					.catch((error) => {
+						if (error.message) {
+							throw new Error(
+								`Failed to upload profile picture. ${error.message}`
+							);
+						}
+					});
+			}
 		}
-
-		console.log({ uploadedAvatar });
 
 		const data = {
 			...(uploadedAvatar && { avatar: uploadedAvatar.secure_url }),

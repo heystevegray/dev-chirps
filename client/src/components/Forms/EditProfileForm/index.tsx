@@ -79,7 +79,7 @@ const EditProfileForm = ({ profileData, updateViewer }: Props) => {
 				console.error(error.message);
 				setShowErrorMessage(true);
 			},
-			fetchPolicy: 'network-only'
+			fetchPolicy: "network-only",
 		}
 	);
 
@@ -111,20 +111,21 @@ const EditProfileForm = ({ profileData, updateViewer }: Props) => {
 			}}
 			messages={{ required: "Required" }}
 			onSubmit={() => {
+				let avatar = undefined;
 				const file = getAvatarFile();
 
-				console.log({ file });
-				let avatar = undefined;
 				if (file) {
-					avatar = file;
+					avatar = { avatar: file };
 				}
+
 				const data = {
 					description,
 					fullName,
 					username,
-					...(avatar && { avatar }),
+					// Only send the avatar if it is defined
+					...avatar,
 				};
-				debugger;
+
 				updateProfile({
 					variables: {
 						data,

@@ -25,7 +25,6 @@ const createApolloClient = (getToken) => {
 	});
 
 	const errorLink = onError(({ graphQLErrors, networkError }) => {
-		debugger;
 		if (graphQLErrors) {
 			graphQLErrors.forEach(
 				({ extensions: { serviceName }, message, path }) =>

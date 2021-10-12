@@ -1,4 +1,4 @@
-const { isObject } = require("@apollo/gateway/dist/utilities/predicates");
+import cloudinary from "../config/cloudinary";
 
 /*
 The onReadStream function (which is called from within
@@ -42,34 +42,54 @@ service:
   mimetype: "image/png"
 }
 
+Note that this function will process any deeply nested Upload promises within the mutation variables object 
+by checking if a given value is another object and recursively calling readNestedFileStreams on it.
+
 Excerpt From: Mandi Wise. “Advanced GraphQL with Apollo and React.”
 */
 const readNestedFileStreams = async (variables) => {
-	const variableArray = Object.entries(variables || {});
-	console.log({ variableArray });
+	let variableArray = [];
+
+	if (variables && variables.data) {
+		variableArray = Object.entries(variables.data);
+	}
 
 	for (const [imageFileKey, imageFileValue] of variableArray) {
-		if (imageFileValue instanceof Promise) {
-			// this is a file upload!
-			console.log({ imageFileValue });
-		}
+		if (imageFileKey === "avatar") {
+			if (Boolean(imageFileValue && imageFileValue.file)) {
+				const { createReadStream, encoding, filename, mimetype } =
+					await imageFileValue.file;
 
-		if (
-			Boolean(imageFileValue && typeof imageFileValue.then === "function")
-		) {
-			const { createReadStream, encoding, filename, mimetype } =
-				await imageFileValue;
+				const readStream = createReadStream();
+				const buffer = await onReadStream(readStream);
+				variables["data"]["avatar"] = {
+					buffer,
+					encoding,
+					filename,
+					mimetype,
+				};
+			}
 
-			const readStream = createReadStream();
-			const buffer = await onReadStream(readStream);
-			variables[imageFileKey] = { buffer, encoding, filename, mimetype };
-		}
+			/*
+			 * TODO: I'm not sure if this is doing anything now that I changed the code above?
 
-		if (
-			imageFileValue !== null &&
-			imageFileValue.constructor.name === "Object"
-		) {
-			await readNestedFileStreams(imageFileValue);
+			 * The structure I'm getting after adding `app.use(graphqlUploadExpress())` to the
+			 * server/src/index.js file is this:
+			 *
+			 * file: { filename: 'cors.png', mimetype: 'image/png', encoding: '7bit', createReadStream: ƒ, capacitor: WriteStream }
+			 * promise: Promise {[[PromiseState]]: 'fulfilled', [[PromiseResult]]: {…}}
+			 * resolve: ƒ()
+			 * reject: ƒ()
+			 *
+			 * I'm able to upload the entire file, and I'm not sure if checking for imageFileValue.constructor.name === "Object"
+			 * will still work as expected and call this function recursively. Leaving this here, but need to test this more.
+			 */
+			if (
+				imageFileValue !== null &&
+				imageFileValue.constructor.name === "Object"
+			) {
+				await readNestedFileStreams(imageFileValue);
+			}
 		}
 	}
 };
@@ -83,8 +103,8 @@ into the returned stream’s end method to write the buffer before closing the s
 
 Excerpt From: Mandi Wise. “Advanced GraphQL with Apollo and React.”
 */
-const uploadStream = (buffer, options) => {
-	return new Promise((reject, resolve) => {
+export function uploadStream(buffer, options) {
+	return new Promise((resolve, reject) => {
 		cloudinary.uploader
 			.upload_stream(options, (error, result) => {
 				if (error) {
@@ -94,6 +114,6 @@ const uploadStream = (buffer, options) => {
 			})
 			.end(buffer);
 	});
-};
+}
 
-export { readNestedFileStreams, uploadStream };
+export { readNestedFileStreams };
