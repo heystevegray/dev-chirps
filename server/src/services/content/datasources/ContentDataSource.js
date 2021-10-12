@@ -1,7 +1,7 @@
 import { DataSource } from "apollo-datasource";
 import { UserInputError } from "apollo-server";
-
 import Pagination from "../../../lib/Pagination";
+import { uploadStream } from "../../../lib/handleUploads";
 
 class ContentDataSource extends DataSource {
 	constructor({ Post, Profile, Reply }) {
