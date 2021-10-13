@@ -70,6 +70,7 @@ export interface Post {
 	author: Author;
 	createdAt: Date;
 	text: string;
+	media?: string;
 }
 
 export interface Author {

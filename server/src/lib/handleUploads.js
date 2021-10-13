@@ -55,22 +55,21 @@ const readNestedFileStreams = async (variables) => {
 	}
 
 	for (const [imageFileKey, imageFileValue] of variableArray) {
-		if (imageFileKey === "avatar") {
-			if (Boolean(imageFileValue && imageFileValue.file)) {
-				const { createReadStream, encoding, filename, mimetype } =
-					await imageFileValue.file;
+		if (Boolean(imageFileValue && imageFileValue.file)) {
+			const { createReadStream, encoding, filename, mimetype } =
+				await imageFileValue.file;
 
-				const readStream = createReadStream();
-				const buffer = await onReadStream(readStream);
-				variables["data"]["avatar"] = {
-					buffer,
-					encoding,
-					filename,
-					mimetype,
-				};
-			}
+			const readStream = createReadStream();
+			const buffer = await onReadStream(readStream);
+			variables["data"][imageFileKey] = {
+				buffer,
+				encoding,
+				filename,
+				mimetype,
+			};
+		}
 
-			/*
+		/*
 			 * TODO: I'm not sure if this is doing anything now that I changed the code above?
 
 			 * The structure I'm getting after adding `app.use(graphqlUploadExpress())` to the
@@ -84,12 +83,11 @@ const readNestedFileStreams = async (variables) => {
 			 * I'm able to upload the entire file, and I'm not sure if checking for imageFileValue.constructor.name === "Object"
 			 * will still work as expected and call this function recursively. Leaving this here, but need to test this more.
 			 */
-			if (
-				imageFileValue !== null &&
-				imageFileValue.constructor.name === "Object"
-			) {
-				await readNestedFileStreams(imageFileValue);
-			}
+		if (
+			imageFileValue !== null &&
+			imageFileValue.constructor.name === "Object"
+		) {
+			await readNestedFileStreams(imageFileValue);
 		}
 	}
 };

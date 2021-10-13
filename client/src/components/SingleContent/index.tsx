@@ -1,4 +1,4 @@
-import { Box, Text, Anchor } from "grommet";
+import { Box, Text, Anchor, Image } from "grommet";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { Content } from "../../graphql/types";
@@ -22,6 +22,7 @@ const SingleContent = ({ contentData }: { contentData: Content }) => {
 		isBlocked,
 		post: parentPost,
 		text,
+		media,
 		postAuthor: parentPostAuthor,
 	} = contentData;
 
@@ -75,6 +76,15 @@ const SingleContent = ({ contentData }: { contentData: Content }) => {
 						<Text as="h2" size="xlarge">
 							{text}
 						</Text>
+						{media && (
+							<Box direction="row" justify="center">
+								<Image
+									margin={{ top: "small" }}
+									src={media}
+									alt="Content image"
+								/>
+							</Box>
+						)}
 					</Box>
 				)}
 			</Box>

@@ -23,18 +23,22 @@ class ContentDataSource extends DataSource {
 	 * Excerpt From: Mandi Wise. “Advanced GraphQL with Apollo and React.”
 	 */
 	async uploadMedia(media, profileId) {
-		const buffer = Buffer.from(media.buffer.data);
-		const uploadedMedia = await uploadStream(buffer, {
-			folder: `${process.env.NODE_ENV}/${profileId}`,
-			sign_url: true,
-			type: "authenticated",
-		}).catch((error) => {
-			throw new Error(
-				`Failed to upload media to the content service. ${error.message}`
-			);
-		});
+		if (media.buffer.data) {
+			const buffer = Buffer.from(media.buffer.data);
+			const uploadedMedia = await uploadStream(buffer, {
+				folder: `${process.env.NODE_ENV}/${profileId}`,
+				sign_url: true,
+				type: "authenticated",
+			}).catch((error) => {
+				throw new Error(
+					`Failed to upload media to the content service. ${error.message}`
+				);
+			});
 
-		return uploadedMedia.secure_url;
+			return uploadedMedia.secure_url;
+		}
+
+		return "";
 	}
 
 	getPostById(id) {
@@ -98,7 +102,7 @@ class ContentDataSource extends DataSource {
 		return { edges, pageInfo };
 	}
 
-	async createPost({ text, username }) {
+	async createPost({ media, text, username }) {
 		const profile = await this.Profile.findOne({ username }).exec();
 
 		if (!profile) {
@@ -110,7 +114,7 @@ class ContentDataSource extends DataSource {
 		let uploadedMediaUrl;
 
 		if (media) {
-			uploadedMediaUrl = await this.uploadMedia(media, profile_id);
+			uploadedMediaUrl = await this.uploadMedia(media, profile._id);
 		}
 
 		const newPost = new this.Post({
@@ -247,7 +251,7 @@ class ContentDataSource extends DataSource {
 		return { edges, pageInfo };
 	}
 
-	async createReply({ postId, text, username }) {
+	async createReply({ media, postId, text, username }) {
 		const post = await this.Post.findById(postId).exec();
 		const profile = await this.Profile.findOne({ username }).exec();
 

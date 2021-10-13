@@ -1,6 +1,16 @@
 import { useMutation } from "@apollo/client";
-import { Box, Form, FormField, TextArea } from "grommet";
-import { useState } from "react";
+import {
+	Box,
+	Button,
+	Form,
+	FormField,
+	Stack,
+	TextArea,
+	TextInput,
+	Image,
+} from "grommet";
+import { Close } from "grommet-icons";
+import { useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { useAuth } from "../../../context/AuthContext";
 import { CREATE_POST, CREATE_REPLY } from "../../../graphql/mutations";
@@ -22,6 +32,9 @@ const CreateContentForm = ({ parentPostId }: Props) => {
 	const [contentCharacterCount, setContentCharacterCount] = useState(0);
 	const value = useAuth();
 	const { username } = value.viewerQuery.data.viewer.profile;
+	const mediaInput = useRef<HTMLInputElement>(null);
+	const [mediaFile, setMediaFile] = useState<string | null>();
+	const validFormats = ["image/gif", "image/jpeg", "image/jpg", "image/png"];
 
 	const [createPost, { loading }] = useMutation(CREATE_POST, {
 		onCompleted: ({ createPost: { id } }) => {
@@ -53,70 +66,153 @@ const CreateContentForm = ({ parentPostId }: Props) => {
 		],
 	});
 
+	const getMediaFile = () => {
+		let file: File | undefined = undefined;
+
+		if (mediaInput.current) {
+			file = mediaInput.current?.files?.[0];
+		}
+
+		return file;
+	};
+
 	return (
-		<Form
-			messages={{ required: "Required" }}
-			onSubmit={(event: any) => {
-				if (parentPostId) {
-					createReply({
-						variables: {
-							data: {
-								postId: parentPostId,
-								text: event.value.text,
-								username,
+		<Box fill="vertical" overflow="auto">
+			<Form
+				messages={{ required: "Required" }}
+				onSubmit={(event: any) => {
+					let media = undefined;
+					const file = getMediaFile();
+
+					if (file) {
+						media = { media: file };
+					}
+
+					if (parentPostId) {
+						createReply({
+							variables: {
+								data: {
+									postId: parentPostId,
+									text: event.value.text,
+									username,
+									// Only send the media if it is defined
+									...media,
+								},
 							},
-						},
-					}).catch((error) => {
-						console.log(error);
-					});
-				} else {
-					createPost({
-						variables: {
-							data: {
-								text: event.value.text,
-								username,
+						}).catch((error) => {
+							console.log(error);
+						});
+					} else {
+						createPost({
+							variables: {
+								data: {
+									text: event.value.text,
+									username,
+									// Only send the media if it is defined
+									...media,
+								},
 							},
-						},
-					}).catch((error) => {
-						console.log(error);
-					});
-				}
-			}}
-		>
-			<FormField
-				component={TextArea}
-				htmlFor="text"
-				id="text"
-				resize="vertical"
-				label={
-					<RequiredLabel>
-						<CharacterCountLabel
-							currentCharacters={contentCharacterCount}
-							label="Content"
-							max={256}
-						/>
-					</RequiredLabel>
-				}
-				name="text"
-				onInput={(event: any) => {
-					setContentCharacterCount(event.target.value.length);
-				}}
-				placeholder={`Write your ${parentPostId ? "reply" : "post"}`}
-				required
-				validate={(fieldData: string) => {
-					if (fieldData && fieldData.length > 256) {
-						return "256 maximum character count exceeded";
+						}).catch((error) => {
+							console.log(error);
+						});
 					}
 				}}
-			/>
-			<Box align="center" direction="row" justify="end">
-				<LoadingButton
-					loading={loading}
-					label={`${parentPostId ? "Reply" : "Publish"}`}
-					type="submit"
+			>
+				<FormField
+					component={TextArea}
+					htmlFor="text"
+					id="text"
+					resize="vertical"
+					label={
+						<RequiredLabel>
+							<CharacterCountLabel
+								currentCharacters={contentCharacterCount}
+								label="Content"
+								max={256}
+							/>
+						</RequiredLabel>
+					}
+					name="text"
+					onInput={(event: any) => {
+						setContentCharacterCount(event.target.value.length);
+					}}
+					placeholder={`Write your ${
+						parentPostId ? "reply" : "post"
+					}`}
+					required
+					validate={(fieldData: string) => {
+						if (fieldData && fieldData.length > 256) {
+							return "256 maximum character count exceeded";
+						}
+					}}
 				/>
-			</Box>
-		</Form>
+				<FormField
+					htmlFor="media"
+					id="media"
+					label="Image"
+					name="media"
+					validate={(fieldData) => {
+						const file = getMediaFile();
+						if (file && !validFormats.includes(file.type)) {
+							return "Upload GIF, JPG or PNG files only";
+						} else if (file && file.size > 5 * 1024 * 1024) {
+							return "Maximum file size is 5 MB";
+						}
+					}}
+				>
+					{mediaFile && (
+						<Stack anchor="top-right" margin="medium">
+							<Image
+								src={mediaFile}
+								alt="Uploaded content image"
+							/>
+							<Box
+								background="dark-1"
+								margin="xsmall"
+								overflow="hidden"
+								round="full"
+							>
+								<Button
+									a11yTitle="Remove Image"
+									hoverIndicator
+									icon={<Close size="18px" />}
+									onClick={() => {
+										setMediaFile(null);
+										if (mediaInput.current?.value) {
+											mediaInput.current.value = "";
+										}
+									}}
+								/>
+							</Box>
+						</Stack>
+					)}
+					<TextInput
+						accept={validFormats.join(", ")}
+						onChange={(event) => {
+							setMediaFile(
+								event.target.files?.length
+									? URL.createObjectURL(event.target.files[0])
+									: null
+							);
+						}}
+						ref={mediaInput}
+						type="file"
+					/>
+				</FormField>
+				<Box
+					align="center"
+					direction="row"
+					justify="end"
+					margin={{ right: "small" }}
+				>
+					<LoadingButton
+						loading={loading}
+						label={`${parentPostId ? "Reply" : "Publish"}`}
+						type="submit"
+					/>
+				</Box>
+			</Form>
+		</Box>
 	);
 };
 

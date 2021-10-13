@@ -1,4 +1,5 @@
 import { Box, Text } from "grommet";
+import { MarginType } from "grommet/utils";
 import Loader from "../../Loader";
 import AccentButton from "../AccentButton";
 
@@ -10,6 +11,7 @@ interface Props {
 	showErrorMessage?: boolean;
 	errorMessage?: string;
 	type?: string;
+	margin?: MarginType;
 	disabled?: boolean;
 }
 

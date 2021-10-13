@@ -1,4 +1,4 @@
-import { Box, Text, Anchor } from "grommet";
+import { Box, Text, Anchor, Image } from "grommet";
 import { Link, useHistory } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import { Content } from "../../../graphql/types";
@@ -21,6 +21,7 @@ const ContentListItem = ({ contentData }: { contentData: Content }) => {
 		createdAt,
 		isBlocked,
 		post: parentPost,
+		media,
 		postAuthor: parentPostAuthor,
 		text,
 	} = contentData;
@@ -69,9 +70,20 @@ const ContentListItem = ({ contentData }: { contentData: Content }) => {
 						/>
 					)}
 					{(!isBlocked || author.username === username) && (
-						<Text as="p" margin={{ top: "small" }}>
-							{text}
-						</Text>
+						<>
+							<Text as="p" margin={{ top: "small" }}>
+								{text}
+							</Text>
+							{media && (
+								<Box direction="row" justify="center">
+									<Image
+										src={media}
+										margin={{ top: "small" }}
+										alt="Content image"
+									/>
+								</Box>
+							)}
+						</>
 					)}
 					<Box
 						align="center"
