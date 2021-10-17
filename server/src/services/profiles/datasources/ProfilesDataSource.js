@@ -3,6 +3,7 @@ import { UserInputError } from "apollo-server";
 import gravatarUrl from "gravatar-url";
 import Pagination from "../../../lib/Pagination";
 import { uploadStream } from "../../../lib/handleUploads";
+import { graphql } from "@octokit/graphql";
 
 class ProfilesDataSource extends DataSource {
 	constructor({ auth0, Profile }) {
@@ -130,8 +131,86 @@ class ProfilesDataSource extends DataSource {
 		return viewerProfile.following.includes(profileId);
 	}
 
+	/*
+	It’s worth noting that in the catch function we don’t throw any errors
+	if the request fails for any reason. Rather, we can return null
+	instead because we made the pinnedItems field nullable in our
+	schema—and with good reason. The pinned repos and gists are not
+	mission-critical pieces of data in our user profiles, so we don’t
+	want to interrupt the execution of the other code in our app if a
+	problem arises here. Nullability in a GraphQL schema provides an
+	important escape hatch where third-party data sources are concerned
+	because we typically won’t want to rely too heavily on the existence
+	of data that’s not under our control.
+
+	Excerpt From: Mandi Wise. “Advanced GraphQL with Apollo and React.”
+	*/
+	async _getPinnedItems(githubToken, username) {
+		const response = await graphql(
+			`{
+				user(login: "${username}") {
+					pinnedItems(first: 6, types: [GIST, REPOSITORY]) {
+						edges {
+							node {
+								... on Gist {
+									id
+									name
+									description
+									url
+								}
+								... on Repository {
+									id
+									name
+									description
+									primaryLanguage {
+										name
+									}
+									url
+								}
+							}
+						}
+					}
+				}
+			}`,
+			{ headers: { authorization: `token ${githubToken}` } }
+		).catch(() => null);
+
+		const { edges } = response.user.pinnedItems;
+		return edges.length
+			? edges
+					.reduce((accumulator, currentValue) => {
+						const { primaryLanguage: language } = currentValue.node;
+						currentValue.node.primaryLanguage = language
+							? language.name
+							: null;
+
+						accumulator.push(currentValue.node);
+						return accumulator;
+					}, [])
+					.map((pinnedItem) => {
+						const { id: githubId, ...rest } = pinnedItem;
+						return { githubId, ...rest };
+					})
+			: null;
+	}
+
 	async createProfile(profile) {
 		const account = await this.auth0.getUser({ id: profile.accountId });
+
+		// Example GitHub-based user account ID in Auth0: github|1234567
+		if (account.user_id.includes("github")) {
+			// Get the github profile url
+			const { html_url } = account;
+			profile.githubUrl = html_url;
+
+			// Get the github pinned items
+			const username = html_url.split("/").pop();
+			const pinnedItems = await this._getPinnedItems(
+				account.identities[0].access_token,
+				username
+			);
+			profile.pinnedItems = pinnedItems;
+		}
 
 		const { picture } = account;
 
