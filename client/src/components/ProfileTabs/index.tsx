@@ -1,12 +1,13 @@
 import { useQuery } from "@apollo/client";
 import { Box, Tab, Tabs, Text } from "grommet";
-import { ChatOption, Group, Note } from "grommet-icons";
+import { ChatOption, Group, Note, Pin } from "grommet-icons";
 import { GET_PROFILE_CONTENT } from "../../graphql/queries";
 import { updateSubfieldPageResults } from "../../lib/updateQueries";
 import LoadMoreButton from "../Buttons/LoadMoreButton";
 import EndOfList from "../EndOfList";
 import ContentList from "../Lists/ContentList";
 import ProfileList from "../Lists/ProfileList";
+import PinnedItemList from "../Lists/PinnedItemList";
 import Loader from "../Loader";
 import RichTabTitle from "../RichTabTitle";
 
@@ -41,7 +42,7 @@ const ProfileTabs = ({ username }: { username: string }) => {
 	}
 
 	const {
-		profile: { following, posts, replies },
+		profile: { following, posts, replies, pinnedItems },
 	} = data;
 
 	return (
@@ -174,6 +175,20 @@ const ProfileTabs = ({ username }: { username: string }) => {
 						</>
 					) : (
 						<Text as="p">No followed users to display yet!</Text>
+					)}
+				</Box>
+			</Tab>
+
+			<Tab
+				title={
+					<RichTabTitle icon={<Pin />} label="Code" size="xsmall" />
+				}
+			>
+				<Box margin={{ top: "medium" }}>
+					{pinnedItems && pinnedItems.length ? (
+						<PinnedItemList pinnedItemsData={pinnedItems} />
+					) : (
+						<Text as="p">No code to display yet!</Text>
 					)}
 				</Box>
 			</Tab>

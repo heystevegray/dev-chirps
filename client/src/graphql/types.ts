@@ -11,9 +11,18 @@ export interface Profile extends IsModerator, IsBlocked {
 	fullName: string;
 	username: string;
 	viewerIsFollowing: boolean;
+	githubUrl?: string;
 }
 
 export type Children = ReactElement | ReactElement[] | null;
+
+export interface PinnedItem {
+	description: string;
+	id: string;
+	name: string;
+	primaryLanguage?: string;
+	url: string;
+}
 
 export interface MatchUsername {
 	match: MatchInterface<{ username?: string }>;

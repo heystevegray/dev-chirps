@@ -1,4 +1,4 @@
-import { Box, Heading, Text } from "grommet";
+import { Anchor, Box, Heading, Text } from "grommet";
 import { useAuth } from "../../context/AuthContext";
 import { Profile } from "../../graphql/types";
 import dayjs from "dayjs";
@@ -10,6 +10,7 @@ import { FOLLOW_PROFILE, UNFOLLOW_PROFILE } from "../../graphql/mutations";
 import NotAvailableMessage from "../NotAvailableMessage";
 import AccountBlockButton from "../Buttons/AccountBlockedButton";
 import ModeratorRoleButton from "../Buttons/ModeratorRoleButton";
+import { Github } from "grommet-icons";
 
 interface Props {
 	profileData: Profile;
@@ -33,6 +34,7 @@ const ProfileHeader = ({ profileData, refetchProfile }: Props) => {
 		username,
 		viewerIsFollowing,
 		id,
+		githubUrl,
 	} = profileData;
 	const {
 		isModerator: viewerIsModerator,
@@ -99,9 +101,17 @@ const ProfileHeader = ({ profileData, refetchProfile }: Props) => {
 				<Box alignSelf="center">
 					<Avatar fullName={fullName} avatar={avatar} size="xlarge" />
 				</Box>
-				<Text as="p" textAlign="center" color="dark-4">
-					@{username} {account.isModerator && `(Moderator)`}
-				</Text>
+				<Box align="center" direction="row" justify="center">
+					<Text as="p" textAlign="center" color="dark-4">
+						@{username} {account.isModerator && `(Moderator)`}
+					</Text>
+					{githubUrl && (
+						<Anchor href={githubUrl} margin={{ left: "small" }}>
+							<Github color="secondary" size="30px" />
+						</Anchor>
+					)}
+				</Box>
+
 				<Box
 					gap="medium"
 					justify="center"

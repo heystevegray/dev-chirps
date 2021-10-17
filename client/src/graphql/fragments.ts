@@ -7,6 +7,7 @@ export const basicProfile = gql`
 		description
 		fullName
 		username
+		githubUrl
 	}
 `;
 
