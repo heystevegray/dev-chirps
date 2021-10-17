@@ -1,7 +1,7 @@
 import { DataSource } from "apollo-datasource";
 import { UserInputError } from "apollo-server";
-
 import Pagination from "../../../lib/Pagination";
+import { deleteUpload, uploadStream } from "../../../lib/handleUploads";
 
 class ContentDataSource extends DataSource {
 	constructor({ Post, Profile, Reply }) {
@@ -11,6 +11,34 @@ class ContentDataSource extends DataSource {
 		this.Reply = Reply;
 		this.postPagination = new Pagination(Post);
 		this.replyPagination = new Pagination(Reply);
+	}
+
+	/*
+	 * We pass in fewer options to uploadStream here than we did when uploading the avatar
+	 * previously because we don’t need to standardize the size, name, or file format of
+	 * the image. And because we don’t specify a public_id in the options, when the image
+	 * is uploaded to Cloudinary it will be assigned a random name (which is fine for all
+	 * non-avatar images).
+	 *
+	 * Excerpt From: Mandi Wise. “Advanced GraphQL with Apollo and React.”
+	 */
+	async uploadMedia(media, profileId) {
+		if (media.buffer.data) {
+			const buffer = Buffer.from(media.buffer.data);
+			const uploadedMedia = await uploadStream(buffer, {
+				folder: `${process.env.NODE_ENV}/${profileId}`,
+				sign_url: true,
+				type: "authenticated",
+			}).catch((error) => {
+				throw new Error(
+					`Failed to upload media to the content service. ${error.message}`
+				);
+			});
+
+			return uploadedMedia.secure_url;
+		}
+
+		return "";
 	}
 
 	getPostById(id) {
@@ -74,7 +102,7 @@ class ContentDataSource extends DataSource {
 		return { edges, pageInfo };
 	}
 
-	async createPost({ text, username }) {
+	async createPost({ media, text, username }) {
 		const profile = await this.Profile.findOne({ username }).exec();
 
 		if (!profile) {
@@ -83,15 +111,33 @@ class ContentDataSource extends DataSource {
 			);
 		}
 
-		const newPost = new this.Post({ authorProfileId: profile._id, text });
+		let uploadedMediaUrl;
+
+		if (media) {
+			uploadedMediaUrl = await this.uploadMedia(media, profile._id);
+		}
+
+		const newPost = new this.Post({
+			...(uploadedMediaUrl && { media: uploadedMediaUrl }),
+			authorProfileId: profile._id,
+			text,
+		});
 		return newPost.save();
 	}
 
 	async deletePost(id) {
 		const deletedPost = await this.Post.findByIdAndDelete(id).exec();
+
 		if (!deletedPost) {
 			throw new UserInputError("The provided post id does not exist.");
 		}
+
+		const { media } = deletedPost;
+
+		if (media) {
+			await deleteUpload(media);
+		}
+
 		return deletedPost._id;
 	}
 
@@ -213,7 +259,7 @@ class ContentDataSource extends DataSource {
 		return { edges, pageInfo };
 	}
 
-	async createReply({ postId, text, username }) {
+	async createReply({ media, postId, text, username }) {
 		const post = await this.Post.findById(postId).exec();
 		const profile = await this.Profile.findOne({ username }).exec();
 
@@ -227,7 +273,14 @@ class ContentDataSource extends DataSource {
 			);
 		}
 
+		let uploadedMediaUrl;
+
+		if (media) {
+			uploadedMediaUrl = await this.uploadMedia(media, profile._id);
+		}
+
 		const newReply = new this.Reply({
+			...(uploadedMediaUrl && { media: uploadedMediaUrl }),
 			authorProfileId: profile._id,
 			text,
 			postId,
@@ -239,9 +292,17 @@ class ContentDataSource extends DataSource {
 
 	async deleteReply(id) {
 		const deleteReply = await this.Reply.findByIdAndDelete(id).exec();
+
 		if (!deleteReply) {
 			throw new UserInputError("The provided reply id does not exist.");
 		}
+
+		const { media } = deleteReply;
+
+		if (media) {
+			await deleteUpload(media);
+		}
+
 		return deleteReply._id;
 	}
 

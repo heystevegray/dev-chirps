@@ -2,6 +2,9 @@ import app from "./config/app";
 import initGateway from "./config/apollo/apollo";
 import waitOn from "wait-on";
 import { ApolloError } from "apollo-server-express";
+import {
+	graphqlUploadExpress, // A Koa implementation is also exported.
+} from "graphql-upload";
 
 const SERVICES = [
 	{
@@ -46,6 +49,16 @@ export const wait = async () => {
 	const port = process.env.PORT;
 
 	const server = await initGateway();
+
+	/*
+	 * This middleware should be added before calling `applyMiddleware`.
+
+	 * This one line of code is SUPER IMPORTANT FOR IMAGE UPLOADS!!!!!!!!!!!
+	 * This resolved that fucking horrible "POST body missing, invalid Content-Type, or JSON object has no keys." error. 
+	 * Found this in the apollo docs here: https://www.apollographql.com/docs/apollo-server/data/file-uploads/#integrating-with-express
+	 */
+	app.use(graphqlUploadExpress());
+
 	await server.start();
 	server.applyMiddleware({ app, cors: false });
 	app.listen({ port }, async () => {
