@@ -36,7 +36,28 @@ const resolvers = {
 
 			return dataSources.profilesAPI
 				.getProfileById(profile.id)
-				.then((result) => result.username);
+				.then((result) => {
+					/*
+					 * After an account is deleted, any users that were
+					 * following that account seem to have an issue loading their profile
+					 * page. Navigating to a user's profile calls the GET_PROFILE_CONTENT query.
+					 * This query includes the basicReply fragment, and is querying for:
+					 *
+					 * postAuthor {
+					 *   username
+					 * }
+					 *
+					 * An error is thrown in the Profiles service:
+					 *
+					 * Cannot read property 'username' of null
+					 *
+					 * Just return an empty string if the username is null.
+					 */
+					if (result) {
+						return result.username;
+					}
+					return "";
+				});
 		},
 		avatar(profile, args, { dataSources }, info) {
 			/*

@@ -9,6 +9,37 @@ import DeleteContentModal from "../Modals/DeleteContentModal";
 import NewReplyModal from "../Modals/NewReplyModal";
 import NotAvailableMessage from "../NotAvailableMessage";
 
+export const getPostAuthorUsername = (parentPostAuthor: {
+	username?: string;
+}) => {
+	// If an account has been deleted, the parentPostAuthor username will not exist
+	if (parentPostAuthor) {
+		if (parentPostAuthor.username) {
+			return (
+				<Text as="p">
+					<Text color="dark-3">Replying to </Text>
+					<Link to={`/profile/${parentPostAuthor.username}`}>
+						<Anchor as="span">@{parentPostAuthor.username}</Anchor>
+					</Link>
+				</Text>
+			);
+		}
+
+		return (
+			<Text as="p">
+				<Text color="dark-3">
+					Replying to{" "}
+					<Text color="status-error">
+						an account that no longer exists 😬
+					</Text>
+				</Text>
+			</Text>
+		);
+	}
+
+	return null;
+};
+
 const SingleContent = ({ contentData }: { contentData: Content }) => {
 	const value = useAuth();
 	const {
@@ -55,16 +86,7 @@ const SingleContent = ({ contentData }: { contentData: Content }) => {
 				</Box>
 			</Box>
 			<Box margin={{ top: "medium" }}>
-				{parentPostAuthor && (
-					<Text as="p">
-						<Text color="dark-3">Replying to </Text>
-						<Link to={`/profile/${parentPostAuthor.username}`}>
-							<Anchor as="span">
-								@{parentPostAuthor.username}
-							</Anchor>
-						</Link>
-					</Text>
-				)}
+				{getPostAuthorUsername(parentPostAuthor)}
 				{isBlocked && (
 					<NotAvailableMessage
 						margin={{ bottom: "small", top: "xsmall" }}

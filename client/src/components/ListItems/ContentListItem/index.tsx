@@ -1,5 +1,5 @@
-import { Box, Text, Anchor, Image } from "grommet";
-import { Link, useHistory } from "react-router-dom";
+import { Box, Text, Image } from "grommet";
+import { useHistory } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import { Content } from "../../../graphql/types";
 import { displayRelativeDateOrTime } from "../../../lib/displayDatetime";
@@ -7,6 +7,7 @@ import HoverBox from "../../HoverBox";
 import DeleteContentModal from "../../Modals/DeleteContentModal";
 import NewReplyModal from "../../Modals/NewReplyModal";
 import NotAvailableMessage from "../../NotAvailableMessage";
+import { getPostAuthorUsername } from "../../SingleContent";
 import UsernameHeader from "../../UsernameHeader";
 import ListItem from "../ListItem";
 
@@ -42,21 +43,7 @@ const ContentListItem = ({ contentData }: { contentData: Content }) => {
 						fullName={author.fullName}
 						username={author.username}
 					/>
-					{parentPostAuthor && (
-						<Text as="p">
-							<Text color="dark-2">Replying to </Text>
-							<Link to={`/profile/${parentPostAuthor.username}`}>
-								<Anchor
-									as="span"
-									onClick={(event) => {
-										event.stopPropagation();
-									}}
-								>
-									@{parentPostAuthor.username}
-								</Anchor>
-							</Link>
-						</Text>
-					)}
+					{getPostAuthorUsername(parentPostAuthor)}
 					{parentPostAuthor === null && (
 						<NotAvailableMessage
 							margin={{ top: "xsmall" }}

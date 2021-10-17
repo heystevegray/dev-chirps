@@ -82,7 +82,10 @@ const Home = () => {
 						{!posts.pageInfo.hasNextPage && <EndOfList />}
 					</>
 				) : (
-					<Text as="p">Nothing to display in your feed yet!</Text>
+					<Text as="p">
+						Nothing to display in your feed yet! Search for profiles
+						to follow.
+					</Text>
 				)}
 			</Box>
 		</MainLayout>
