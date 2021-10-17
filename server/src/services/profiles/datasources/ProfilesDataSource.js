@@ -132,8 +132,18 @@ class ProfilesDataSource extends DataSource {
 
 	async createProfile(profile) {
 		const account = await this.auth0.getUser({ id: profile.accountId });
-		const avatar = gravatarUrl(account.email, { default: "mm" });
-		profile.avatar = avatar;
+
+		const { picture } = account;
+
+		// Get the github profile image
+		// Example: https://avatars2.githubusercontent.com/u/1518780?v=4
+		if (picture && picture.includes("githubusercontent")) {
+			profile.avatar = picture;
+		} else {
+			const avatar = gravatarUrl(account.email, { default: "mm" });
+			profile.avatar = avatar;
+		}
+
 		const newProfile = new this.Profile(profile);
 		return newProfile.save();
 	}
