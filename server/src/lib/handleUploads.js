@@ -114,4 +114,81 @@ export function uploadStream(buffer, options) {
 	});
 }
 
+/*
+Above, we use the cloudinary.api.delete_resources method and extract
+the public_id from the image URL to pass into it in an array (we could
+pass multiple public IDs inside this array if needed). We also set
+some options in a second object argument to invalidate the image on
+the CDN and to set the type to authenticated explicitly (otherwise
+the deletion will not work).
+
+Excerpt From: Mandi Wise. “Advanced GraphQL with Apollo and React.”
+*/
+
+export const deleteUpload = (url) => {
+	// Extract the public_id from the image URL
+	const public_id = url.split("/").slice(-3).join("/").split(".")[0];
+
+	return new Promise((resolve, reject) => {
+		cloudinary.api.delete_resources(
+			[public_id],
+			{ invalidate: true, type: "authenticated" },
+			(error, result) => {
+				if (error) {
+					return reject(error);
+				}
+
+				resolve(result);
+			}
+		);
+	});
+};
+
+/*
+Now we’ll turn our attention to deleting all of a user’s content images and custom avatar image if they delete 
+their account. Doing so will require two steps — first, we must delete all of the images inside of the user’s designated 
+subdirectory in Cloudinary, and then we need to delete the now-empty directory itself. Unfortunately, at this time there 
+is no way to complete both actions at once with Cloudinary’s APIs because a directory must first be emptied before it can
+be programmatically removed from the Media Library.
+
+The deleteUserUploads function will take care of the first step, using a method from the Cloudinary Admin API called
+cloudinary.api.delete_resources_by_prefix. This method provides a convenient way to bulk-delete a user’s images based
+on the current environment and the user’s profile document ID because the “prefix” is the custom subdirectory portion
+of the image’s public ID (for example, development/5d52d6ccbae12121ef58944e).
+
+Excerpt From: Mandi Wise. “Advanced GraphQL with Apollo and React.”
+*/
+export function deleteUserUploads(profileId) {
+	const prefix = `${process.env.NODE_ENV}/${profileId}`;
+
+	return new Promise((resolve, reject) => {
+		cloudinary.api.delete_resources_by_prefix(
+			prefix,
+			{ invalidate: true, type: "authenticated" },
+			(error, result) => {
+				if (error) {
+					return reject(error);
+				}
+				resolve(result);
+			}
+		);
+	});
+}
+
+// https://cloudinary.com/documentation/admin_api#delete_folder
+export async function deleteUserUploadsDir(profileId) {
+	return new Promise((resolve, reject) => {
+		cloudinary.api.delete_folder(
+			`${process.env.NODE_ENV}/${profileId}`,
+			{ invalidate: true, type: "authenticated" },
+			(error, result) => {
+				if (error) {
+					return reject(error);
+				}
+				resolve(result);
+			}
+		);
+	});
+}
+
 export { readNestedFileStreams };

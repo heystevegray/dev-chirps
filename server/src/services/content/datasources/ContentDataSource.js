@@ -1,7 +1,7 @@
 import { DataSource } from "apollo-datasource";
 import { UserInputError } from "apollo-server";
 import Pagination from "../../../lib/Pagination";
-import { uploadStream } from "../../../lib/handleUploads";
+import { deleteUpload, uploadStream } from "../../../lib/handleUploads";
 
 class ContentDataSource extends DataSource {
 	constructor({ Post, Profile, Reply }) {
@@ -127,9 +127,17 @@ class ContentDataSource extends DataSource {
 
 	async deletePost(id) {
 		const deletedPost = await this.Post.findByIdAndDelete(id).exec();
+
 		if (!deletedPost) {
 			throw new UserInputError("The provided post id does not exist.");
 		}
+
+		const { media } = deletedPost;
+
+		if (media) {
+			await deleteUpload(media);
+		}
+
 		return deletedPost._id;
 	}
 
@@ -284,9 +292,17 @@ class ContentDataSource extends DataSource {
 
 	async deleteReply(id) {
 		const deleteReply = await this.Reply.findByIdAndDelete(id).exec();
+
 		if (!deleteReply) {
 			throw new UserInputError("The provided reply id does not exist.");
 		}
+
+		const { media } = deleteReply;
+
+		if (media) {
+			await deleteUpload(media);
+		}
+
 		return deleteReply._id;
 	}
 
