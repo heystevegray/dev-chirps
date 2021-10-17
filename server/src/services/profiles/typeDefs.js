@@ -137,6 +137,23 @@ const typeDefs = gql`
 		username: String!
 		"Whether the currently logged in user follows this profile."
 		viewerIsFollowing: Boolean
+		"The URL of the user's GitHub page."
+		githubUrl: String
+		"The user's pinned GitHub repositories and gists."
+		pinnedItems: [PinnableItem]
+	}
+
+	type PinnableItem {
+		"The unique GitHub ID of the repository or gist."
+		id: ID!
+		"The name of the repository or gist."
+		name: String!
+		"The description of the repository or gist."
+		description: String!
+		"The name of the primary language of a repository's code."
+		primaryLanguage: String
+		"The URL for the repository or gist."
+		url: String!
 	}
 
 	extend type Query {

@@ -1,6 +1,11 @@
 import { UserInputError } from "apollo-server";
 
 const resolvers = {
+	PinnableItem: {
+		id(pinnableItem, args, context, info) {
+			return pinnableItem.githubId;
+		},
+	},
 	Profile: {
 		__resolveReference(reference, { dataSources }, info) {
 			return dataSources.profilesAPI.getProfileById(reference.id);
