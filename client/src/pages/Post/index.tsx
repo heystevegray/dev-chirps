@@ -12,19 +12,23 @@ import MainLayout from "../../layouts/MainLayout";
 import { updateSubfieldPageResults } from "../../lib/updateQueries";
 import NotFound from "../NotFound";
 
+export const loadingComponent = (
+	<MainLayout>
+		<Box align="center" margin={{ top: "medium" }}>
+			<Loader />
+		</Box>
+	</MainLayout>
+);
+
 const Post = ({ match }: MatchId) => {
-	const { data, fetchMore, loading } = useQuery(GET_POST, {
+	const { data, fetchMore, loading, error } = useQuery(GET_POST, {
 		variables: {
 			id: match.params.id,
 		},
 	});
 
 	if (loading) {
-		<MainLayout>
-			<Box align="center" margin={{ top: "medium" }}>
-				<Loader />
-			</Box>
-		</MainLayout>;
+		return loadingComponent;
 	} else if (data && data.post) {
 		const { post } = data;
 		return (
@@ -64,9 +68,11 @@ const Post = ({ match }: MatchId) => {
 					)}
 			</MainLayout>
 		);
+	} else if (error || !data || !data.post) {
+		return <Route component={NotFound} />;
 	}
 
-	return <Route component={NotFound} />;
+	return loadingComponent;
 };
 
 export default Post;
