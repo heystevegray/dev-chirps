@@ -1,9 +1,8 @@
-import { Anchor, Box, Heading, Menu } from "grommet";
-import { Menu as MenuIcon } from "grommet-icons";
+import { Anchor, Box, Button, Heading, Menu } from "grommet";
+import { Add, Menu as MenuIcon } from "grommet-icons";
 import { useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { useAuth } from "../../context/AuthContext";
-import AccentButton from "../Buttons/AccentButton";
 import CreateContentForm from "../Forms/CreateContentForm";
 import Modal from "../Modal";
 
@@ -42,11 +41,19 @@ const NavBar = () => {
 						>
 							<CreateContentForm />
 						</Modal>
-						<Box>
-							<AccentButton
+						<Box
+							round="full"
+							overflow="hidden"
+							width="40px"
+							height="40px"
+							align="center"
+							justify="center"
+						>
+							<Button
 								primary
-								label="New Post"
-								margin={{ right: "small" }}
+								a11yTitle="New Post"
+								tip="New Post"
+								icon={<Add color="paper" size="22px" />}
 								onClick={() => {
 									setModalOpen(!modalOpen);
 								}}

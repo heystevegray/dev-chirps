@@ -23,6 +23,18 @@ const profileSchema = new mongoose.Schema({
 		trim: true,
 		unique: true,
 	},
+	githubUrl: {
+		type: String,
+	},
+	pinnedItems: [
+		{
+			githubId: { type: String, required: true },
+			description: { type: String },
+			name: { type: String, required: true },
+			primaryLanguage: { type: String },
+			url: { type: String, required: true },
+		},
+	],
 });
 
 profileSchema.index({ fullName: "text", username: "text" });

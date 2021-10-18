@@ -51,6 +51,13 @@ export const GET_PROFILE_CONTENT = gql`
 	) {
 		profile(username: $username) {
 			id
+			pinnedItems {
+				id
+				description
+				name
+				primaryLanguage
+				url
+			}
 			following(first: 30, after: $followingCursor) {
 				edges {
 					node {

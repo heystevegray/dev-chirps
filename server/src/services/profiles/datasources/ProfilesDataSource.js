@@ -3,6 +3,7 @@ import { UserInputError } from "apollo-server";
 import gravatarUrl from "gravatar-url";
 import Pagination from "../../../lib/Pagination";
 import { uploadStream } from "../../../lib/handleUploads";
+import { graphql } from "@octokit/graphql";
 
 class ProfilesDataSource extends DataSource {
 	constructor({ auth0, Profile }) {
@@ -10,6 +11,23 @@ class ProfilesDataSource extends DataSource {
 		this.auth0 = auth0;
 		this.Profile = Profile;
 		this.pagination = new Pagination(Profile);
+	}
+
+	/*
+	Access the Apollo Server context to get the sub value from the decoded token
+	contained within it (because the sub value is the user’s Auth0 ID).
+
+	Luckily, we have easy access to context inside of an Apollo data source.
+	The initialize method is exposed by the parent DataSource class and allows
+	us to set configuration options for our child class. For our purposes, we
+	need access to the server’s context object so we can later use the decoded
+	JWT from Auth0 to query the Management API for user account data. To do this,
+	we’ll use the initialize method and create a property to store the context object from the config.
+
+	Excerpt From: Mandi Wise. “Advanced GraphQL with Apollo and React.”
+	*/
+	initialize(config) {
+		this.context = config.context;
 	}
 
 	getProfile(filter) {
@@ -31,7 +49,7 @@ class ProfilesDataSource extends DataSource {
 
 	async updateProfile(
 		currentUsername,
-		{ avatar, description, fullName, username }
+		{ avatar, description, fullName, username, github }
 	) {
 		if (!avatar && !description && !fullName && !username) {
 			throw new UserInputError(
@@ -39,7 +57,25 @@ class ProfilesDataSource extends DataSource {
 			);
 		}
 
-		let uploadedAvatar;
+		let uploadedAvatar, githubUrl, pinnedItems;
+
+		// Refetch the user's github pinned items
+		if (github) {
+			const accountId = this.context.user.sub;
+
+			if (!accountId.includes("github")) {
+				throw new UserInputError(
+					"Only GitHub accounts can fetch GitHub data."
+				);
+			}
+
+			const account = await this.auth0.getUser({ id: accountId });
+			const { githubUrl: url, pinnedItems: items } =
+				await this._getGitHubData(account);
+
+			githubUrl = url;
+			pinnedItems = items;
+		}
 
 		if (avatar) {
 			const { _id } = await this.Profile.findOne({
@@ -110,6 +146,8 @@ class ProfilesDataSource extends DataSource {
 		}
 
 		const data = {
+			...(githubUrl && { githubUrl }),
+			...(pinnedItems && { pinnedItems }),
 			...(uploadedAvatar && { avatar: uploadedAvatar.secure_url }),
 			...(description && { description }),
 			...(fullName && { fullName }),
@@ -130,10 +168,106 @@ class ProfilesDataSource extends DataSource {
 		return viewerProfile.following.includes(profileId);
 	}
 
+	async _getGitHubData(account) {
+		// Get the github profile url
+		const { html_url } = account;
+
+		// Get the github pinned items
+		const username = html_url.split("/").pop();
+		const pinnedItems = await this._getPinnedItems(
+			account.identities[0].access_token,
+			username
+		);
+
+		return { githubUrl: html_url, pinnedItems };
+	}
+
+	/*
+	It’s worth noting that in the catch function we don’t throw any errors
+	if the request fails for any reason. Rather, we can return null
+	instead because we made the pinnedItems field nullable in our
+	schema—and with good reason. The pinned repos and gists are not
+	mission-critical pieces of data in our user profiles, so we don’t
+	want to interrupt the execution of the other code in our app if a
+	problem arises here. Nullability in a GraphQL schema provides an
+	important escape hatch where third-party data sources are concerned
+	because we typically won’t want to rely too heavily on the existence
+	of data that’s not under our control.
+
+	Excerpt From: Mandi Wise. “Advanced GraphQL with Apollo and React.”
+	*/
+	async _getPinnedItems(githubToken, username) {
+		const response = await graphql(
+			`{
+				user(login: "${username}") {
+					pinnedItems(first: 6, types: [GIST, REPOSITORY]) {
+						edges {
+							node {
+								... on Gist {
+									id
+									name
+									description
+									url
+								}
+								... on Repository {
+									id
+									name
+									description
+									primaryLanguage {
+										name
+									}
+									url
+								}
+							}
+						}
+					}
+				}
+			}`,
+			{ headers: { authorization: `token ${githubToken}` } }
+		).catch(() => null);
+
+		const { edges } = response.user.pinnedItems;
+		return edges.length
+			? edges
+					.reduce((accumulator, currentValue) => {
+						const { primaryLanguage: language } = currentValue.node;
+						currentValue.node.primaryLanguage = language
+							? language.name
+							: null;
+
+						accumulator.push(currentValue.node);
+						return accumulator;
+					}, [])
+					.map((pinnedItem) => {
+						const { id: githubId, ...rest } = pinnedItem;
+						return { githubId, ...rest };
+					})
+			: null;
+	}
+
 	async createProfile(profile) {
 		const account = await this.auth0.getUser({ id: profile.accountId });
-		const avatar = gravatarUrl(account.email, { default: "mm" });
-		profile.avatar = avatar;
+
+		// Example GitHub-based user account ID in Auth0: github|1234567
+		if (account.user_id.includes("github")) {
+			const { githubUrl, pinnedItems } = await this._getGitHubData(
+				account
+			);
+			profile.githubUrl = githubUrl;
+			profile.pinnedItems = pinnedItems;
+		}
+
+		const { picture } = account;
+
+		// Get the github profile image
+		// Example: https://avatars2.githubusercontent.com/u/1518780?v=4
+		if (picture && picture.includes("githubusercontent")) {
+			profile.avatar = picture;
+		} else {
+			const avatar = gravatarUrl(account.email, { default: "mm" });
+			profile.avatar = avatar;
+		}
+
 		const newProfile = new this.Profile(profile);
 		return newProfile.save();
 	}

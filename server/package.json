@@ -21,6 +21,7 @@
 	"dependencies": {
 		"@apollo/federation": "^0.29.0",
 		"@apollo/gateway": "^0.38.1",
+		"@octokit/graphql": "^4.5.7",
 		"apollo-datasource": "^3.0.3",
 		"apollo-link-error": "^1.1.13",
 		"apollo-server": "^3.1.2",

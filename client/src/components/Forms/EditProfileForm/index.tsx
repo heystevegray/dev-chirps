@@ -1,5 +1,5 @@
 import { ApolloError, useMutation } from "@apollo/client";
-import { Box, Form, FormField, Image, TextInput } from "grommet";
+import { Box, Form, FormField, Image, TextInput, CheckBox } from "grommet";
 import { useEffect, useState, useRef } from "react";
 import { UPDATE_PROFILE } from "../../../graphql/mutations";
 import { GET_VIEWER } from "../../../graphql/queries";
@@ -54,6 +54,7 @@ const EditProfileForm = ({ profileData, updateViewer }: Props) => {
 		useState(descriptionLength);
 	const [showSavedMessage, setShowSavedMessage] = useState(false);
 	const [showErrorMessage, setShowErrorMessage] = useState(false);
+	const [githubChecked, setGithubChecked] = useState(false);
 	const [updateProfile, { error: updateProfileError, loading }] = useMutation(
 		UPDATE_PROFILE,
 		{
@@ -124,6 +125,7 @@ const EditProfileForm = ({ profileData, updateViewer }: Props) => {
 					username,
 					// Only send the avatar if it is defined
 					...avatar,
+					...(githubChecked && { github: githubChecked }),
 				};
 
 				updateProfile({
@@ -221,6 +223,19 @@ const EditProfileForm = ({ profileData, updateViewer }: Props) => {
 					type="file"
 				/>
 			</FormField>
+			{profileData.githubUrl && (
+				<FormField htmlFor="github" id="github" name="github">
+					<Box pad={{ bottom: "small", top: "small" }}>
+						<CheckBox
+							checked={githubChecked}
+							label="Fetch updated profile page URL and pinned items from GitHub"
+							onChange={(event) => {
+								setGithubChecked(event.target.checked);
+							}}
+						/>
+					</Box>
+				</FormField>
+			)}
 			<LoadingButton
 				loading={loading}
 				label="Save Profile"
