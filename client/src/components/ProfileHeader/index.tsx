@@ -93,13 +93,13 @@ const ProfileHeader = ({ profileData, refetchProfile }: Props) => {
 			alignSelf="center"
 			flex={{ grow: 1, shrink: 0 }}
 			gap="medium"
-			border={{ side: "bottom", color: "brand", size: "small" }}
+			border={{ side: "bottom", color: "dark-1", size: "small" }}
 			direction="row-responsive"
 			justify="center"
 		>
 			<Box gap="medium">
 				<Box alignSelf="center">
-					<Avatar fullName={fullName} avatar={avatar} size="xlarge" />
+					<Avatar fullName={fullName} avatar={avatar} size="3xl" />
 				</Box>
 				<Box align="center" direction="row" justify="center">
 					<Text as="p" textAlign="center" color="dark-4">
