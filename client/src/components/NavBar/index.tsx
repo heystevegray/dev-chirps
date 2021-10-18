@@ -48,6 +48,7 @@ const NavBar = () => {
 							height="40px"
 							align="center"
 							justify="center"
+							margin={{ right: "small" }}
 						>
 							<Button
 								primary

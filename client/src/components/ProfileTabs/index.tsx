@@ -179,19 +179,21 @@ const ProfileTabs = ({ username }: { username: string }) => {
 				</Box>
 			</Tab>
 
-			<Tab
-				title={
-					<RichTabTitle icon={<Pin />} label="Code" size="xsmall" />
-				}
-			>
-				<Box margin={{ top: "medium" }}>
-					{pinnedItems && pinnedItems.length ? (
+			{pinnedItems && pinnedItems.length > 0 && (
+				<Tab
+					title={
+						<RichTabTitle
+							icon={<Pin />}
+							label="Code"
+							size="xsmall"
+						/>
+					}
+				>
+					<Box margin={{ top: "medium" }}>
 						<PinnedItemList pinnedItemsData={pinnedItems} />
-					) : (
-						<Text as="p">No code to display yet!</Text>
-					)}
-				</Box>
-			</Tab>
+					</Box>
+				</Tab>
+			)}
 		</Tabs>
 	);
 };
