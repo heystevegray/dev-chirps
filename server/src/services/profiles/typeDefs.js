@@ -84,6 +84,8 @@ const typeDefs = gql`
 		fullName: String
 		"The updated unique username of the user."
 		username: String
+		"Whether to re-fetch GitHub profile data from the GitHub GraphQL API."
+		github: Boolean
 	}
 
 	"""

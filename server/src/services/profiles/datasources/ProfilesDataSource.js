@@ -13,6 +13,23 @@ class ProfilesDataSource extends DataSource {
 		this.pagination = new Pagination(Profile);
 	}
 
+	/*
+	Access the Apollo Server context to get the sub value from the decoded token
+	contained within it (because the sub value is the user’s Auth0 ID).
+
+	Luckily, we have easy access to context inside of an Apollo data source.
+	The initialize method is exposed by the parent DataSource class and allows
+	us to set configuration options for our child class. For our purposes, we
+	need access to the server’s context object so we can later use the decoded
+	JWT from Auth0 to query the Management API for user account data. To do this,
+	we’ll use the initialize method and create a property to store the context object from the config.
+
+	Excerpt From: Mandi Wise. “Advanced GraphQL with Apollo and React.”
+	*/
+	initialize(config) {
+		this.context = config.context;
+	}
+
 	getProfile(filter) {
 		return this.Profile.findOne(filter).exec();
 	}
@@ -32,7 +49,7 @@ class ProfilesDataSource extends DataSource {
 
 	async updateProfile(
 		currentUsername,
-		{ avatar, description, fullName, username }
+		{ avatar, description, fullName, username, github }
 	) {
 		if (!avatar && !description && !fullName && !username) {
 			throw new UserInputError(
@@ -40,7 +57,25 @@ class ProfilesDataSource extends DataSource {
 			);
 		}
 
-		let uploadedAvatar;
+		let uploadedAvatar, githubUrl, pinnedItems;
+
+		// Refetch the user's github pinned items
+		if (github) {
+			const accountId = this.context.user.sub;
+
+			if (!accountId.includes("github")) {
+				throw new UserInputError(
+					"Only GitHub accounts can fetch GitHub data."
+				);
+			}
+
+			const account = await this.auth0.getUser({ id: accountId });
+			const { githubUrl: url, pinnedItems: items } =
+				await this._getGitHubData(account);
+
+			githubUrl = url;
+			pinnedItems = items;
+		}
 
 		if (avatar) {
 			const { _id } = await this.Profile.findOne({
@@ -111,6 +146,8 @@ class ProfilesDataSource extends DataSource {
 		}
 
 		const data = {
+			...(githubUrl && { githubUrl }),
+			...(pinnedItems && { pinnedItems }),
 			...(uploadedAvatar && { avatar: uploadedAvatar.secure_url }),
 			...(description && { description }),
 			...(fullName && { fullName }),
@@ -129,6 +166,20 @@ class ProfilesDataSource extends DataSource {
 			accountId: viewerAccountId,
 		}).exec();
 		return viewerProfile.following.includes(profileId);
+	}
+
+	async _getGitHubData(account) {
+		// Get the github profile url
+		const { html_url } = account;
+
+		// Get the github pinned items
+		const username = html_url.split("/").pop();
+		const pinnedItems = await this._getPinnedItems(
+			account.identities[0].access_token,
+			username
+		);
+
+		return { githubUrl: html_url, pinnedItems };
 	}
 
 	/*
@@ -199,16 +250,10 @@ class ProfilesDataSource extends DataSource {
 
 		// Example GitHub-based user account ID in Auth0: github|1234567
 		if (account.user_id.includes("github")) {
-			// Get the github profile url
-			const { html_url } = account;
-			profile.githubUrl = html_url;
-
-			// Get the github pinned items
-			const username = html_url.split("/").pop();
-			const pinnedItems = await this._getPinnedItems(
-				account.identities[0].access_token,
-				username
+			const { githubUrl, pinnedItems } = await this._getGitHubData(
+				account
 			);
+			profile.githubUrl = githubUrl;
 			profile.pinnedItems = pinnedItems;
 		}
 
