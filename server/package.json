@@ -25,6 +25,7 @@
 		"apollo-datasource": "^3.0.3",
 		"apollo-link-error": "^1.1.13",
 		"apollo-server": "^3.1.2",
+		"apollo-server-cache-redis": "^1.2.2",
 		"apollo-server-express": "^3.1.2",
 		"apollo-upload-client": "^12.1.0",
 		"auth0": "^2.36.1",

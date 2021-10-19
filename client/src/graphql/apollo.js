@@ -9,6 +9,8 @@ import { useAuth } from "../context/AuthContext";
 import typePolicies from "./typePolicies";
 import { createUploadLink } from "apollo-upload-client";
 import { onError } from "apollo-link-error";
+import { createPersistedQueryLink } from "@apollo/client/link/persisted-queries";
+import { sha256 } from "crypto-hash";
 
 const cache = new InMemoryCache({ typePolicies });
 
@@ -40,6 +42,11 @@ const createApolloClient = (getToken) => {
 		}
 	});
 
+	const persistedQueryLink = createPersistedQueryLink({
+		sha256,
+		useGETForHashedQueries: true,
+	});
+
 	return new ApolloClient({
 		cache,
 		/*  
@@ -47,9 +54,14 @@ const createApolloClient = (getToken) => {
 		 to note that the terminating uploadLink must always be the last item passed into
 		 the array because it sends our network request.
 
-		 Excerpt From: Mandi Wise. “Advanced GraphQL with Apollo and React.”
+		 `Excerpt From: Mandi Wise. “Advanced GraphQL with Apollo and React.”`
 		*/
-		link: ApolloLink.from([errorLink, authLink, uploadLink]),
+		link: ApolloLink.from([
+			errorLink,
+			persistedQueryLink,
+			authLink,
+			uploadLink,
+		]),
 	});
 };
 
