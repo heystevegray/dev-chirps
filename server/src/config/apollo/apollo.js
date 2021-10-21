@@ -3,6 +3,7 @@ import { ApolloServer } from "apollo-server-express";
 import { wait, dynamicServiceList } from "../../index";
 import { readNestedFileStreams } from "../../lib/handleUploads";
 import { RedisCache } from "apollo-server-cache-redis";
+import depthLimit from "graphql-depth-limit";
 
 // https://www.apollographql.com/docs/apollo-server/integrations/plugins-event-reference/#willresolvefield
 
@@ -88,5 +89,6 @@ export default async function () {
 				ttl: 600,
 			}),
 		},
+		validationRules: [depthLimit(10)],
 	});
 }
