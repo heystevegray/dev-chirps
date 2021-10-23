@@ -4,6 +4,7 @@ import gravatarUrl from "gravatar-url";
 import Pagination from "../../../lib/Pagination";
 import { uploadStream } from "../../../lib/handleUploads";
 import { graphql } from "@octokit/graphql";
+import DataLoader from "dataloader";
 
 class ProfilesDataSource extends DataSource {
 	constructor({ auth0, Profile }) {
@@ -12,6 +13,18 @@ class ProfilesDataSource extends DataSource {
 		this.Profile = Profile;
 		this.pagination = new Pagination(Profile);
 	}
+
+	_profileByIdLoader = new DataLoader(async (ids) => {
+		const profiles = await this.Profile.find({ _id: { $in: ids } }).exec();
+
+		/* 
+		Return the profile documents in the same order
+		as the ID's that were passed to the function
+		*/
+		return ids.map((id) =>
+			profiles.find((profile) => profile._id.toString() === id)
+		);
+	});
 
 	/*
 	Access the Apollo Server context to get the sub value from the decoded token
@@ -44,7 +57,7 @@ class ProfilesDataSource extends DataSource {
 	}
 
 	getProfileById(id) {
-		return this.Profile.findById(id);
+		return this._profileByIdLoader.load(id);
 	}
 
 	async updateProfile(

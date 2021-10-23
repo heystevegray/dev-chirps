@@ -12,6 +12,40 @@ const resolvers = {
 		},
 		account(profile, args, context, info) {
 			return { __typename: "Account", id: profile.accountId };
+
+			/*
+			When testing this query below:
+
+			query GET_POSTS {
+			  posts(filter: { followedBy: "username" }, first: 20) {
+			    edges {
+			      node {
+			        id
+			        text
+			        author {
+			          id
+			          username
+			          account {
+			            isModerator
+			          }
+			        }
+			      }
+			    }
+			  }
+			}
+
+			Specifically this part:
+
+			 account {
+	            isModerator
+	          }
+
+			I would need to change my return value to this (profile.id):
+
+			return { __typename: "Account", id: profile.id };
+
+			Why? Where does the value come from for `profile.id` vs `profile.accountId`?
+			*/
 		},
 		id(profile, args, context, info) {
 			return profile._id;

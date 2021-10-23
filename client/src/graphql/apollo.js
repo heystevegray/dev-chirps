@@ -54,7 +54,7 @@ const createApolloClient = (getToken) => {
 		 to note that the terminating uploadLink must always be the last item passed into
 		 the array because it sends our network request.
 
-		 `Excerpt From: Mandi Wise. “Advanced GraphQL with Apollo and React.”`
+		 Excerpt From: Mandi Wise. “Advanced GraphQL with Apollo and React.”
 		*/
 		link: ApolloLink.from([
 			errorLink,
