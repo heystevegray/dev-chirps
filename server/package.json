@@ -9,6 +9,8 @@
 		"format": "prettier --write .",
 		"redis": "brew services start redis",
 		"stopRedis": "brew services stop redis",
+		"mongo": "brew services start mongodb-community",
+		"stopMongo": "brew services stop mongodb-community",
 		"testQueue": "ts-node -r dotenv/config src/scripts/testQueue.ts"
 	},
 	"keywords": [],

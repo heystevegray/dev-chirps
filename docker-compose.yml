@@ -1,0 +1,62 @@
+version: "3.7"
+
+services:
+  mongo:
+    image: mongo:4.2.2
+    container_name: mongo
+    restart: always
+    volumes:
+      - ./data/db:/data/db
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+  redis:
+    image: redis:5.0.1-alpine
+    container_name: redis
+    restart: always
+  graphql:
+    container_name: graphql
+    restart: always
+    build:
+      context: ./server
+    # This option is like ports but it only makes these ports available within Docker to other containers,
+    # rather than publishing them to the host machine as well. We don’t need to access the accounts, content,
+    # or profiles APIs’ ports anywhere but in the gateway API, so we expose them internally only.
+    expose:
+      - 4001
+      - 4002
+      - 4003
+    volumes:
+      - ./server:/home/node/app
+      # Use the node_modules directory installed by the image during its build process
+      # in the /home/node/app and mount it in the container (again, because we don’t use the
+      # host machine’s node_modules directory).
+      - /home/node/app/node_modules
+    depends_on:
+      - mongo
+      - redis
+    env_file:
+      - ./server/.env
+    environment:
+      - ACCOUNTS_SERVICE_PORT=4001
+      - ACCOUNTS_SERVICE_URL=http://localhost:4001
+      - PROFILES_SERVICE_PORT=4002
+      - PROFILES_SERVICE_URL=http://localhost:4002
+      - CONTENT_SERVICE_PORT=4003
+      - CONTENT_SERVICE_URL=http://localhost:4003
+      - PORT=4000
+      - REDIS_HOST_ADDRESS=redis
+      - REDIS_PORT=6379
+    ports:
+      - 4000:4000
+    command: pm2-dev process.yml
+  client:
+    container_name: client
+    restart: always
+    build:
+      context: ./client
+    volumes:
+        - ./client:/usr/src/app
+        - /usr/src/app/node_modules
+    env_file:
+      - ./client/.env
