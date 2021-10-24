@@ -1,6 +1,6 @@
 # squeaken
 
-A micro blogging app based on the book [“Advanced GraphQL with Apollo and React”](https://8bit.press/book/advanced-graphql) by [Mandi Wise](https://twitter.com/mandiwise).
+A microblogging app based on the book [“Advanced GraphQL with Apollo and React”](https://8bit.press/book/advanced-graphql) by [Mandi Wise](https://twitter.com/mandiwise).
 
 ## Features
 - Microservices with [Apollo Federation](https://www.apollographql.com/docs/federation/)
