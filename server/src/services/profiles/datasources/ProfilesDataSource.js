@@ -5,6 +5,7 @@ import Pagination from "../../../lib/Pagination";
 import { uploadStream } from "../../../lib/handleUploads";
 import { graphql } from "@octokit/graphql";
 import DataLoader from "dataloader";
+import getProjectionFields from "../../../lib/getProjectionFields";
 
 class ProfilesDataSource extends DataSource {
 	constructor({ auth0, Profile }) {
@@ -14,15 +15,24 @@ class ProfilesDataSource extends DataSource {
 		this.pagination = new Pagination(Profile);
 	}
 
-	_profileByIdLoader = new DataLoader(async (ids) => {
-		const profiles = await this.Profile.find({ _id: { $in: ids } }).exec();
+	_profileByIdLoader = new DataLoader(async (keys) => {
+		const ids = [...new Set(keys.map((key) => key.id))];
+		let profileQuery = this.Profile.find({ _id: { $in: ids } }).exec();
+
+		if (keys.projection) {
+			profileQuery = this.Profile.find({ _id: { $in: ids } })
+				.select(keys[0].projection)
+				.exec();
+		}
+
+		const profiles = await profileQuery;
 
 		/* 
 		Return the profile documents in the same order
 		as the ID's that were passed to the function
 		*/
-		return ids.map((id) =>
-			profiles.find((profile) => profile._id.toString() === id)
+		return keys.map((key) =>
+			profiles.find((profile) => profile._id.toString() === key.id)
 		);
 	});
 
@@ -43,21 +53,44 @@ class ProfilesDataSource extends DataSource {
 		this.context = config.context;
 	}
 
-	getProfile(filter) {
-		return this.Profile.findOne(filter).exec();
+	getProfile(filter, info) {
+		const projection = getProjectionFields(info, this.Profile.schema);
+		return this.Profile.findOne(filter).select(projection);
 	}
 
-	async getProfiles({ after, before, first, last, orderBy }) {
+	async getProfiles({ after, before, first, last, orderBy }, info) {
 		const sort = this._getProfileSort(orderBy);
 		const queryArgs = { after, before, first, last, sort };
-		const edges = await this.pagination.getEdges(queryArgs);
+		const projection = getProjectionFields(info, this.Profile.schema);
+		const edges = await this.pagination.getEdges(queryArgs, projection);
 		const pageInfo = await this.pagination.getPageInfo(edges, queryArgs);
 
 		return { edges, pageInfo };
 	}
 
-	getProfileById(id) {
-		return this._profileByIdLoader.load(id);
+	getProfileById(id, info) {
+		let projection;
+
+		// Some field resolvers are not passing the info object at this time
+		if (info) {
+			projection = getProjectionFields(info, this.Profile.schema);
+		}
+
+		/*
+		Because we’re passing an object now instead of a solo ID, we will
+		also need to pass load a second argument telling it how to identify
+		the cache key value in the load key object.
+
+		Excerpt From: Mandi Wise. “Advanced GraphQL with Apollo and React.”
+		*/
+		return this._profileByIdLoader.load(
+			{
+				id,
+				// Only include the projection if it exists
+				...(projection && { projection }),
+			},
+			{ cacheKeyFn: (key) => key.id }
+		);
 	}
 
 	async updateProfile(
@@ -177,7 +210,9 @@ class ProfilesDataSource extends DataSource {
 	async checkViewerFollowsProfile(viewerAccountId, profileId) {
 		const viewerProfile = await this.Profile.findOne({
 			accountId: viewerAccountId,
-		}).exec();
+		})
+			.select("following")
+			.exec();
 		return viewerProfile.following.includes(profileId);
 	}
 
@@ -309,28 +344,26 @@ class ProfilesDataSource extends DataSource {
 		);
 	}
 
-	async getFollowedProfiles({
-		after,
-		before,
-		first,
-		last,
-		orderBy,
-		following,
-	}) {
+	async getFollowedProfiles(
+		{ after, before, first, last, orderBy, following },
+		info
+	) {
 		const sort = this._getProfileSort(orderBy);
 		const filter = { _id: { $in: following } };
 		const queryArgs = { after, before, first, last, filter, sort };
-		const edges = await this.pagination.getEdges(queryArgs);
+		const projection = getProjectionFields(info, this.Profile.schema);
+		const edges = await this.pagination.getEdges(queryArgs, projection);
 		const pageInfo = await this.pagination.getPageInfo(edges, queryArgs);
 
 		return { edges, pageInfo };
 	}
 
-	async searchProfiles({ after, first, searchString }) {
+	async searchProfiles({ after, first, searchString }, info) {
 		const sort = { score: { $meta: "textScore" }, _id: -1 };
 		const filter = { $text: { $search: searchString } };
 		const queryArgs = { after, first, filter, sort };
-		const edges = await this.pagination.getEdges(queryArgs);
+		const projection = getProjectionFields(info, this.Profile.schema);
+		const edges = await this.pagination.getEdges(queryArgs, projection);
 		const pageInfo = await this.pagination.getPageInfo(edges, queryArgs);
 
 		return { edges, pageInfo };

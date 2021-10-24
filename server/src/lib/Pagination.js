@@ -6,7 +6,7 @@ class Pagination {
 	}
 
 	// Get documents and cast them into the correct edge/node shape
-	async getEdges(queryArgs) {
+	async getEdges(queryArgs, projection) {
 		const {
 			after,
 			before,
@@ -49,7 +49,8 @@ class Pagination {
 				filter,
 				first,
 				operator,
-				sort
+				sort,
+				projection
 			);
 
 			const docs = await this.Model.aggregate(pipeline);
@@ -64,6 +65,7 @@ class Pagination {
 				: filter;
 
 			const docs = await this.Model.find(queryDoc)
+				.select(projection)
 				.sort(sort)
 				.limit(first)
 				.exec();
@@ -84,6 +86,7 @@ class Pagination {
 				: filter;
 
 			const docs = await this.Model.find(queryDoc)
+				.select(projection)
 				.sort(reverseSort)
 				.limit(last)
 				.exec();
@@ -159,10 +162,29 @@ class Pagination {
 	}
 
 	// Create the aggregation pipeline to paginate a full text-search
-	async _getSearchPipeline(fromCursorId, filter, first, operator, sort) {
+	async _getSearchPipeline(
+		fromCursorId,
+		filter,
+		first,
+		operator,
+		sort,
+		projection = "_id"
+	) {
+		const projectionDocument = projection
+			.split(" ")
+			.reduce((accumulator, field) => {
+				accumulator[field] = 1;
+				return accumulator;
+			}, {});
+
 		const textSearchPipeline = [
 			{ $match: filter },
-			{ $addFields: { score: { $meta: "textScore" } } },
+			{
+				$project: {
+					...projectionDocument,
+					score: { $meta: "textScore" },
+				},
+			},
 			{ $sort: sort },
 		];
 
