@@ -35,7 +35,7 @@ const AccountBlockButton = ({
 				changeAccountBlockedStatus({
 					variables: { where: { id: accountId } },
 				}).catch((error) => {
-					console.log(error);
+					console.error(error);
 				});
 			}}
 		/>

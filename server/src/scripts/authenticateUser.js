@@ -9,14 +9,14 @@ const copy = (data) => {
 (async () => {
 	const [email, password] = process.argv.slice(2);
 	const access_token = await getToken(email, password).catch((error) => {
-		console.log(error);
+		console.error(error);
 	});
 	const token = `"Authorization": "Bearer ${access_token}"`;
 	try {
 		copy(token);
 		console.log("Copied the following to your clipboard 😎\n");
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 	}
 	console.log(token);
 })();

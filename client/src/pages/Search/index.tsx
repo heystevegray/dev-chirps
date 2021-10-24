@@ -5,6 +5,7 @@ import queryString from "query-string";
 import LoadMoreButton from "../../components/Buttons/LoadMoreButton";
 import EndOfList from "../../components/EndOfList";
 import SearchForm from "../../components/Forms/SearchForm";
+import GoHome from "../../components/Links/GoHome";
 import ContentList from "../../components/Lists/ContentList";
 import ProfileList from "../../components/Lists/ProfileList";
 import Loader from "../../components/Loader";
@@ -18,7 +19,7 @@ const Search = ({ location }: { location: Location }) => {
 	const SEARCH_QUERY =
 		type === "searchPosts" ? SEARCH_POSTS : SEARCH_PROFILES;
 
-	const { data, fetchMore, loading } = useQuery(SEARCH_QUERY, {
+	const { data, fetchMore, loading, error } = useQuery(SEARCH_QUERY, {
 		variables: {
 			query: { text: text || "" },
 		},
@@ -33,6 +34,20 @@ const Search = ({ location }: { location: Location }) => {
 	) : (
 		"Submit a search query above to see results."
 	);
+
+	if (error) {
+		console.error(error);
+		return (
+			<MainLayout>
+				<Box align="center" margin={{ top: "medium" }}>
+					<Text as="p" color="status-error">
+						Oof! Something went wrong with your search.
+					</Text>
+					<GoHome />
+				</Box>
+			</MainLayout>
+		);
+	}
 
 	if (loading) {
 		return (

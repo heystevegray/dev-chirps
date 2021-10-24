@@ -1,6 +1,5 @@
 import { Box, Heading, Text } from "grommet";
-import React from "react";
-import { Link } from "react-router-dom";
+import GoHome from "../../components/Links/GoHome";
 
 import MainLayout from "../../layouts/MainLayout";
 
@@ -15,12 +14,8 @@ const NotFound = () => (
 				</span>{" "}
 				This is not the page you are looking for.
 			</Text>
-			<Link to="/">
-				<Text as="p" color="brand">
-					Go Home
-				</Text>
-			</Link>
 		</Box>
+		<GoHome />
 	</MainLayout>
 );
 

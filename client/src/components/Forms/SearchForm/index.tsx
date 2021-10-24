@@ -47,7 +47,6 @@ const SearchForm = () => {
 				} = event;
 				const searchType = getTypeFromLabel(searchLabel);
 				if (searchType) {
-					console.log({ searchText, searchType });
 					history.push(
 						`/search?type=${searchType}&text=${searchText}`
 					);
@@ -69,7 +68,7 @@ const SearchForm = () => {
 						onInput={(event: any) => {
 							setText(event.target.value);
 						}}
-						placeholder="Search DevChirps..."
+						placeholder="Search squeaken..."
 						required
 						value={text}
 					/>

@@ -76,7 +76,7 @@ const Account = () => {
 								where: { id: viewerId },
 							},
 						}).catch((error) => {
-							console.log(error);
+							console.error(error);
 						});
 					}}
 				>
@@ -142,7 +142,7 @@ const Account = () => {
 								setInvalidPassword(false);
 							})
 							.catch((error) => {
-								console.log(error);
+								console.error(error);
 								setInvalidPassword(true);
 							});
 					}}

@@ -41,13 +41,13 @@ const ContentBlockButton = ({
 					toggleReplyBlock({
 						variables: { where: { id } },
 					}).catch((error) => {
-						console.log(error);
+						console.error(error);
 					});
 				} else {
 					togglePostBlock({
 						variables: { where: { id } },
 					}).catch((error) => {
-						console.log(error);
+						console.error(error);
 					});
 				}
 			}}

@@ -1,18 +1,26 @@
-import { Box, Text } from "grommet";
+import { Anchor, Box, Text } from "grommet";
 
 const Footer = () => (
 	<footer>
 		<Box
-			direction="row"
+			background="dark-1"
+			align="center"
+			direction="row-responsive"
 			justify="center"
-			margin={{ top: "medium", bottom: "small" }}
+			pad="small"
+			gap="xsmall"
+			margin={{ top: "medium" }}
 		>
-			<Text as="p">
-				Made by and for devs{" "}
-				<span role="img" aria-label="Developer emoji">
-					👩🏻‍💻
-				</span>
+			<Text as="p" textAlign="center">
+				Built by{" "}
+				<Anchor color="brand" href="https://heystevegray.dev/">
+					Steve Gray
+				</Anchor>
 			</Text>
+			<Text
+				as="p"
+				textAlign="center"
+			>{`All rights reserved ${new Date().getFullYear()}`}</Text>
 		</Box>
 	</footer>
 );

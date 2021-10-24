@@ -27,7 +27,7 @@ const NavBar = () => {
 				pad="small"
 			>
 				<Heading as="h1" color="brand" level="1" size="32px">
-					<Anchor href="/" label="devchirps" />
+					<Anchor href="/" label="squeaken" />
 				</Heading>
 				{location.pathname !== "/" && (
 					<Box align="center" direction="row">

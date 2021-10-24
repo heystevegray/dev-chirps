@@ -100,7 +100,7 @@ const CreateContentForm = ({ parentPostId }: Props) => {
 								},
 							},
 						}).catch((error) => {
-							console.log(error);
+							console.error(error);
 						});
 					} else {
 						createPost({
@@ -113,7 +113,7 @@ const CreateContentForm = ({ parentPostId }: Props) => {
 								},
 							},
 						}).catch((error) => {
-							console.log(error);
+							console.error(error);
 						});
 					}
 				}}

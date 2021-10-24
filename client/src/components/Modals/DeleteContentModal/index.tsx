@@ -88,16 +88,16 @@ const DeleteContentModal = ({
 									variables: {
 										where: { id },
 									},
-								}).catch((err) => {
-									console.log(err);
+								}).catch((error) => {
+									console.error(error);
 								});
 							} else {
 								deletePost({
 									variables: {
 										where: { id },
 									},
-								}).catch((err) => {
-									console.log(err);
+								}).catch((error) => {
+									console.error(error);
 								});
 							}
 						}}

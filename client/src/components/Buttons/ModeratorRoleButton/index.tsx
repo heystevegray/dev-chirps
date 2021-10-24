@@ -36,8 +36,8 @@ const ModeratorRoleButton = ({
 			onClick={() => {
 				changeAccountModeratorRole({
 					variables: { where: { id: accountId } },
-				}).catch((err) => {
-					console.log(err);
+				}).catch((error) => {
+					console.error(error);
 				});
 			}}
 		/>
