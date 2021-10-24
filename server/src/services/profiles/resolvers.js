@@ -8,10 +8,44 @@ const resolvers = {
 	},
 	Profile: {
 		__resolveReference(reference, { dataSources }, info) {
-			return dataSources.profilesAPI.getProfileById(reference.id);
+			return dataSources.profilesAPI.getProfileById(reference.id, info);
 		},
 		account(profile, args, context, info) {
 			return { __typename: "Account", id: profile.accountId };
+
+			/*
+			When testing this query below:
+
+			query GET_POSTS {
+			  posts(filter: { followedBy: "username" }, first: 20) {
+			    edges {
+			      node {
+			        id
+			        text
+			        author {
+			          id
+			          username
+			          account {
+			            isModerator
+			          }
+			        }
+			      }
+			    }
+			  }
+			}
+
+			Specifically this part:
+
+			 account {
+	            isModerator
+	          }
+
+			I would need to change my return value to this (profile.id):
+
+			return { __typename: "Account", id: profile.id };
+
+			Why? Where does the value come from for `profile.id` vs `profile.accountId`?
+			*/
 		},
 		id(profile, args, context, info) {
 			return profile._id;
@@ -23,14 +57,18 @@ const resolvers = {
 			);
 		},
 		following(profile, args, { dataSources }, info) {
-			return dataSources.profilesAPI.getFollowedProfiles({
-				...args,
-				following: profile.following,
-			});
+			return dataSources.profilesAPI.getFollowedProfiles(
+				{
+					...args,
+					following: profile.following,
+				},
+				info
+			);
 		},
 		username(profile, args, { dataSources }, info) {
 			/*
 			 * TODO: Why do I have to do this????
+			 * TODO: Add the info object and include a projection document for Mongo DB
 			 * Why is profile.username null when fetching the profile query?
 			 * You are extending the Account type that's defined in the Accounts federated schema
 			 */
@@ -67,6 +105,7 @@ const resolvers = {
 		avatar(profile, args, { dataSources }, info) {
 			/*
 			 * TODO: Why do I have to do this????
+			 * TODO: Add the info object and include a projection document for Mongo DB
 			 */
 
 			if (profile.avatar) {
@@ -80,6 +119,7 @@ const resolvers = {
 		fullName(profile, args, { dataSources }, info) {
 			/*
 			 * TODO: Why do I have to do this????
+			 * TODO: Add the info object and include a projection document for Mongo DB
 			 */
 
 			if (profile.fullName) {
@@ -93,6 +133,7 @@ const resolvers = {
 		description(profile, args, { dataSources }, info) {
 			/*
 			 * TODO: Why do I have to do this????
+			 * TODO: Add the info object and include a projection document for Mongo DB
 			 */
 
 			if (profile.description) {
@@ -105,16 +146,22 @@ const resolvers = {
 	},
 	Account: {
 		profile(account, args, { dataSources }, info) {
-			return dataSources.profilesAPI.getProfile({
-				accountId: account.id,
-			});
+			return dataSources.profilesAPI.getProfile(
+				{
+					accountId: account.id,
+				},
+				info
+			);
 		},
 	},
 	Query: {
 		async profile(parent, { username }, { dataSources }, info) {
-			const profile = await dataSources.profilesAPI.getProfile({
-				username,
-			});
+			const profile = await dataSources.profilesAPI.getProfile(
+				{
+					username,
+				},
+				info
+			);
 
 			if (!profile) {
 				throw new UserInputError("Profile does not exist.");
@@ -123,7 +170,7 @@ const resolvers = {
 			return profile;
 		},
 		profiles(parent, args, { dataSources }, info) {
-			return dataSources.profilesAPI.getProfiles(args);
+			return dataSources.profilesAPI.getProfiles(args, info);
 		},
 		searchProfiles(
 			parent,
@@ -131,11 +178,14 @@ const resolvers = {
 			{ dataSources },
 			info
 		) {
-			return dataSources.profilesAPI.searchProfiles({
-				after,
-				first,
-				searchString: text,
-			});
+			return dataSources.profilesAPI.searchProfiles(
+				{
+					after,
+					first,
+					searchString: text,
+				},
+				info
+			);
 		},
 	},
 	Mutation: {

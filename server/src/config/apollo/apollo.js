@@ -2,6 +2,8 @@ import { ApolloGateway, RemoteGraphQLDataSource } from "@apollo/gateway";
 import { ApolloServer } from "apollo-server-express";
 import { wait, dynamicServiceList } from "../../index";
 import { readNestedFileStreams } from "../../lib/handleUploads";
+import { RedisCache } from "apollo-server-cache-redis";
+import depthLimit from "graphql-depth-limit";
 
 // https://www.apollographql.com/docs/apollo-server/integrations/plugins-event-reference/#willresolvefield
 
@@ -80,8 +82,13 @@ export default async function () {
 			const user = req.user || null;
 			return { user };
 		},
-		// plugins: [
-		// 	myPlugin,
-		// ],
+		persistedQueries: {
+			cache: new RedisCache({
+				host: process.env.REDIS_HOST_ADDRESS,
+				port: process.env.REDIS_PORT,
+				ttl: 600,
+			}),
+		},
+		validationRules: [depthLimit(10)],
 	});
 }

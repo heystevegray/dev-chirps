@@ -1,8 +1,7 @@
 import { DataSource } from "apollo-datasource";
 import { UserInputError } from "apollo-server";
-
 import getToken from "../../../lib/getToken";
-
+import DataLoader from "dataloader";
 class AccountsDataSource extends DataSource {
 	authorPermissions = [
 		"read:own_account",
@@ -25,6 +24,24 @@ class AccountsDataSource extends DataSource {
 		super();
 		this.auth0 = auth0;
 	}
+
+	_accountByIdLoader = new DataLoader(async (ids) => {
+		/*
+		Auth0 uses Lucene query syntax to retrieve users based on search criteria,
+		so our search query string must be formed as follows
+
+		Excerpt From: Mandi Wise. “Advanced GraphQL with Apollo and React.”
+		*/
+		const luceneQuery = ids.map((id) => `user_id:${id}`).join(" OR ");
+		const accounts = await this.auth0.getUsers({
+			search_engine: "v3",
+			luceneQuery,
+		});
+
+		return ids.map((id) =>
+			accounts.find((account) => account.user_id === id)
+		);
+	});
 
 	createAccount(email, password) {
 		return this.auth0.createUser({
@@ -94,7 +111,7 @@ class AccountsDataSource extends DataSource {
 	}
 
 	getAccountById(id) {
-		return this.auth0.getUser({ id });
+		return this._accountByIdLoader.load(id);
 	}
 
 	getAccounts() {

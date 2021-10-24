@@ -38,11 +38,15 @@ const resolvers = {
 			return dataSources.accountsAPI
 				.getAccountById(account.id)
 				.then((result) => {
-					return (
-						result.app_metadata &&
-						result.app_metadata.roles &&
-						result.app_metadata.roles.includes("moderator")
-					);
+					if (result) {
+						return (
+							result.app_metadata &&
+							result.app_metadata.roles &&
+							result.app_metadata.roles.includes("moderator")
+						);
+					}
+
+					return false;
 				});
 		},
 		isBlocked(account, args, { dataSources }, info) {
