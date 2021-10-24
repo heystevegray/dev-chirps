@@ -4,11 +4,7 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"dev": "concurrently -k npm:dev:*",
-		"dev:accounts": "nodemon -r dotenv/config -r esm ./src/services/accounts/index.js",
-		"dev:profiles": "nodemon -r dotenv/config -r esm ./src/services/profiles/index.js",
-		"dev:content": "nodemon -r dotenv/config -r esm ./src/services/content/index.js",
-		"dev:gateway": "nodemon -r dotenv/config -r esm ./src/index.js",
+		"dev": "npx pm2 start process.yml --watch",
 		"seed": "node -r dotenv/config -r esm src/scripts/seedData.js superHARDpa55!",
 		"format": "prettier --write .",
 		"redis": "brew services start redis",
@@ -52,9 +48,7 @@
 		"wait-on": "^6.0.0"
 	},
 	"devDependencies": {
-		"concurrently": "^6.2.1",
 		"faker": "^4.1.0",
-		"nodemon": "^2.0.12",
 		"prettier": "^2.3.2"
 	}
 }
