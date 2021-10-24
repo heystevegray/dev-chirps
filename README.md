@@ -15,3 +15,4 @@ A micro blogging app based on the book [“Advanced GraphQL with Apollo and Reac
 - [Mongo DB](https://www.mongodb.com/)
 - [GraphQL](https://graphql.org/)
 - [Redis](https://redis.io/)
+- [Grommet Component Library](https://v2.grommet.io/)
