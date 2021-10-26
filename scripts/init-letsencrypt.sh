@@ -9,7 +9,7 @@
 
 domain=${1}
 rsa_key_size=4096
-data_path="/home/chirpsdev/devchirps/certbot"
+data_path="/home/squeakendev/squeaken/certbot"
 email=${2:-""}
 staging=${3:-0}
 
