@@ -1,4 +1,4 @@
-FROM node:12-alpine
+FROM node:12-alpine as base
 
 # An important note about creating Dockerfiles is that we want to be strategic about the number
 # of RUN, COPY, and ADD lines we add to them because these instructions create new layers in
@@ -40,3 +40,9 @@ RUN npm install --no-optional pm2 -g && \
 # Copy over all of the files from our local server directory into the app directory
 # And make the node user the owner
 COPY --chown=node:node . .
+
+FROM base as production
+
+RUN npm prune --production
+
+EXPOSE 4000

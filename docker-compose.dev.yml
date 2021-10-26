@@ -8,7 +8,15 @@ services:
     ports:
       - "6379:6379"
   client:
+    build:
+      target: base
     ports:
       - 3000:3000
     stdin_open: true
     command: npm start
+  graphql:
+    build:
+      target: base
+    ports:
+      - 4000:4000
+    command: pm2-dev process.yml
