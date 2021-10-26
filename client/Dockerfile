@@ -14,7 +14,7 @@ COPY . .
 
 FROM base as builder
 
-RUN npm run builder
+RUN npm run build
 
 FROM nginx:1.17-alpine as production
 
