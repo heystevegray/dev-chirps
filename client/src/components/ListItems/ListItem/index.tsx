@@ -1,5 +1,5 @@
-import { Box } from "grommet";
-import { ReactElement } from "react";
+import { Box, ResponsiveContext } from "grommet";
+import { ReactElement, useContext } from "react";
 import { Children } from "../../../graphql/types";
 import Avatar from "../../Avatar";
 
@@ -11,6 +11,15 @@ interface Props {
 }
 
 const ListItem = ({ children, fullName = "", avatar = "", icon }: Props) => {
+	const sizeSmall = useContext(ResponsiveContext) === "small";
+	const padding = sizeSmall
+		? "small"
+		: {
+				left: "small",
+				top: "medium",
+				right: "small",
+		  };
+
 	return (
 		<Box
 			border={{
@@ -22,11 +31,7 @@ const ListItem = ({ children, fullName = "", avatar = "", icon }: Props) => {
 			gap="medium"
 			direction="row"
 			width="100%"
-			pad={{
-				left: "small",
-				top: "medium",
-				right: "small",
-			}}
+			pad={padding}
 		>
 			<Box width={{ min: "48px" }}>
 				{icon ? icon : <Avatar fullName={fullName} avatar={avatar} />}

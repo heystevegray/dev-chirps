@@ -1,4 +1,5 @@
-import { Box, Text, Anchor, Image } from "grommet";
+import { Box, Text, Anchor, Image, ResponsiveContext } from "grommet";
+import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { Content } from "../../graphql/types";
@@ -42,6 +43,7 @@ export const getPostAuthorUsername = (parentPostAuthor: {
 
 const SingleContent = ({ contentData }: { contentData: Content }) => {
 	const value = useAuth();
+	const sizeSmall = useContext(ResponsiveContext) === "small";
 	const {
 		isModerator,
 		profile: { username },
@@ -72,7 +74,7 @@ const SingleContent = ({ contentData }: { contentData: Content }) => {
 				<Avatar
 					avatar={author.avatar}
 					fullName={author.fullName}
-					size="xlarge"
+					size={sizeSmall ? "medium" : "xlarge"}
 				/>
 				<Box justify="center">
 					<Text weight="bold">{author.fullName}</Text>
@@ -95,7 +97,7 @@ const SingleContent = ({ contentData }: { contentData: Content }) => {
 				)}
 				{(!isBlocked || author.username === username) && (
 					<Box>
-						<Text as="h2" size="xlarge">
+						<Text as="h2" size={sizeSmall ? "large" : "xlarge"}>
 							{text}
 						</Text>
 						{media && (

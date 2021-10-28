@@ -1,9 +1,17 @@
-import { Box, Button, Form, FormField, Select } from "grommet";
+import {
+	Box,
+	Button,
+	Form,
+	FormField,
+	ResponsiveContext,
+	Select,
+} from "grommet";
 import { Search } from "grommet-icons";
 import { useHistory, useLocation } from "react-router-dom";
 import queryString from "query-string";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { SearchTypes } from "../../../graphql/types";
+import AccentButton from "../../Buttons/AccentButton";
 
 interface SearchOption {
 	label: string;
@@ -11,6 +19,7 @@ interface SearchOption {
 }
 
 const SearchForm = () => {
+	const sizeSmall = useContext(ResponsiveContext) === "small";
 	const options: SearchOption[] = [
 		{ label: "For Posts", value: "searchPosts" },
 		{ label: "For Profiles", value: "searchProfiles" },
@@ -73,7 +82,7 @@ const SearchForm = () => {
 						value={text}
 					/>
 				</Box>
-				<Box direction="row" justify="start" gap="large">
+				<Box flex={{ grow: 1, shrink: 0 }}>
 					<Box>
 						<FormField
 							a11yTitle="Type of Search"
@@ -91,6 +100,20 @@ const SearchForm = () => {
 							}}
 						/>
 					</Box>
+				</Box>
+				{sizeSmall ? (
+					<Box align="center">
+						<Box alignContent="center" justify="center">
+							<AccentButton
+								tip="Search"
+								a11yTitle="Search..."
+								icon={<Search color="paper" size="22px" />}
+								label="Search"
+								type="submit"
+							/>
+						</Box>
+					</Box>
+				) : (
 					<Box
 						align="center"
 						width="40px"
@@ -107,7 +130,7 @@ const SearchForm = () => {
 							type="submit"
 						/>
 					</Box>
-				</Box>
+				)}
 			</Box>
 		</Form>
 	);

@@ -40,6 +40,8 @@ const theme: ThemeType = {
 		content: {
 			background: "dark-1",
 			elevation: "none",
+			justify: "center",
+			align: "center",
 		},
 	},
 	global: {

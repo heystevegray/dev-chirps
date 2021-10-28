@@ -23,7 +23,7 @@ const MainLayout = ({ centered, children }: Props) => (
 			justify={centered ? "center" : "start"}
 			margin="medium"
 		>
-			<Container>{children}</Container>
+			<Container children={children} />
 		</Box>
 		<Footer />
 	</Box>

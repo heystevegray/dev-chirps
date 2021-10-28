@@ -89,6 +89,7 @@ const ProfileHeader = ({ profileData, refetchProfile }: Props) => {
 
 	return (
 		<Box
+			width="100%"
 			pad={{ top: "medium", right: "medium", left: "medium" }}
 			alignSelf="center"
 			flex={{ grow: 1, shrink: 0 }}
