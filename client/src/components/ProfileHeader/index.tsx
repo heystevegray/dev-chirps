@@ -103,9 +103,14 @@ const ProfileHeader = ({ profileData, refetchProfile }: Props) => {
 					<Avatar fullName={fullName} avatar={avatar} size="3xl" />
 				</Box>
 				<Box align="center" direction="row" justify="center">
-					<Text as="p" textAlign="center" color="dark-4">
+					<Heading
+						level="2"
+						responsive
+						textAlign="center"
+						color="dark-4"
+					>
 						@{username} {account.isModerator && `(Moderator)`}
-					</Text>
+					</Heading>
 					{githubUrl && (
 						<Anchor href={githubUrl} margin={{ left: "small" }}>
 							<Github color="secondary" size="30px" />
@@ -124,7 +129,12 @@ const ProfileHeader = ({ profileData, refetchProfile }: Props) => {
 					}}
 				>
 					{fullName && (
-						<Heading textAlign="center" level="2">
+						<Heading
+							level="3"
+							size="small"
+							responsive
+							textAlign="center"
+						>
 							{fullName}
 						</Heading>
 					)}

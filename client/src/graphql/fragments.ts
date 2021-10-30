@@ -8,6 +8,7 @@ export const basicProfile = gql`
 		fullName
 		username
 		githubUrl
+		isFullNameHidden
 	}
 `;
 

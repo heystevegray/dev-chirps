@@ -10,6 +10,7 @@ export interface Profile extends IsModerator, IsBlocked {
 	following: string[];
 	fullName: string;
 	username: string;
+	isFullNameHidden: boolean;
 	viewerIsFollowing: boolean;
 	githubUrl?: string;
 }

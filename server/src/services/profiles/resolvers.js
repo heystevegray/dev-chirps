@@ -116,11 +116,23 @@ const resolvers = {
 				.getProfileById(profile.id)
 				.then((result) => result.avatar);
 		},
-		fullName(profile, args, { dataSources }, info) {
+		async fullName(profile, args, { dataSources }, info) {
 			/*
 			 * TODO: Why do I have to do this????
 			 * TODO: Add the info object and include a projection document for Mongo DB
 			 */
+
+			const isFullNameHidden = await dataSources.profilesAPI
+				.getProfileById(profile.id)
+				.then((result) => result.isFullNameHidden);
+
+			if (
+				profile.isFullNameHidden === true ||
+				isFullNameHidden === true
+			) {
+				// Hide the full name everywhere if the user prefers to hide their full name
+				return "";
+			}
 
 			if (profile.fullName) {
 				return profile.fullName;

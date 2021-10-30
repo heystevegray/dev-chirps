@@ -26,6 +26,10 @@ const profileSchema = new mongoose.Schema({
 	githubUrl: {
 		type: String,
 	},
+	isFullNameHidden: {
+		type: Boolean,
+		default: false,
+	},
 	pinnedItems: [
 		{
 			githubId: { type: String, required: true },
