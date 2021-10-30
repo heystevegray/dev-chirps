@@ -69,6 +69,7 @@ const EditProfileForm = ({ profileData, updateViewer }: Props) => {
 		useState(descriptionLength);
 	const [showSavedMessage, setShowSavedMessage] = useState(false);
 	const [showErrorMessage, setShowErrorMessage] = useState(false);
+	const hiddenText = "Your full name is currently hidden";
 	const [githubChecked, setGithubChecked] = useState(false);
 	const isFullNameHiddenInTheDB = profileData.isFullNameHidden;
 	const [isFullNameHidden, setIsFullNameHidden] = useState(
@@ -130,7 +131,7 @@ const EditProfileForm = ({ profileData, updateViewer }: Props) => {
 	});
 
 	const placeholder = isFullNameHiddenInTheDB
-		? "Your full name is currently hidden"
+		? hiddenText
 		: "Add your full name";
 
 	return (
@@ -208,9 +209,9 @@ const EditProfileForm = ({ profileData, updateViewer }: Props) => {
 
 					{isFullNameHiddenInTheDB && (
 						<Text as="p" color="status-warning">
-							Your full name is currently hidden. To show your
+							{`${hiddenText}. To show your
 							full name on squeaken, uncheck the box below and
-							save your profile.
+							save your profile.`}
 						</Text>
 					)}
 
