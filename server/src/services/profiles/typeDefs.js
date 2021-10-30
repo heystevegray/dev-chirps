@@ -84,6 +84,8 @@ const typeDefs = gql`
 		fullName: String
 		"The updated unique username of the user."
 		username: String
+		"Wether the full name is hidden."
+		isFullNameHidden: Boolean
 		"Whether to re-fetch GitHub profile data from the GitHub GraphQL API."
 		github: Boolean
 	}
@@ -108,6 +110,8 @@ const typeDefs = gql`
 		fullName: String
 		"The new user's username (must be unique)."
 		username: String!
+		"Wether the full name is hidden."
+		isFullNameHidden: Boolean
 	}
 
 	"""
@@ -125,6 +129,8 @@ const typeDefs = gql`
 		avatar: String
 		"A short bio or description about the user (max. 256 characters)."
 		description: String
+		"Wether the full name is hidden."
+		isFullNameHidden: Boolean
 		"Other users that the users follows."
 		following(
 			first: Int

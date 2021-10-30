@@ -18,6 +18,7 @@ const Modal = ({
 	width = "medium",
 }: Props) => {
 	const sizeSmall = useContext(ResponsiveContext) === "small";
+	const padding = sizeSmall ? "medium" : "large";
 
 	return (
 		<Box align="center" justify="center">
@@ -34,7 +35,7 @@ const Modal = ({
 						direction="row"
 						background="dark-1"
 						justify="between"
-						pad="small"
+						pad="large"
 					>
 						<Heading level="2" size="1.5rem">
 							{title}
@@ -50,7 +51,8 @@ const Modal = ({
 					<Box
 						height="100%"
 						background="dark-1"
-						pad="large"
+						pad={padding}
+						overflow="auto"
 						gap="large"
 						width={sizeSmall ? "100%" : width}
 					>

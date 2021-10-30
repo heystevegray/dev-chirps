@@ -95,9 +95,15 @@ class ProfilesDataSource extends DataSource {
 
 	async updateProfile(
 		currentUsername,
-		{ avatar, description, fullName, username, github }
+		{ avatar, description, fullName, username, github, isFullNameHidden }
 	) {
-		if (!avatar && !description && !fullName && !username) {
+		if (
+			!avatar &&
+			!description &&
+			!fullName &&
+			!username &&
+			!isFullNameHidden
+		) {
 			throw new UserInputError(
 				"You must supply some profile data to update."
 			);
@@ -191,6 +197,8 @@ class ProfilesDataSource extends DataSource {
 			}
 		}
 
+		console.log({ resolverIsFullNameHidden: isFullNameHidden });
+
 		const data = {
 			...(githubUrl && { githubUrl }),
 			...(pinnedItems && { pinnedItems }),
@@ -198,6 +206,7 @@ class ProfilesDataSource extends DataSource {
 			...(description && { description }),
 			...(fullName && { fullName }),
 			...(username && { username }),
+			isFullNameHidden,
 		};
 
 		return this.Profile.findOneAndUpdate(

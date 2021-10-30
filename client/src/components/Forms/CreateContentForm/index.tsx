@@ -22,6 +22,7 @@ import {
 import { LoadingButton } from "../../Buttons/LoadingButton";
 import CharacterCountLabel from "../../CharacterCountLabel";
 import RequiredLabel from "../../RequiredLabel";
+import FormFieldContainer from "../FormFieldContainer";
 
 interface Props {
 	parentPostId?: string;
@@ -118,99 +119,106 @@ const CreateContentForm = ({ parentPostId }: Props) => {
 					}
 				}}
 			>
-				<FormField
-					component={TextArea}
-					htmlFor="text"
-					id="text"
-					resize="vertical"
-					label={
-						<RequiredLabel>
-							<CharacterCountLabel
-								currentCharacters={contentCharacterCount}
-								label="Content"
-								max={256}
+				<FormFieldContainer
+					button={
+						<Box
+							align="center"
+							direction="row"
+							justify="end"
+							margin={{ right: "small" }}
+						>
+							<LoadingButton
+								loading={loading}
+								label={`${parentPostId ? "Reply" : "Publish"}`}
+								type="submit"
 							/>
-						</RequiredLabel>
+						</Box>
 					}
-					name="text"
-					onInput={(event: any) => {
-						setContentCharacterCount(event.target.value.length);
-					}}
-					placeholder={`Write your ${
-						parentPostId ? "reply" : "post"
-					}`}
-					required
-					validate={(fieldData: string) => {
-						if (fieldData && fieldData.length > 256) {
-							return "256 maximum character count exceeded";
-						}
-					}}
-				/>
-				<FormField
-					htmlFor="media"
-					id="media"
-					label="Image"
-					name="media"
-					validate={(fieldData) => {
-						const file = getMediaFile();
-						if (file && !validFormats.includes(file.type)) {
-							return "Upload GIF, JPG or PNG files only";
-						} else if (file && file.size > 5 * 1024 * 1024) {
-							return "Maximum file size is 5 MB";
-						}
-					}}
 				>
-					{mediaFile && (
-						<Stack anchor="top-right" margin="medium">
-							<Image
-								src={mediaFile}
-								alt="Uploaded content image"
-							/>
-							<Box
-								background="dark-1"
-								margin="xsmall"
-								overflow="hidden"
-								round="full"
-							>
-								<Button
-									a11yTitle="Remove Image"
-									hoverIndicator
-									icon={<Close size="18px" />}
-									onClick={() => {
-										setMediaFile(null);
-										if (mediaInput.current?.value) {
-											mediaInput.current.value = "";
-										}
-									}}
+					<FormField
+						component={TextArea}
+						htmlFor="text"
+						id="text"
+						resize="vertical"
+						label={
+							<RequiredLabel>
+								<CharacterCountLabel
+									currentCharacters={contentCharacterCount}
+									label="Content"
+									max={256}
 								/>
-							</Box>
-						</Stack>
-					)}
-					<TextInput
-						accept={validFormats.join(", ")}
-						onChange={(event) => {
-							setMediaFile(
-								event.target.files?.length
-									? URL.createObjectURL(event.target.files[0])
-									: null
-							);
+							</RequiredLabel>
+						}
+						name="text"
+						onInput={(event: any) => {
+							setContentCharacterCount(event.target.value.length);
 						}}
-						ref={mediaInput}
-						type="file"
+						placeholder={`Write your ${
+							parentPostId ? "reply" : "post"
+						}`}
+						required
+						validate={(fieldData: string) => {
+							if (fieldData && fieldData.length > 256) {
+								return "256 maximum character count exceeded";
+							}
+						}}
 					/>
-				</FormField>
-				<Box
-					align="center"
-					direction="row"
-					justify="end"
-					margin={{ right: "small" }}
-				>
-					<LoadingButton
-						loading={loading}
-						label={`${parentPostId ? "Reply" : "Publish"}`}
-						type="submit"
-					/>
-				</Box>
+					<FormField
+						htmlFor="media"
+						id="media"
+						label="Image"
+						name="media"
+						validate={(fieldData) => {
+							const file = getMediaFile();
+							if (file && !validFormats.includes(file.type)) {
+								return "Upload GIF, JPG or PNG files only";
+							} else if (file && file.size > 5 * 1024 * 1024) {
+								return "Maximum file size is 5 MB";
+							}
+						}}
+					>
+						{mediaFile && (
+							<Stack anchor="top-right" margin="medium">
+								<Image
+									src={mediaFile}
+									alt="Uploaded content image"
+								/>
+								<Box
+									background="dark-1"
+									margin="xsmall"
+									overflow="hidden"
+									round="full"
+								>
+									<Button
+										a11yTitle="Remove Image"
+										hoverIndicator
+										icon={<Close size="18px" />}
+										onClick={() => {
+											setMediaFile(null);
+											if (mediaInput.current?.value) {
+												mediaInput.current.value = "";
+											}
+										}}
+									/>
+								</Box>
+							</Stack>
+						)}
+						<TextInput
+							accept={validFormats.join(", ")}
+							onChange={(event) => {
+								setMediaFile(
+									event.target.files?.length
+										? URL.createObjectURL(
+												event.target.files[0]
+										  )
+										: null
+								);
+							}}
+							ref={mediaInput}
+							type="file"
+						/>
+					</FormField>
+				</FormFieldContainer>
 			</Form>
 		</Box>
 	);
