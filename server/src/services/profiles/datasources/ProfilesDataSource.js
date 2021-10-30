@@ -197,8 +197,6 @@ class ProfilesDataSource extends DataSource {
 			}
 		}
 
-		console.log({ resolverIsFullNameHidden: isFullNameHidden });
-
 		const data = {
 			...(githubUrl && { githubUrl }),
 			...(pinnedItems && { pinnedItems }),
