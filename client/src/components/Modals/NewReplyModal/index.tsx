@@ -1,6 +1,6 @@
-import { Box, Text } from "grommet";
+import { Box, ResponsiveContext, Text } from "grommet";
 import { ChatOption } from "grommet-icons";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Post } from "../../../graphql/types";
 import { displayRelativeDateOrTime } from "../../../lib/displayDatetime";
 import Avatar from "../../Avatar";
@@ -22,6 +22,12 @@ const NewReplyModal = ({
 }: Props) => {
 	const [modalOpen, setModalOpen] = useState(false);
 	const { author, createdAt, id, text } = postData;
+	const sizeSmall = useContext(ResponsiveContext) === "small";
+	const gap = sizeSmall ? "medium" : "small";
+
+	const handleClose = () => {
+		setModalOpen(false);
+	};
 
 	return (
 		<Box
@@ -31,49 +37,60 @@ const NewReplyModal = ({
 			}}
 		>
 			<Modal
-				handleClose={() => setModalOpen(false)}
+				handleClose={handleClose}
 				isOpen={modalOpen}
 				title="Create a New Reply"
 				width="large"
 			>
-				<Box height={{ min: "132px" }} margin={{ vertical: "small" }}>
-					<Box direction="row" gap="medium">
-						<Box
-							height="48px"
-							overflow="hidden"
-							round="full"
-							width={{ min: "48px" }}
-						>
-							<Avatar
-								fullName={author.fullName}
-								avatar={author.avatar}
-							/>
-						</Box>
-						<Box>
-							<UsernameHeader
-								fullName={author.fullName}
-								username={author.username}
-							/>
-							<Text as="p" margin={{ top: "small" }}>
-								{text}
-							</Text>
-							<Text
-								as="p"
-								color="dark-3"
-								size="small"
-								margin={{ top: "small" }}
+				<Box gap={gap}>
+					<Box margin={{ vertical: "small" }} gap={gap}>
+						<Box direction="row" gap={gap}>
+							<Box
+								height="48px"
+								overflow="hidden"
+								round="full"
+								width={{ min: "48px" }}
 							>
-								{displayRelativeDateOrTime(createdAt)}
-							</Text>
+								<Avatar
+									fullName={author.fullName}
+									avatar={author.avatar}
+								/>
+							</Box>
+							<Box>
+								<UsernameHeader
+									fullName={author.fullName}
+									username={author.username}
+								/>
+								<Text as="p" margin={{ top: "small" }}>
+									{text}
+								</Text>
+								<Text
+									as="p"
+									color="dark-3"
+									size="small"
+									margin={{ top: "small" }}
+								>
+									{displayRelativeDateOrTime(createdAt)}
+								</Text>
+							</Box>
 						</Box>
 					</Box>
-					<Text as="p" margin={{ top: "medium" }}>
-						<Text color="dark-3">
-							Replying to @{author.username}
-						</Text>
-					</Text>
+					<Box background="dark-1" gap={gap}>
+						<Box pad={{ vertical: sizeSmall ? "large" : "small" }}>
+							<Text as="p">
+								<Text color="dark-3">
+									Replying to @{author.username}
+								</Text>
+							</Text>
+						</Box>
+						<Box>
+							<CreateContentForm
+								parentPostId={id}
+								handleClose={handleClose}
+							/>
+						</Box>
+					</Box>
 				</Box>
-				<CreateContentForm parentPostId={id} />
 			</Modal>
 			<AccentButton
 				hoverIndicator={!showButtonLabel}

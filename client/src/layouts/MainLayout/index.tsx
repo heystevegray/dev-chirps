@@ -3,6 +3,7 @@ import { ReactElement } from "react";
 import NavBar from "../../components/NavBar";
 import Footer from "../../components/Footer";
 import Container from "../../components/Container";
+import NewPostFloatingActionButton from "../../components/Buttons/NewPostFloatingActionButton";
 
 interface Props {
 	centered?: boolean;
@@ -25,6 +26,7 @@ const MainLayout = ({ centered, children }: Props) => (
 		>
 			<Container children={children} />
 		</Box>
+		<NewPostFloatingActionButton />
 		<Footer />
 	</Box>
 );

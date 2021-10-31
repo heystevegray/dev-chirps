@@ -26,9 +26,10 @@ import FormFieldContainer from "../FormFieldContainer";
 
 interface Props {
 	parentPostId?: string;
+	handleClose: () => void;
 }
 
-const CreateContentForm = ({ parentPostId }: Props) => {
+const CreateContentForm = ({ parentPostId, handleClose }: Props) => {
 	const history = useHistory();
 	const [contentCharacterCount, setContentCharacterCount] = useState(0);
 	const value = useAuth();
@@ -100,9 +101,11 @@ const CreateContentForm = ({ parentPostId }: Props) => {
 									...media,
 								},
 							},
-						}).catch((error) => {
-							console.error(error);
-						});
+						})
+							.catch((error) => {
+								console.error(error);
+							})
+							.finally(handleClose);
 					} else {
 						createPost({
 							variables: {
@@ -113,9 +116,11 @@ const CreateContentForm = ({ parentPostId }: Props) => {
 									...media,
 								},
 							},
-						}).catch((error) => {
-							console.error(error);
-						});
+						})
+							.catch((error) => {
+								console.error(error);
+							})
+							.finally(handleClose);
 					}
 				}}
 			>
@@ -154,7 +159,7 @@ const CreateContentForm = ({ parentPostId }: Props) => {
 							setContentCharacterCount(event.target.value.length);
 						}}
 						placeholder={`Write your ${
-							parentPostId ? "reply" : "post"
+							parentPostId ? "reply" : "squeak"
 						}`}
 						required
 						validate={(fieldData: string) => {
