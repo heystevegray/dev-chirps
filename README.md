@@ -12,7 +12,7 @@ A microblogging app based on the book [“Advanced GraphQL with Apollo and React
 ## Tech Stack
 - [React](https://reactjs.org/)
 - [Typescript](https://www.typescriptlang.org/) / [Javascript](https://www.javascript.com/)
-- [Mongo DB](https://www.mongodb.com/)
+- [MongoDB](https://www.mongodb.com/)
 - [GraphQL](https://graphql.org/)
 - [Redis](https://redis.io/)
 - [Grommet Component Library](https://v2.grommet.io/)
